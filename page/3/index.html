@@ -7,13 +7,17 @@
   
   <title>Math &amp; Code</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
+  <meta name="description" content="the best or nothing">
+<meta name="keywords" content="Algorithm">
+<meta property="og:type" content="website">
 <meta property="og:title" content="Math &amp; Code">
 <meta property="og:url" content="http://yoursite.com/page/3/index.html">
 <meta property="og:site_name" content="Math &amp; Code">
+<meta property="og:description" content="the best or nothing">
 <meta property="og:locale" content="default">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Math &amp; Code">
+<meta name="twitter:description" content="the best or nothing">
   
     <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
   
@@ -36,6 +40,10 @@
       <h1 id="logo-wrap">
         <a href="/" id="logo">Math &amp; Code</a>
       </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">---By Frank,the best or nothing</a>
+        </h2>
       
     </div>
     <div id="header-inner" class="inner">
@@ -62,10 +70,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-最优化-求解线性方程组-3" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-机器学习-神经网络反向传播的推导" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/29/最优化-求解线性方程组-3/" class="article-date">
-  <time datetime="2018-08-29T10:42:54.000Z" itemprop="datePublished">2018-08-29</time>
+    <a href="/2018/08/29/机器学习-神经网络反向传播的推导/" class="article-date">
+  <time datetime="2018-08-29T10:43:17.000Z" itemprop="datePublished">2018-08-29</time>
 </a>
     
   </div>
@@ -76,7 +84,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/29/最优化-求解线性方程组-3/">[最优化]求解线性方程组(3)</a>
+      <a class="article-title" href="/2018/08/29/机器学习-神经网络反向传播的推导/">[机器学习]神经网络反向传播的推导</a>
     </h1>
   
 
@@ -84,25 +92,161 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="求解线性方程组-3"><a href="#求解线性方程组-3" class="headerlink" title="求解线性方程组(3)"></a>求解线性方程组(3)</h1><h2 id="矩阵的伪逆"><a href="#矩阵的伪逆" class="headerlink" title="矩阵的伪逆"></a>矩阵的伪逆</h2><p>这里所介绍的伪逆是<strong>Moore-Penrose逆矩阵</strong>，其定义为：给定矩阵<script type="math/tex">A\in R^{m*n}</script>，如果矩阵<script type="math/tex">A^{\dagger}\in R^{n*m}</script>满足<script type="math/tex">AA^{\dagger}A=A</script>，且存在两个矩阵<script type="math/tex">U\in R^{n*n},V\in R^{m*m}</script>使得</p>
+        <h1 id="神经网络反向传播的推导"><a href="#神经网络反向传播的推导" class="headerlink" title="神经网络反向传播的推导"></a>神经网络反向传播的推导</h1><p>对于神经网络的训练过程而言，其反向传播算法是训练过程的核心，神经网络根据预测值$\hat{y}$与实际值$y$的偏差从后向前来计算损失函数对于各个参数的梯度，从而利用梯度下降的方法来优化训练神经网络的各个参数。</p>
+<p>神经网络的计算流程图如下：<br><img src="https://img-blog.csdn.net/2018060112352186?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>从该流程图可以看到，如果我们要计算神经网络的参数$W^{[1]},b^{[1]},W^{[2]},b^{[2]}$，首先需要计算$\frac{\partial L}{\partial a^{[2]}}$和$\frac{\partial a^{[2]}}{\partial z^{[2]}}$，然后根据链式法则得到$\frac{\partial L}{\partial z^{[2]}}=\frac{\partial L}{\partial a^{[2]}}\frac{\partial a^{[2]}}{\partial z^{[2]}}$。</p>
+<p>之后再计算$\frac{\partial z^{[2]}}{\partial W^{[2]}}$和$\frac{\partial z^{[2]}}{\partial b^{[2]}}$，同样根据链式法则可以得到$\frac{\partial L}{\partial W^{[2]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial W^{[2]}}$以及得到$\frac{\partial L}{\partial b^{[2]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial b^{[2]}}$。这样便得到了$dW^{[2]}$和$db^{[2]}$。</p>
+<p>另外对于$dW^{[1]}$和$db^{[1]}$的计算，需要先计算$\frac{\partial z^{[1]}}{\partial W^{[1]}}$，$\frac{\partial a^{[1]}}{\partial z^{[1]}}$和$\frac{\partial z^{[2]}}{\partial a^{[1]}}$，同样根据链式法则可以得到$\frac{\partial L}{\partial W^{[1]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial a^{[1]}}\frac{\partial a^{[1]}}{\partial z^{[1]}}\frac{\partial z^{[1]}}{\partial W^{[1]}}$，以及$\frac{\partial L}{\partial b^{[1]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial a^{[1]}}\frac{\partial a^{[1]}}{\partial z^{[1]}}\frac{\partial z^{[1]}}{\partial b^{[1]}}$。这样也得到了$dW^{[1]}$和$db^{[1]}$。</p>
+<p>在使用随机梯度下降(SGD)优化算法以及交叉熵(Cross Entropy)损失函数的时候，我们令$a^{[2]}=\hat{y}$，即损失函数：</p>
+<script type="math/tex; mode=display">L(\hat{y},y)=-(ylog\hat{y}+(1-y)log(1-\hat{y}))</script><p>使用sigmoid激活函数，即</p>
+<script type="math/tex; mode=display">a^{[1]}=\sigma(z^{[1]})=\frac{1}{1+e^{-z^{[1]}}}\\a^{[2]}=\sigma(z^{[2]})=\frac{1}{1+e^{-z^{[2]}}}</script><p>将该激活函数和损失函数代入上面的计算过程，可以得到：</p>
 <script type="math/tex; mode=display">
-A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V</script><p>那么则称<script type="math/tex">A^{\dagger}</script>是矩阵<script type="math/tex">A</script>的<strong>伪逆</strong>，可以通过证明得到，矩阵的伪逆是<strong>唯一</strong>的。</p>
-<p>对于矩阵<script type="math/tex">A\in R^{m*n},m\ge n</script>且<script type="math/tex">rank(A)=n</script>，可以根据以上定义验证得到<script type="math/tex">A</script>的伪逆为</p>
+dz^{[2]}=a^{[2]}-y\\
+dW^{[2]}=dz^{[2]}a^{[1]T}\\
+db^{[2]}=dz^{[2]}\\
+dz^{[1]}=W^{[2]T}dz^{[2]}*\sigma^{'}(z^{[1]})\\
+dW^{[1]}=dz^{[1]}x^{T}\\
+db^{[1]}=dz^{[1]}</script><p>在进行随机梯度下降的过程中，随机选取样本中的一个错误分类点，根据该点计算当前的$dW^{[1]},db^{[1]},dW^{[2]},db^{[2]}$，然后利用以下公式来更新$W^{[1]},b^{[1]},W^{[2]},b^{[2]}$：</p>
 <script type="math/tex; mode=display">
-A^{\dagger}=(A^{T}A)^{-1}A^{T}</script><p>对于矩阵<script type="math/tex">A\in R^{m*n},m\le n</script>且<script type="math/tex">rank(A)=m</script>，同样根据以上定义验证得到<script type="math/tex">A</script>的伪逆为</p>
-<script type="math/tex; mode=display">
-A^{\dagger}=A^{T}(AA^{T})^{-1}</script><p>以上两种情况是当矩阵为<strong>列满秩</strong>或者<strong>行满秩</strong>情况下的伪逆，而对于一般矩阵<script type="math/tex">A\in R^{m*n},rank(A)=r,r\le min(m,n)</script>，我们可以采用<strong>满秩分解</strong>的方法来求得其伪逆。</p>
-<p>对于任意矩阵<script type="math/tex">A\in R^{m*n},rank(A)=r,r\le min(m,n)</script>，都可以将其分解为一个行满秩矩阵和列满秩矩阵的乘积：<br>即<script type="math/tex">A=BC,B\in R^{m*r},c\in R^{r*n},rank(A)=rank(B)=rank(C)=r</script></p>
-<p>可以通过证明得到：</p>
-<p><script type="math/tex">A^{\dagger}=C^{\dagger}B^{\dagger}</script>，而其中<script type="math/tex">B^{\dagger}=(B^{T}B)^{-1}B^{T},C^{\dagger}=C^{T}(CC^{T})^{-1}</script>，即为一般矩阵的伪逆求法。</p>
-<h2 id="一般情况下线性方程组的解法"><a href="#一般情况下线性方程组的解法" class="headerlink" title="一般情况下线性方程组的解法"></a>一般情况下线性方程组的解法</h2><p>某线性方程组为<script type="math/tex">Ax=b,A\in R^{m*n},rank(A)=r</script>，向量<script type="math/tex">x^{*}=A^{\dagger}b</script>可在空间<script type="math/tex">R^{n}</script>中最小化<script type="math/tex">||Ax-b||^{2}</script>;而且在<script type="math/tex">R^{n}</script>中所有能够最小化<script type="math/tex">||Ax-b||^{2}</script>的向量中，向量<script type="math/tex">x^{*}=A^{\dagger}b</script>的范数最小，并且是唯一的。</p>
-<p>当<script type="math/tex">r=m</script>时，<script type="math/tex">A</script>是行满秩矩阵，此时<script type="math/tex">x^{*}=A^{\dagger}b=A^{T}(AA^{T})^{-1}b</script>，即为方程组<script type="math/tex">Ax=b</script>的<strong>最小范数解</strong>。</p>
-<p>当<script type="math/tex">r=n</script>时，<script type="math/tex">A</script>是列满秩矩阵，此时<script type="math/tex">x^{*}=A^{\dagger}b=(A^{T}A)^{-1}A^{T}b</script>，即为方程组<script type="math/tex">Ax=b</script>的<strong>最小二乘解</strong>。</p>
+W^{[2]}:=W^{[2]}-\alpha *dW^{[2]}\\
+b^{[2]}:=b^{[2]}-\alpha *db^{[2]}\\
+W^{[1]}:=W^{[1]}-\alpha *dW^{[1]}\\
+b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
+<p>对于神经网络的训练，还有批量梯度下降(Batch Gradient Descent)和小批量梯度下降(Mini-Batch Gradient Descent)，带动量的随机梯度下降(Momentum)，RMSProp，Adam等方法，后面再做详解。</p>
+<p>To be continue…</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/最优化-求解线性方程组-3/" data-id="cjlf8oq94000mtoezawoe7byt" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/机器学习-神经网络反向传播的推导/" data-id="cjlfav97e001f48ezklg735jy" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Cpp-Cpp中的关联容器" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/29/Cpp-Cpp中的关联容器/" class="article-date">
+  <time datetime="2018-08-29T10:43:15.000Z" itemprop="datePublished">2018-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/29/Cpp-Cpp中的关联容器/">[Cpp]Cpp中的关联容器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="关联容器"><a href="#关联容器" class="headerlink" title="关联容器"></a>关联容器</h1><p>关联容器支持高效的关键字查找和访问，两个主要的关联容器是set和map。map中的元素是一些键值对(key-value)，关键字起着索引的作用，值则表示与索引相关联的数据，set中的元素只包含一个关键字。set支持高效的关键字查找操作，底层应该是用的哈希表来实现的。</p>
+<p>C++标准库提供了8个关联容器，这8个容器的不同体现在三个维度上：</p>
+<ol>
+<li>set或者map</li>
+<li>有序或者无序—-有无unordered前缀</li>
+<li>允许或禁止重复关键字—-有无multi前缀</li>
+</ol>
+<p>本文重点介绍set和map，关于其他容器的相关内容可以查看C++的API</p>
+<h2 id="set与map的使用"><a href="#set与map的使用" class="headerlink" title="set与map的使用"></a>set与map的使用</h2><p>使用map：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//统计每个单词在输入中出现的次数</span></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="keyword">size_t</span>&gt; word_count;	<span class="comment">//新建map</span></span><br><span class="line"><span class="built_in">string</span> word;</span><br><span class="line"><span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;word)</span><br><span class="line">	++word_count[word];    <span class="comment">//将该单词所对应的次数加1</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;w:word_count)</span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt;w.first&lt;&lt;<span class="string">" occurs "</span>&lt;&lt;w.second&lt;&lt;((w.second&gt;<span class="number">1</span>)?<span class="string">" times"</span>:<span class="string">" time"</span>)&lt;&lt;<span class="built_in">endl</span>;</span><br></pre></td></tr></table></figure></p>
+<p>需要注意，对于map的下标操作如果使用word_count[word]，在未找到word关键字的时候会添加一个关键字为word的元素，对其值进行初始化。如果使用word_count.at(word)，在未找到word关键字的时候会抛出一个out_of_range异常。</p>
+<p>使用set：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//统计输入中每个单词出现的次数</span></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="keyword">size_t</span>&gt; word_count;</span><br><span class="line"><span class="built_in">set</span>&lt;<span class="built_in">string</span>&gt; exclude=&#123;<span class="string">"The"</span>,<span class="string">"But"</span>,<span class="string">"And"</span>,<span class="string">"Or"</span>,<span class="string">"An"</span>&#125;;</span><br><span class="line"><span class="built_in">string</span> word;</span><br><span class="line"><span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;word)</span><br><span class="line">	<span class="keyword">if</span>(exclude.find(word)==exclude.end())   <span class="comment">//当在set中未find时，返回尾迭代器</span></span><br><span class="line">	++word_count[word];</span><br></pre></td></tr></table></figure></p>
+<h2 id="pair类和关联容器中额外的类型别名"><a href="#pair类和关联容器中额外的类型别名" class="headerlink" title="pair类和关联容器中额外的类型别名"></a>pair类和关联容器中额外的类型别名</h2><p>pair类定义在头文件utility中，一个pair保存两个数据成员。类似于容器，pair是一个用来生成特定类型的模板。当创建一个pair的时候，我们必须提供两个类型名。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pair&lt;<span class="built_in">string</span>,<span class="keyword">size_t</span>&gt; word_count;	<span class="comment">//保存string和size_t</span></span><br></pre></td></tr></table></figure>
+<p>与其他的标准库类型不同，pair的数据成员是public的，两个成员分别命名为first和second，map中保存的元素就是pair类型的。</p>
+<p>关联容器还定义了其他的类型，这些类型表示容器关键字和值的类型：</p>
+<ul>
+<li>key_type   容器的关键字类型</li>
+<li>mapped_type   每个关键字关联的类型，只适用于map</li>
+<li>value_type   对于set，与key_type相同，对于map，为pair<const key_type,mapped_type=""><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span>&lt;<span class="built_in">string</span>&gt;::value_type v1;	<span class="comment">//string</span></span><br><span class="line"><span class="built_in">set</span>&lt;<span class="built_in">string</span>&gt;::key_type v2;  <span class="comment">//string</span></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="keyword">int</span>&gt;::value_type v3;	<span class="comment">//pair&lt;const string,int&gt;</span></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="keyword">int</span>&gt;::key_type v4;	<span class="comment">//string</span></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="keyword">int</span>&gt;::mapped_type v5;<span class="comment">//int</span></span><br></pre></td></tr></table></figure>
+</const></li>
+</ul>
+<h2 id="关联容器的迭代器"><a href="#关联容器的迭代器" class="headerlink" title="关联容器的迭代器"></a>关联容器的迭代器</h2><p>当解引用一个关联容器的迭代器时，会得到一个类型为容器的value_type的值的引用。对map而言，value_type是一个pair类型，其first成员保存const的关键字，second成员保存值：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获得指向word_count中一个元素的迭代器</span></span><br><span class="line"><span class="keyword">auto</span> map_it=word_count.begin();</span><br><span class="line"><span class="comment">//*map_it是指向一个pair&lt;const string,size_t&gt;对象的引用</span></span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;map_it-&gt;first;</span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">" "</span>&lt;&lt;map_it-&gt;second;</span><br><span class="line">map_it-&gt;first=<span class="string">"new key"</span>;  <span class="comment">//错误，关键字是const的</span></span><br><span class="line">++map_it-&gt;second;   <span class="comment">//值的元素是可以改变的</span></span><br></pre></td></tr></table></figure></p>
+<p>一个set中的关键字也是const的。可以用一个set来读取元素的值，但是不能修改：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt; iset=&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>&#125;;</span><br><span class="line"><span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt;::iterator set_it=iset.begin();</span><br><span class="line"><span class="keyword">if</span>(set_it!=iset.end())&#123;</span><br><span class="line">	*set_it=<span class="number">42</span>;   <span class="comment">//错误，const的关键字不能修改</span></span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt;*set_it&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/08/29/Cpp-Cpp中的关联容器/" data-id="cjlfav95k000348ezhmtbpvo0" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-最优化-不等式约束的优化问题求解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/29/最优化-不等式约束的优化问题求解/" class="article-date">
+  <time datetime="2018-08-29T10:43:12.000Z" itemprop="datePublished">2018-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/29/最优化-不等式约束的优化问题求解/">[最优化]不等式约束的优化问题求解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="不等式约束的优化问题求解"><a href="#不等式约束的优化问题求解" class="headerlink" title="不等式约束的优化问题求解"></a>不等式约束的优化问题求解</h1><p>与前文讨论的只含等式约束的优化问题求解类似，含不等式约束的优化问题同样可以用拉格朗日乘子法进行求解<br>对于一般形式的优化问题：</p>
+<script type="math/tex; mode=display">
+minimize\quad f(x)\\
+subject\  to\quad h(x)=0\\
+\quad\quad g(x)\le 0</script><p>其中，<script type="math/tex">f:R^{n}\to R,h:R^{n}\to R^{m},m\le n,g:R^{n}\to R^{p}</script><br>引入下面两个定义：</p>
+<p><strong>定义1</strong>：对于一个不等式约束<script type="math/tex">g_{j}(x)\le 0</script>，如果在<script type="math/tex">x^{*}</script>处<script type="math/tex">g_{j}(x^{*})=0</script>，那么称该不等式约束是<script type="math/tex">x^{*}</script>处的起作用约束；如果在<script type="math/tex">x^{*}</script>处<script type="math/tex">g_{j}(x^{*})<0</script>，那么称该约束是<script type="math/tex">x^{*}</script>处的不起作用约束。按照惯例，总是把等式约束<script type="math/tex">h_{i}(x)</script>当作起作用的约束</p>
+<p><strong>定义2：</strong>设<script type="math/tex">x^{*}</script>满足<script type="math/tex">h(x^{*})=0,g(x^{*})\le 0</script>，设<script type="math/tex">J(x^{*})</script>为起作用不等式约束的下标集：</p>
+<script type="math/tex; mode=display">
+J(x^{*})\triangleq \{j:g_{j}(x^{*})=0\}</script><p>如果向量</p>
+<script type="math/tex; mode=display">
+\nabla h_{i}(x^{*}),\nabla g_{j}(x^{*}),1\le i\le m,j\in J(x^{*})</script><p>是线性无关的，那么称<script type="math/tex">x^{*}</script>是一个正则点</p>
+<p>下面介绍某个点是局部极小点所满足的一阶必要条件，即KKT条件。<br><strong>KKT条件：</strong>设<script type="math/tex">f,h,g\in C^{1}</script>，设<script type="math/tex">x^{*}</script>是问题<script type="math/tex">h(x)=0,g(x)\le 0</script>的一个正则点和局部极小点，那么必然存在<script type="math/tex">\lambda^{*}\in R^{m}</script>和<script type="math/tex">\mu^{*}\in R^{p}</script>，使得以下条件成立：</p>
+<script type="math/tex; mode=display">
+\mu^{*}\ge0\\
+Df(x^{*})+\lambda^{*T}Dh(x^{*})+\mu^{*T}Dg(x^{*})=0^{T}\\
+\mu^{*T}g(x^{*})=0\\
+h(x^{*})=0\\
+g(x^{*})\le0</script><p>那么在求解不等式约束的最优化问题的时候，可以搜索满足KKT条件的点，并将这些点作为极小点的候选对象。</p>
+<h2 id="二阶充分必要条件"><a href="#二阶充分必要条件" class="headerlink" title="二阶充分必要条件"></a>二阶充分必要条件</h2><p>除了一阶的KKT条件之外，求解这类问题还有二阶的充分必要条件。</p>
+<p><strong>二阶必要条件：</strong>在上述的问题中若<script type="math/tex">x^{*}</script>是极小点且<script type="math/tex">f,h,g\in C^{2}</script>。假设<script type="math/tex">x^{*}</script>是正则点，那么存在<script type="math/tex">\lambda^{*}\in R^{m}</script>和<script type="math/tex">\mu^{*}\in R^{p}</script>使得</p>
+<ol>
+<li><script type="math/tex; mode=display">\mu^{*}\ge 0,Df(x^{*})+\lambda^{*T}Dh(x^{*})+\mu^{*T}Dg(x^{*})=0^{T},\mu^{*T}g(x^{*})=0</script></li>
+<li>对于所有<script type="math/tex">y\in T(x^{*})</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*},\mu^{*})y\ge0</script>成立</li>
+</ol>
+<p><strong>二阶充分条件：</strong>假定<script type="math/tex">f,h,g\in C^{2}</script>，<script type="math/tex">x^{*}\in R^{n}</script>是一个可行点，存在向量<script type="math/tex">\lambda^{*}\in R^{m}</script>和<script type="math/tex">\mu^{*}\in R^{p}</script>使得</p>
+<ol>
+<li><script type="math/tex; mode=display">\mu^{*}\ge 0,Df(x^{*})+\lambda^{*T}Dh(x^{*})+\mu^{*T}Dg(x^{*})=0^{T},\mu^{*T}g(x^{*})=0</script></li>
+<li>对于所有<script type="math/tex">y\in \widetilde{T}(x^{*},\mu^{*}),y\neq0</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*},\mu^{*})y>0</script>成立</li>
+</ol>
+<p>那么<script type="math/tex">x^{*}</script>是优化问题<script type="math/tex">h(x)=0,g(x)\le 0</script>的严格局部极小点</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/08/29/最优化-不等式约束的优化问题求解/" data-id="cjlfav964000f48ez6z2b31oi" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -114,10 +258,10 @@ A^{\dagger}=A^{T}(AA^{T})^{-1}</script><p>以上两种情况是当矩阵为<stro
 
 
   
-    <article id="post-机器学习-SVM的推导-1" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-机器学习-KITTI的雷达-摄像头数据融合" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/29/机器学习-SVM的推导-1/" class="article-date">
-  <time datetime="2018-08-29T10:42:51.000Z" itemprop="datePublished">2018-08-29</time>
+    <a href="/2018/08/29/机器学习-KITTI的雷达-摄像头数据融合/" class="article-date">
+  <time datetime="2018-08-29T10:43:10.000Z" itemprop="datePublished">2018-08-29</time>
 </a>
     
   </div>
@@ -128,7 +272,7 @@ A^{\dagger}=A^{T}(AA^{T})^{-1}</script><p>以上两种情况是当矩阵为<stro
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/29/机器学习-SVM的推导-1/">[机器学习]SVM的推导(1)</a>
+      <a class="article-title" href="/2018/08/29/机器学习-KITTI的雷达-摄像头数据融合/">[机器学习]KITTI的雷达+摄像头数据融合</a>
     </h1>
   
 
@@ -136,53 +280,30 @@ A^{\dagger}=A^{T}(AA^{T})^{-1}</script><p>以上两种情况是当矩阵为<stro
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="硬间隔的SVM推导"><a href="#硬间隔的SVM推导" class="headerlink" title="硬间隔的SVM推导"></a>硬间隔的SVM推导</h1><p>SVM是机器学习中的一种经典方法，除了硬间隔SVM之外，还包括软间隔SVM，核技巧等SVM的变种，本文主要介绍<strong>硬间隔SVM</strong>的推导。</p>
-<p>假设两类样本点是可以被准确分开的，那么则可以使用硬间隔SVM来进行分类，假设分隔的超平面方程为<script type="math/tex">w\cdot x+b=0</script>，则每个样本点<script type="math/tex">x_{i}</script>到该超平面的距离为<script type="math/tex">|w\cdot x_{i}+b|</script>，如果设定与超平面之间的距离为正的点为正分类，即<script type="math/tex">y_{i}=+1</script>，相反负距离的点为负分类，即<script type="math/tex">y_{i}=-1</script>，那么可以将样本点到分离超平面的距离表示为<script type="math/tex">\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)</script>，这称为样本点到分离超平面之间的<strong>函数距离</strong>。</p>
-<p>令<script type="math/tex">\hat{\gamma}=min(\hat{\gamma}_{i})</script>，即为最小函数距离。需要注意到，函数距离<script type="math/tex">\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)</script>在<script type="math/tex">w</script>和<script type="math/tex">b</script>同时增大某个比例倍数时，函数间隔会增大但是超平面不会发生改变，此时便需要将超平面的<script type="math/tex">w</script>进行约束，比如令<script type="math/tex">||w||=1</script>，我们可以重新定义距离为<script type="math/tex">\gamma_{i}=y_{i}(\frac{w}{||w||}\cdot x_{i}+\frac{b}{||w||})</script>，称之为<strong>几何距离</strong>，令<script type="math/tex">\gamma=min(\gamma_{i})</script>，即可以得到<script type="math/tex">\gamma=\frac{\hat\gamma}{||w||}</script>。</p>
-<p>那么最大化分隔距离的优化问题即可表示如下：</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-&max_{w,b}\quad \gamma \\
-&s.t.\quad y_{i}(\frac{w}{||w||}\cdot x_{i}+\frac{b}{||w||})\ge\gamma，i=1,2...n
-\end{align*}</script><p>即</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-&max_{w,b}\quad \frac{\hat\gamma}{||w||} \\
-&s.t.\quad y_{i}(w\cdot x_{i}+b)\ge\hat \gamma，i=1,2...n
-\end{align*}</script><p>注意上式中，函数间隔<script type="math/tex">\hat\gamma</script>的取值并不会影响最优化问题的解，不妨假设<script type="math/tex">\hat\gamma=1</script>，并且注意到最大化<script type="math/tex">\frac{1}{||w||}</script>与最小化<script type="math/tex">\frac{1}{2}||w||^{2}</script>等价，那么上述问题即可以等价为：</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-&min_{w,b}\quad \frac{1}{2}||w||^{2}\\
-&s.t.\quad y_{i}(w\cdot x_{i}+b)-1\ge0
-\end{align*}</script><p>上述问题即为一个不等式约束的最优化问题，可以利用拉格朗日乘子法与KKT条件来求解，令<script type="math/tex">\alpha=[\alpha_{1},\alpha_{2},\alpha_{3},...,\alpha_{n}]^{T}</script>，首先构造拉格朗日函数为：<script type="math/tex">L(w,b,\alpha)=\frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}</script></p>
-<p>假设<script type="math/tex">W^{*},b^{*},\alpha^{*}</script>是优化问题的最优解，那么根据KKT条件，<script type="math/tex">W^{*},b^{*},\alpha^{*}</script>一定满足以下方程：</p>
-<script type="math/tex; mode=display">
-\begin{align}
-&\nabla_{w}L(w^{*},b^{*},\alpha^{*})=w^{*}-\sum_{i=1}^{N}\alpha^{*}_{i}y_{i}x_{i}=0\tag{1}\\
-&\nabla_{b}L(w^{*},b^{*},\alpha^{*})=-\sum_{i=1}^{N}\alpha_{i}^{*}y_{i}=0\tag{2}\\
-&\alpha_{i}^{*}(y_{i}(w^{*}\cdot x_{i}+b^{*})-1)=0\tag{3}\\
-&y_{i}(w^{*}\cdot x_{i}+b^{*})-1\ge 0\tag{4}\\
-&\alpha_{i}^{*}\ge0\tag{5}
-\end{align}</script><p>KKT条件主要包括几个方面的内容：<br>1.拉格朗日函数对于原始优化变量的梯度为0，如（1）和（2）<br>2.拉格朗日乘子和不等式约束的左式（化为标准形式）的乘积全为0，如（3）<br>3.原问题的约束条件，如（4）<br>4.拉格朗日乘子非负，如（5）</p>
-<p>由（1）和（2）可以得到：</p>
-<script type="math/tex; mode=display">
-w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}\\
-\sum_{i}^{N}\alpha_{i}^{*}y_{i}=0</script><p>根据拉格朗日对偶性，原问题可以化为：</p>
-<script type="math/tex; mode=display">
-min_{w,b}\ max_{\alpha}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i},\alpha_{i}\ge 0</script><p>即</p>
-<script type="math/tex; mode=display">
-max_{\alpha}\ min_{w,b}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i},\alpha_{i}\ge 0</script><p>其中<script type="math/tex">min_{w,b}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}</script>问题的最优解由KKT条件可以得到为<script type="math/tex">w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}</script>，并且有<script type="math/tex">\sum_{i}^{N}\alpha_{i}^{*}y_{i}=0</script>，代入上式即可将原问题化为：</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-max_{\alpha}\quad&-\frac{1}{2}\sum_{i}\sum_{j}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}\cdot x_{j})+\sum_{i}\alpha_{i}\\
-s.t.\quad&\alpha_{i}\ge 0
-\end{align*}</script><p>在求解了<script type="math/tex">\alpha^{*}</script>之后，即可根据<script type="math/tex">w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}</script>求得<script type="math/tex">w^{*}</script>，由于分离超平面的参数是<script type="math/tex">w^{*},b^{*}</script>决定的，而分离超平面由<script type="math/tex">\alpha_{i}\neq0</script>的<script type="math/tex">\alpha_{i},x_{i},y_{i}</script>决定的，因此再选取任意<script type="math/tex">j</script>使得<script type="math/tex">\alpha_{j}\neq0</script>，得到<script type="math/tex">b^{*}=y_{j}-w^{*}\cdot x_{j}</script>，这样便可以得到分离超平面<script type="math/tex">w^{*}\cdot x+b^{*}=0</script>。</p>
-<p>对于上面的求解<script type="math/tex">\alpha^{*}</script>的优化问题，我们在下文将会介绍SMO算法来求解<br>To be continuue…</p>
+        <h1 id="KITTI数据"><a href="#KITTI数据" class="headerlink" title="KITTI数据"></a>KITTI数据</h1><p>KITTI的数据集有很多，我们在这里选取了其中的raw_data(原始数据)进行融合，数据下载地址：<a href="http://www.cvlibs.net/datasets/kitti/raw_data.php" target="_blank" rel="noopener">http://www.cvlibs.net/datasets/kitti/raw_data.php</a></p>
+<p>KITTI数据集的数据采集平台装配有2个灰度摄像机，2个彩色摄像机，一个Velodyne 64线3D激光雷达，4个光学镜头，以及1个GPS导航系统。具体的传感器参数如下 ：</p>
+<ul>
+<li>2 × PointGray Flea2 grayscale cameras (FL2-14S3M-C), 1.4 Megapixels,<br>1/2” Sony ICX267 CCD, global shutter</li>
+<li>2 × PointGray Flea2 color cameras (FL2-14S3C-C), 1.4 Megapixels, 1/2”<br>Sony ICX267 CCD, global shutter</li>
+<li>4 × Edmund Optics lenses, 4mm, opening angle ∼ 90◦, vertical opening<br>angle of region of interest (ROI) ∼ 35◦</li>
+<li>1 × Velodyne HDL-64E rotating 3D laser scanner, 10 Hz, 64 beams, 0.09<br>degree angular resolution, 2 cm distance accuracy, collecting ∼ 1.3<br>million points/second, field of view: 360◦ horizontal, 26.8◦<br>vertical, range: 120 m</li>
+<li>1 × OXTS RT3003 inertial and GPS navigation system, 6 axis, 100 Hz,<br>L1/L2 RTK, resolution: 0.02m / 0.1◦</li>
+</ul>
+<p><img src="https://img-blog.csdn.net/20180615212808485?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="传感器"></p>
+<p>传感器的安装位置如下图：<br><img src="https://img-blog.csdn.net/20180615212914102?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>对于我们使用的raw_data数据集，其数据包（以2011_09_26_drive_0001，synced,+rectified data为例），解压之后主要包含以下几个部分：</p>
+<ul>
+<li>标定文件：calib_cam_to_cam.txt，calib_imu_to_velo.txt，calib_velo_to_cam.txt</li>
+<li>摄像头文件：image_00到image_03四个文件夹，分别对应4个摄像头，常用的摄像头为02</li>
+<li>点云文件：雷达扫描到的点文件，velodyne_points文件夹，其中包括多个bin文件和时间戳文件</li>
+</ul>
+<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p>KITTI数据集提供了官方的toolkit来方便我们对数据集进行操作，对于其中的raw_data数据，提供了十多个函数来方便我们进行操作。并提供了数据融合的demo如下：<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run_demoVelodyne</span> <span class="params">(base_dir,calib_dir)</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">% clear and close everything</span></span><br><span class="line">close all; dbstop error; clc;</span><br><span class="line"><span class="built_in">disp</span>(<span class="string">'======= KITTI DevKit Demo ======='</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">% 根据函数输入参数的不同的设定</span></span><br><span class="line"><span class="keyword">if</span> nargin&lt;<span class="number">1</span></span><br><span class="line">  base_dir  = <span class="string">'./data/2011_09_26/2011_09_26_drive_0005_sync'</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">if</span> nargin&lt;<span class="number">2</span></span><br><span class="line">  calib_dir = <span class="string">'./data/2011_09_26'</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">cam       = <span class="number">2</span>; <span class="comment">% 0-based index</span></span><br><span class="line">frame     = <span class="number">137</span>; <span class="comment">% 0-based index</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%加载标定文件，fullfile将路径和文件相结合</span></span><br><span class="line"><span class="comment">%calib是相机参数的结构矩阵</span></span><br><span class="line">calib = loadCalibrationCamToCam(fullfile(calib_dir,<span class="string">'calib_cam_to_cam.txt'</span>));</span><br><span class="line"><span class="comment">%Tr_velo_to_cam是一个参数矩阵</span></span><br><span class="line">Tr_velo_to_cam = loadCalibrationRigid(fullfile(calib_dir,<span class="string">'calib_velo_to_cam.txt'</span>));	</span><br><span class="line"></span><br><span class="line"><span class="comment">%计算从雷达的3d数据到摄像机图片的投影矩阵</span></span><br><span class="line">R_cam_to_rect = <span class="built_in">eye</span>(<span class="number">4</span>);</span><br><span class="line">R_cam_to_rect(<span class="number">1</span>:<span class="number">3</span>,<span class="number">1</span>:<span class="number">3</span>) = calib.R_rect&#123;<span class="number">1</span>&#125;;</span><br><span class="line">P_velo_to_img = calib.P_rect&#123;cam+<span class="number">1</span>&#125;*R_cam_to_rect*Tr_velo_to_cam;</span><br><span class="line"></span><br><span class="line"><span class="comment">% load and display image</span></span><br><span class="line">img = imread(sprintf(<span class="string">'%s/image_%02d/data/%010d.png'</span>,base_dir,cam,frame));</span><br><span class="line">fig = figure(<span class="string">'Position'</span>,[<span class="number">20</span> <span class="number">100</span> size(img,<span class="number">2</span>) size(img,<span class="number">1</span>)]);</span><br><span class="line">axes(<span class="string">'Position'</span>,[<span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">1</span>]);</span><br><span class="line">imshow(img); hold on;</span><br><span class="line"></span><br><span class="line"><span class="comment">% load velodyne points</span></span><br><span class="line">fid=fopen(sprintf(<span class="string">'%s/velodyne_points/data/%010d.bin'</span>,base_dir,frame),<span class="string">'rb'</span>);<span class="comment">%先以二进制方式打开</span></span><br><span class="line">velo = fread(fid,[inf <span class="number">4</span>],<span class="string">'single'</span>);<span class="comment">%将文件读取为single格式，维度为(n,4)</span></span><br><span class="line">velo = velo(<span class="number">1</span>:<span class="number">5</span>:<span class="keyword">end</span>,:);<span class="comment">%每五个点只取一个点，为了方便显示</span></span><br><span class="line">fclose(fid);</span><br><span class="line"></span><br><span class="line"><span class="comment">% remove all points behind image plane (approximation</span></span><br><span class="line">idx = velo(:,<span class="number">1</span>)&lt;<span class="number">5</span>;	<span class="comment">%找到x坐标小于5的雷达点的索引</span></span><br><span class="line">velo(idx,:) = [];	<span class="comment">%将这些点去掉</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% project to image plane (exclude luminance)</span></span><br><span class="line">velo_img = project(velo(:,<span class="number">1</span>:<span class="number">3</span>),P_velo_to_img);</span><br><span class="line"></span><br><span class="line"><span class="comment">% plot points，彩色</span></span><br><span class="line"></span><br><span class="line">cols = jet;</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:<span class="built_in">size</span>(velo_img,<span class="number">1</span>)</span><br><span class="line">  col_idx = <span class="built_in">round</span>(<span class="number">64</span>*<span class="number">5</span>/velo(<span class="built_in">i</span>,<span class="number">1</span>));</span><br><span class="line">  plot(velo_img(<span class="built_in">i</span>,<span class="number">1</span>),velo_img(<span class="built_in">i</span>,<span class="number">2</span>),<span class="string">'o'</span>,<span class="string">'LineWidth'</span>,<span class="number">4</span>,<span class="string">'MarkerSize'</span>,<span class="number">1</span>,<span class="string">'Color'</span>,cols(col_idx,:));</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% plot points，灰度图</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% cols = 1-[0:1/63:1]'*ones(1,3);</span></span><br><span class="line"><span class="comment">% for i=1:size(velo_img,1)</span></span><br><span class="line"><span class="comment">%   col_idx = round(64*5/velo(i,1));</span></span><br><span class="line"><span class="comment">%   plot(velo_img(i,1),velo_img(i,2),'o','LineWidth',4,'MarkerSize',1,'Color',cols(col_idx,:));</span></span><br><span class="line"><span class="comment">% end</span></span><br></pre></td></tr></table></figure></p>
+<p>最后的效果图如下：<br><img src="https://img-blog.csdn.net/20180615214631398?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>完整的toolkit和数据，代码可以到我的github下载：<br><a href="https://github.com/Lannyy/DataFusion" target="_blank" rel="noopener">https://github.com/Lannyy/DataFusion</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/机器学习-SVM的推导-1/" data-id="cjlf8oq9i000ytoez9ae4zl7i" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/机器学习-KITTI的雷达-摄像头数据融合/" data-id="cjlfav96v001048ez8yyomkrz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -194,10 +315,10 @@ s.t.\quad&\alpha_{i}\ge 0
 
 
   
-    <article id="post-机器学习-SVM的推导-2" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-机器学习-在极客云上进行深度学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/29/机器学习-SVM的推导-2/" class="article-date">
-  <time datetime="2018-08-29T10:42:49.000Z" itemprop="datePublished">2018-08-29</time>
+    <a href="/2018/08/29/机器学习-在极客云上进行深度学习/" class="article-date">
+  <time datetime="2018-08-29T10:43:08.000Z" itemprop="datePublished">2018-08-29</time>
 </a>
     
   </div>
@@ -208,7 +329,7 @@ s.t.\quad&\alpha_{i}\ge 0
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/29/机器学习-SVM的推导-2/">[机器学习]SVM的推导(2)</a>
+      <a class="article-title" href="/2018/08/29/机器学习-在极客云上进行深度学习/">[机器学习]在极客云上进行深度学习</a>
     </h1>
   
 
@@ -216,100 +337,14 @@ s.t.\quad&\alpha_{i}\ge 0
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="硬间隔SVM的SMO序列优化算法"><a href="#硬间隔SVM的SMO序列优化算法" class="headerlink" title="硬间隔SVM的SMO序列优化算法"></a>硬间隔SVM的SMO序列优化算法</h1><p>上一篇文章(1)我们讨论了硬间隔SVM的推导及其对偶形式，其对偶问题可以化简成以下形式：</p>
-<script type="math/tex; mode=display">\begin{align*}
-min_ \alpha\quad &\frac{1}{2}\sum_{i=1}^{N}\sum_{j=1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}x_{i}\cdot x_{j}-\sum_{i=1}^{N}\alpha_{i}\\
-s.t.\quad &\sum_{i=1}^{N}\alpha_{i}y_{i}=0\\
-&\alpha_{i}\ge 0\\
-&i=1,2,...,N
-\end{align*}</script><p>该问题可以看作是一个以<script type="math/tex">\alpha</script>为优化变量的二阶规划问题，二阶规划问题有很多成熟的解法，针对SVM的优化有一种最为高效的SMO序列优化算法。</p>
-<h1 id="SMO序列优化算法"><a href="#SMO序列优化算法" class="headerlink" title="SMO序列优化算法"></a>SMO序列优化算法</h1><p>SMO序列优化算法先将<script type="math/tex">\alpha</script>的所有变量进行初始化，比如令<script type="math/tex">\alpha_{1},\alpha_{2},...,\alpha_{N}=0，</script>再将<script type="math/tex">\alpha</script>的其中两个分量看作变量，比如<script type="math/tex">\alpha_{1},\alpha_{2}</script>（在选取两个分量<script type="math/tex">\alpha_{i},\alpha_{j}</script>的时候，通常先取违反上文中KKT条件最严重的为<script type="math/tex">\alpha_{i}</script>，然后选取离<script type="math/tex">x_{i}</script>间隔最远的<script type="math/tex">x_{j}</script>对应的<script type="math/tex">\alpha_{j}</script>为第二个变量），其余的<script type="math/tex">\alpha_{3},\alpha_{4},...,\alpha_{N}</script>固定住，则根据约束条件<script type="math/tex">\sum_{i=1}^{N}\alpha_{i}y_{i}=0</script>可以得到<script type="math/tex">\alpha_{1}=-y_{1}\sum_{i=2}^{N}\alpha_{i}y_{i}</script>。上述问题即可以化为两个变量的二次规划问题(令<script type="math/tex">K_{ij}=x_{i}\cdot x_{j}</script>)：</p>
-<script type="math/tex; mode=display">\begin{align*}
-min_{\alpha_{1},\alpha_{2}}\quad W(\alpha_{1},\alpha_{2})=&\frac{1}{2}K_{11}\alpha_{1}^{2}+\frac{1}{2}K_{22}\alpha_{2}^{2}+y_{1}y_{2}K_{12}\alpha_{1}\alpha_{2}\\
-&-(\alpha_{1}+\alpha_{2})+y_{1}\alpha_{1}\sum_{i=3}^{N}y_{i}\alpha_{i}K_{i1}+y_{2}\alpha_{2}\sum_{i=3}^{N}y_{i}\alpha_{i}K_{i2}\\
-s.t.\quad &\alpha_{1}y_{1}+\alpha_{2}y_{2}=-\sum_{i=3}^{N}y_{i}\alpha_{i}=\zeta\\
-&\alpha_{1},\alpha_{2}\ge0
-\end{align*}</script><p>在上述二次规划问题中，由于<script type="math/tex">\alpha_{1}y_{1}+\alpha_{2}y_{2}=\zeta</script>，那么可以得到<script type="math/tex">\alpha_{1}=(\zeta-y_{2}\alpha_{2})y_{1}</script>，将该约束条件代入<script type="math/tex">W(\alpha_{1},\alpha_{2})</script>中即可以得到单变量的二次规划问题，如果先不考虑不等式约束条件，则可以直接得到解析解，不必利用数值计算的方式求解，这样可以大大提升计算速度。</p>
-<p>令<script type="math/tex">v_{i}=\sum_{j=3}^{N}\alpha_{j}y_{j}K(x_{i},x_{j})</script>，则将<script type="math/tex">\alpha_{1}=(\zeta-y_{2}\alpha_{2})y_{1}</script>代入<script type="math/tex">W(\alpha_{1},\alpha_{2})</script>可以得到：</p>
-<script type="math/tex; mode=display">
-W(\alpha_{2})=\frac{1}{2}K_{11}(\zeta-\alpha_{2}y_{2})^{2}+\frac{1}{2}K_{22}\alpha_{2}^{2}+y_{2}K_{12}(\zeta-\alpha_{2}y_{2})\alpha_{2}-(\zeta-\alpha_{2}y_{2})y_{1}-\alpha_{2}+v_{1}(\zeta-\alpha_{2}y_{2})+y_{2}v_{2}\alpha_{2}</script><p>直接令<script type="math/tex">\frac{\partial W}{\partial\alpha_{2}}=0</script>，那么可以得到<script type="math/tex">\alpha_{2}</script>的解析解为<script type="math/tex">\hat\alpha_{2}=\alpha_{2}+\frac{y_{2}(E_{1}-E_{2})}{\eta}</script>，其中<script type="math/tex">E_{i}=\sum_{j=1}^{N}\alpha_{j}y_{j}K_{ij}+b-y_{i}</script>，<script type="math/tex">\eta=K_{11}+K_{22}-2K_{12}</script>。此时得到的<script type="math/tex">\hat\alpha_{2}</script>还没有考虑不等式约束<script type="math/tex">\alpha_{1},\alpha_{2}\ge 0</script>，由<script type="math/tex">\alpha_{1}=(\zeta-y_{2}\alpha_{2})y_{1}\ge0</script>与<script type="math/tex">\alpha_{2}\ge0</script>可以解不等式得到<script type="math/tex">\alpha_2</script>的上界<script type="math/tex">H</script>与下界<script type="math/tex">L</script>，即经过剪辑可以得到<script type="math/tex">\alpha_{2}</script>的解析解为：</p>
-<script type="math/tex; mode=display">
-\alpha_{2}^{*}=
-\begin{cases}
-H,\quad \hat\alpha_{2}>H\\
-\hat\alpha_{2},\quad L\le\hat\alpha_{2}\le H\\
-L,\quad \hat\alpha_{2}<L
-\end{cases}</script><p>另外根据<script type="math/tex">\alpha_{1}^{*}=(\zeta-y_{2}\alpha_{2}^{*})y_{1}</script>则可以得到<script type="math/tex">\alpha_{1}^{*}</script>，这样便完成了SMO算法的一组变量的更新。重复进行变量选择，解析求解，变量剪辑的过程，直到<script type="math/tex">\alpha</script>的所有变量都能满足文章(1)中的KKT条件为止，然后再根据文章(1)中<script type="math/tex">w</script>与<script type="math/tex">b</script>的计算公式便可以得到训练好的超平面，这样便完成了硬间隔SVM的数学推导过程，后面的文章还会继续介绍软间隔SVM的推导与核方法的应用。To be continue…</p>
+        <h1 id="极客云-深度学习云平台"><a href="#极客云-深度学习云平台" class="headerlink" title="极客云-深度学习云平台"></a>极客云-深度学习云平台</h1><p>最近在做老师给的一个图像相关的深度学习任务，代码调试后发现电脑内存不够(8g笔记本)，后来发现了一个很好用的深度学习云服务平台<br>极客云:<a href="http://www.jikecloud.net/" target="_blank" rel="noopener">http://www.jikecloud.net/</a><br><img src="https://img-blog.csdn.net/20180629223231171?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>这个平台最大的方便之处莫过于其自带很多计算框架，每次配置各种环境的时候都被折腾得要死，各种库之间的依赖关系实在头疼。并且该平台有很多不同配置的机器进行选择，价格也很公道，今天在我用了那个tesla p100的显卡，60g内存的机器之后，就再也没有出现我之前遇到的bad_alloc问题<br><img src="https://img-blog.csdn.net/20180629223343714?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h1 id="关于如何使用"><a href="#关于如何使用" class="headerlink" title="关于如何使用"></a>关于如何使用</h1><p>在进行训练之前可以先上传我们所使用的数据，我自己的数据大概10g左右，上传了一个晚上多一点，这个平台支持数据断点上传，并且在上传数据的时候是不会计算价格的，会默认放到/data目录下，最好是先解压上传压缩包上去，然后再在服务器上将数据解压到/input目录里，这样是最快的，因为貌似/data是机械盘，/input是固态。</p>
+<p>数据上传之后可以创建一个服务器实例了，他会提供一个ssh登陆指令直接远程登陆操作就行，也可以使用jupyter notebook和tensorboard，很方便。也可以直接在独占/共享两种方式上切换，或者换一个性能更强大的服务器。<br><img src="https://img-blog.csdn.net/2018062922402981?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>看一下我这台机子的配置<br>Tesla p100的显卡，京东价5w多。。。<br><img src="https://img-blog.csdn.net/20180629224707639?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>4核8线的志强E5<br><img src="https://img-blog.csdn.net/2018062922475828?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>60g的内存<br><img src="https://img-blog.csdn.net/20180629224823880?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>需要注意的是，在服务器关机后/input和/output的数据会被清除，在关机之前要将这两个目录下所需要的数据转移到/data目录下，这样便可以关机后一直保存。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/机器学习-SVM的推导-2/" data-id="cjlf8oq9p0015toezhv5sgjji" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-机器学习-SVM的推导-3" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/29/机器学习-SVM的推导-3/" class="article-date">
-  <time datetime="2018-08-29T10:42:47.000Z" itemprop="datePublished">2018-08-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/29/机器学习-SVM的推导-3/">[机器学习]SVM的推导(3)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="软间隔SVM的推导"><a href="#软间隔SVM的推导" class="headerlink" title="软间隔SVM的推导"></a>软间隔SVM的推导</h1><p>前文介绍了硬间隔SVM的相关推导，本文将继续介绍软间隔SVM的数学推导，即在样本不是线性可分的情况下，允许一部分样本错误分类的SVM。软间隔SVM允许一部分样本不满足约束：$y_{i}(w\cdot x_{i})\ge 0$</p>
-<p>可以将优化目标写为：</p>
-<script type="math/tex; mode=display">
-min_{w,b}\quad \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}loss(y_{i}(w\cdot x_{i}+b)-1)</script><p>其中 $C$ 是一个常数，用来衡量允许的不满足约束的程度，其中的 $loss()$ 函数可以使用 $hinge()$ 函数，即 $loss_{hinge}(z)=max(0,1-z)$</p>
-<p>那么可以将优化目标写为：</p>
-<script type="math/tex; mode=display">
-min_{w,b}\quad \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}max(0,1-y_{i}(w\cdot x_{i}+b))</script><p>引入“松弛变量” $\xi_{i}\ge 0$ ，可以将上式改写为</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-min_{w,b,\xi_{i}}\quad& \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}\xi_{i}\\
-s.t.\quad& y_{i}(w\cdot x_{i}+b)\ge1-\xi_{i}\\
-&\xi_{i}\ge0,i=1,2,...,m
-\end{align*}</script><p>与硬间隔SVM类似，上述的问题也是个二次规划的问题，可以先用拉格朗日对偶性将其转换为对应的对偶问题，再用SMO算法求解。上面问题对应的拉格朗日函数为：</p>
-<script type="math/tex; mode=display">
-L(w,b,\alpha,\xi,\mu)=\frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}\xi_{i}\\+\sum_{i=1}^{m}\alpha_{i}(1-\xi_{i}-y_{i}(w\cdot x_{i}+b))-\sum_{i=1}^{m}\mu_{i}\xi_{i}</script><p>令 $L$ 对 $w,b,\alpha$ 的偏导为 $0$ 可以得到</p>
-<script type="math/tex; mode=display">
-w=\sum_{i=1}^{m}\alpha_{i}y_{i}x_{i}\\
-0=\sum_{i=1}^{m}\alpha_{i}y_{i}\\
-C=\alpha_{i}+\mu_{i}</script><p>代入 $L(w,b,\alpha,\xi,\mu)$ 即可以将原问题化成对偶问题：</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-min_ \alpha\quad &\frac{1}{2}\sum_{i=1}^{m}\sum_{j=1}^{m}\alpha_{i}\alpha_{j}y_{i}y_{j}x_{i}\cdot x_{j}-\sum_{i=1}^{m}\alpha_{i}\\
-s.t.\quad &\sum_{i=1}^{m}\alpha_{i}y_{i}=0\\
-&C\ge \alpha_{i}\ge 0\\
-&i=1,2,...,m
-\end{align*}</script><p>可以看出其与硬间隔SVM唯一的区别在于 $\alpha_{i}\ge 0$变成了 $C\ge \alpha_{i}\ge 0$，同样可以用上文中提到的SMO算法很方便的求解，唯一的区别在于剪辑的时候需要考虑两个方向。</p>
-<p>后面还会介绍SVM的核技巧以及常用核，To be continue…</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/机器学习-SVM的推导-3/" data-id="cjlf8oq9k0010toezvkp9e7g9" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/机器学习-在极客云上进行深度学习/" data-id="cjlfav971001748ezrcmn0sco" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -325,7 +360,7 @@ s.t.\quad &\sum_{i=1}^{m}\alpha_{i}y_{i}=0\\
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -339,7 +374,7 @@ s.t.\quad &\sum_{i=1}^{m}\alpha_{i}y_{i}=0\\
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">8</span></li></ul>
     </div>
   </div>
 
@@ -358,7 +393,7 @@ s.t.\quad &\sum_{i=1}^{m}\alpha_{i}y_{i}=0\\
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">24</span></li></ul>
     </div>
   </div>
 
@@ -429,21 +464,5 @@ s.t.\quad &\sum_{i=1}^{m}\alpha_{i}y_{i}=0\\
 
 
   </div>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
 </body>
 </html>

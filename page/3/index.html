@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Math &amp; Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Math &amp; Code">
+<meta property="og:url" content="http://yoursite.com/page/3/index.html">
+<meta property="og:site_name" content="Math &amp; Code">
+<meta property="og:locale" content="default">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Math &amp; Code">
+  
+    <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Math &amp; Code</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-最优化-求解线性方程组-3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/29/最优化-求解线性方程组-3/" class="article-date">
+  <time datetime="2018-08-29T10:42:54.000Z" itemprop="datePublished">2018-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/29/最优化-求解线性方程组-3/">[最优化]求解线性方程组(3)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="求解线性方程组-3"><a href="#求解线性方程组-3" class="headerlink" title="求解线性方程组(3)"></a>求解线性方程组(3)</h1><h2 id="矩阵的伪逆"><a href="#矩阵的伪逆" class="headerlink" title="矩阵的伪逆"></a>矩阵的伪逆</h2><p>这里所介绍的伪逆是<strong>Moore-Penrose逆矩阵</strong>，其定义为：给定矩阵$A\in R^{m<em>n}$，如果矩阵$A^{\dagger}\in R^{n</em>m}$满足$AA^{\dagger}A=A$，且存在两个矩阵$U\in R^{n<em>n},V\in R^{m</em>m}$使得$$<br>A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V</p>
+<script type="math/tex; mode=display">
+那么则称$A^{\dagger}$是矩阵$A$的**伪逆**，可以通过证明得到，矩阵的伪逆是**唯一**的。
+
+对于矩阵$A\in R^{m*n},m\ge n$且$rank(A)=n$，可以根据以上定义验证得到$A$的伪逆为</script><p>A^{\dagger}=(A^{T}A)^{-1}A^{T}</p>
+<script type="math/tex; mode=display">
+
+对于矩阵$A\in R^{m*n},m\le n$且$rank(A)=m$，同样根据以上定义验证得到$A$的伪逆为</script><p>A^{\dagger}=A^{T}(AA^{T})^{-1}</p>
+<p>$$</p>
+<p>以上两种情况是当矩阵为<strong>列满秩</strong>或者<strong>行满秩</strong>情况下的伪逆，而对于一般矩阵$A\in R^{m<em>n},rank(A)=r,r\le min(m,n)$，我们可以采用<em>*满秩分解</em></em>的方法来求得其伪逆。</p>
+<p>对于任意矩阵$A\in R^{m<em>n},rank(A)=r,r\le min(m,n)$，都可以将其分解为一个行满秩矩阵和列满秩矩阵的乘积：<br>即$A=BC,B\in R^{m</em>r},c\in R^{r*n},rank(A)=rank(B)=rank(C)=r$</p>
+<p>可以通过证明得到：<br>$A^{\dagger}=C^{\dagger}B^{\dagger}$，而其中$B^{\dagger}=(B^{T}B)^{-1}B^{T},C^{\dagger}=C^{T}(CC^{T})^{-1}$，即为一般矩阵的伪逆求法。</p>
+<h2 id="一般情况下线性方程组的解法"><a href="#一般情况下线性方程组的解法" class="headerlink" title="一般情况下线性方程组的解法"></a>一般情况下线性方程组的解法</h2><p>某线性方程组为$Ax=b,A\in R^{m<em>n},rank(A)=r$，向量$x^{</em>}=A^{\dagger}b$可在空间$R^{n}$中最小化$||Ax-b||^{2}$;而且在$R^{n}$中所有能够最小化$||Ax-b||^{2}$的向量中，向量$x^{*}=A^{\dagger}b$的范数最小，并且是唯一的。</p>
+<p>当$r=m$时，$A$是行满秩矩阵，此时$x^{<em>}=A^{\dagger}b=A^{T}(AA^{T})^{-1}b$，即为方程组$Ax=b$的<em>*最小范数解</em></em>。</p>
+<p>当$r=n$时，$A$是列满秩矩阵，此时$x^{<em>}=A^{\dagger}b=(A^{T}A)^{-1}A^{T}b$，即为方程组$Ax=b$的<em>*最小二乘解</em></em>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/08/29/最优化-求解线性方程组-3/" data-id="cjlf7obwp000ki4ezayavt7f4" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-机器学习-SVM的推导-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/29/机器学习-SVM的推导-1/" class="article-date">
+  <time datetime="2018-08-29T10:42:51.000Z" itemprop="datePublished">2018-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/29/机器学习-SVM的推导-1/">[机器学习]SVM的推导(1)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="硬间隔的SVM推导"><a href="#硬间隔的SVM推导" class="headerlink" title="硬间隔的SVM推导"></a>硬间隔的SVM推导</h1><p>SVM是机器学习中的一种经典方法，除了硬间隔SVM之外，还包括软间隔SVM，核技巧等SVM的变种，本文主要介绍<strong>硬间隔SVM</strong>的推导。</p>
+<p>假设两类样本点是可以被准确分开的，那么则可以使用硬间隔SVM来进行分类，假设分隔的超平面方程为$w\cdot x+b=0$，则每个样本点$x_{i}$到该超平面的距离为$|w\cdot x_{i}+b|$，如果设定与超平面之间的距离为正的点为正分类，即$y_{i}=+1$，相反负距离的点为负分类，即$y_{i}=-1$，那么可以将样本点到分离超平面的距离表示为$\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)$，这称为样本点到分离超平面之间的<strong>函数距离</strong>。</p>
+<p>令$\hat{\gamma}=min(\hat{\gamma}_{i})$，即为最小函数距离。需要注意到，函数距离$\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)$在$w$和$b$同时增大某个比例倍数时，函数间隔会增大但是超平面不会发生改变，此时便需要将超平面的$w$进行约束，比如令$||w||=1$，我们可以重新定义距离为$\gamma_{i}=y_{i}(\frac{w}{||w||}\cdot x_{i}+\frac{b}{||w||})$，称之为<strong>几何距离</strong>，令$\gamma=min(\gamma_{i})$，即可以得到$\gamma=\frac{\hat\gamma}{||w||}$。</p>
+<p>那么最大化分隔距离的优化问题即可表示如下：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&max_{w,b}\quad \gamma \\
+&s.t.\quad y_{i}(\frac{w}{||w||}\cdot x_{i}+\frac{b}{||w||})\ge\gamma，i=1,2...n
+\end{align*}</script><p>即$$<br>\begin{align<em>}<br>&amp;max_{w,b}\quad \frac{\hat\gamma}{||w||} \\<br>&amp;s.t.\quad y_{i}(w\cdot x_{i}+b)\ge\hat \gamma，i=1,2…n<br>\end{align</em>}</p>
+<script type="math/tex; mode=display">
+
+注意上式中，函数间隔$\hat\gamma$的取值并不会影响最优化问题的解，不妨假设$\hat\gamma=1$，并且注意到最大化$\frac{1}{||w||}$与最小化$\frac{1}{2}||w||^{2}$等价，那么上述问题即可以等价为：</script><p>\begin{align<em>}<br>&amp;min_{w,b}\quad \frac{1}{2}||w||^{2}\\<br>&amp;s.t.\quad y_{i}(w\cdot x_{i}+b)-1\ge0<br>\end{align</em>}</p>
+<script type="math/tex; mode=display">
+
+上述问题即为一个不等式约束的最优化问题，可以利用拉格朗日乘子法与KKT条件来求解，令$\alpha=[\alpha_{1},\alpha_{2},\alpha_{3},...,\alpha_{n}]^{T}$，首先构造拉格朗日函数为：$$L(w,b,\alpha)=\frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}</script><p>假设$W^{<em>},b^{</em>},\alpha^{<em>}$是优化问题的最优解，那么根据KKT条件，$W^{</em>},b^{<em>},\alpha^{</em>}$一定满足以下方程：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+&\nabla_{w}L(w^{*},b^{*},\alpha^{*})=w^{*}-\sum_{i=1}^{N}\alpha^{*}_{i}y_{i}x_{i}=0\tag{1}\\
+&\nabla_{b}L(w^{*},b^{*},\alpha^{*})=-\sum_{i=1}^{N}\alpha_{i}^{*}y_{i}=0\tag{2}\\
+&\alpha_{i}^{*}(y_{i}(w^{*}\cdot x_{i}+b^{*})-1)=0\tag{3}\\
+&y_{i}(w^{*}\cdot x_{i}+b^{*})-1\ge 0\tag{4}\\
+&\alpha_{i}^{*}\ge0\tag{5}
+\end{align}</script><p>KKT条件主要包括几个方面的内容：<br>1.拉格朗日函数对于原始优化变量的梯度为0，如（1）和（2）<br>2.拉格朗日乘子和不等式约束的左式（化为标准形式）的乘积全为0，如（3）<br>3.原问题的约束条件，如（4）<br>4.拉格朗日乘子非负，如（5）</p>
+<p>由（1）和（2）可以得到：</p>
+<script type="math/tex; mode=display">
+w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}\\
+\sum_{i}^{N}\alpha_{i}^{*}y_{i}=0</script><p>根据拉格朗日对偶性，原问题可以化为：</p>
+<script type="math/tex; mode=display">
+min_{w,b}\ max_{\alpha}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i},\alpha_{i}\ge 0</script><p>即</p>
+<script type="math/tex; mode=display">
+max_{\alpha}\ min_{w,b}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i},\alpha_{i}\ge 0</script><p>其中$min_{w,b} \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}$问题的最优解由KKT条件可以得到为$w^{<em>}=\sum_{i}^{N}\alpha_{i}^{</em>}y_{i}x_{i}$，并且有$\sum_{i}^{N}\alpha_{i}^{*}y_{i}=0$，代入上式即可将原问题化为：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+max_{\alpha}\quad&-\frac{1}{2}\sum_{i}\sum_{j}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}\cdot x_{j})+\sum_{i}\alpha_{i}\\
+s.t.\quad&\alpha_{i}\ge 0
+\end{align*}</script><p>在求解了$\alpha^{<em>}$之后，即可根据$w^{</em>}=\sum_{i}^{N}\alpha_{i}^{<em>}y_{i}x_{i}$求得$w^{</em>}$，由于分离超平面的参数是$w^{<em>},b^{</em>}$决定的，而分离超平面由$\alpha_{i}\neq0$的$\alpha_{i},x_{i},y_{i}$决定的，因此再选取任意$j$使得$\alpha_{j}\neq0$，得到$b^{<em>}=y_{j}-w^{</em>}\cdot x_{j}$，这样便可以得到分离超平面$w^{<em>}\cdot x+b^{</em>}=0$。</p>
+<p>对于上面的求解$\alpha^{*}$的优化问题，我们在下文将会介绍SMO算法来求解<br>To be continuue…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/08/29/机器学习-SVM的推导-1/" data-id="cjlf7obx6000wi4ez8wvw7ca2" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-机器学习-SVM的推导-2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/29/机器学习-SVM的推导-2/" class="article-date">
+  <time datetime="2018-08-29T10:42:49.000Z" itemprop="datePublished">2018-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/29/机器学习-SVM的推导-2/">[机器学习]SVM的推导(2)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="硬间隔SVM的SMO序列优化算法"><a href="#硬间隔SVM的SMO序列优化算法" class="headerlink" title="硬间隔SVM的SMO序列优化算法"></a>硬间隔SVM的SMO序列优化算法</h1><p>上一篇文章(1)我们讨论了硬间隔SVM的推导及其对偶形式，其对偶问题可以化简成以下形式：</p>
+<script type="math/tex; mode=display">\begin{align*}
+min_ \alpha\quad &\frac{1}{2}\sum_{i=1}^{N}\sum_{j=1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}x_{i}\cdot x_{j}-\sum_{i=1}^{N}\alpha_{i}\\
+s.t.\quad &\sum_{i=1}^{N}\alpha_{i}y_{i}=0\\
+&\alpha_{i}\ge 0\\
+&i=1,2,...,N
+\end{align*}</script><p>该问题可以看作是一个以$\alpha$为优化变量的二阶规划问题，二阶规划问题有很多成熟的解法，针对SVM的优化有一种最为高效的SMO序列优化算法。</p>
+<h1 id="SMO序列优化算法"><a href="#SMO序列优化算法" class="headerlink" title="SMO序列优化算法"></a>SMO序列优化算法</h1><p>SMO序列优化算法先将$\alpha$的所有变量进行初始化，比如令$\alpha_{1},\alpha_{2},…,\alpha_{N}=0，$再将$\alpha$的其中两个分量看作变量，比如$\alpha_{1},\alpha_{2}$（在选取两个分量$\alpha_{i},\alpha_{j}$的时候，通常先取违反上文中KKT条件最严重的为$\alpha_{i}$，然后选取离$x_{i}$间隔最远的$x_{j}$对应的$\alpha_{j}$为第二个变量），其余的$\alpha_{3},\alpha_{4},…,\alpha_{N}$固定住，则根据约束条件$\sum_{i=1}^{N}\alpha_{i}y_{i}=0$可以得到$\alpha_{1}=-y_{1}\sum_{i=2}^{N}\alpha_{i}y_{i}$。上述问题即可以化为两个变量的二次规划问题(令$K_{ij}=x_{i}\cdot x_{j}$)：</p>
+<script type="math/tex; mode=display">\begin{align*}
+min_{\alpha_{1},\alpha_{2}}\quad W(\alpha_{1},\alpha_{2})=&\frac{1}{2}K_{11}\alpha_{1}^{2}+\frac{1}{2}K_{22}\alpha_{2}^{2}+y_{1}y_{2}K_{12}\alpha_{1}\alpha_{2}\\
+&-(\alpha_{1}+\alpha_{2})+y_{1}\alpha_{1}\sum_{i=3}^{N}y_{i}\alpha_{i}K_{i1}+y_{2}\alpha_{2}\sum_{i=3}^{N}y_{i}\alpha_{i}K_{i2}\\
+s.t.\quad &\alpha_{1}y_{1}+\alpha_{2}y_{2}=-\sum_{i=3}^{N}y_{i}\alpha_{i}=\zeta\\
+&\alpha_{1},\alpha_{2}\ge0
+\end{align*}</script><p>在上述二次规划问题中，由于$\alpha_{1}y_{1}+\alpha_{2}y_{2}=\zeta$，那么可以得到$\alpha_{1}=(\zeta-y_{2}\alpha_{2})y_{1}$，将该约束条件代入$W(\alpha_{1},\alpha_{2})$中即可以得到单变量的二次规划问题，如果先不考虑不等式约束条件，则可以直接得到解析解，不必利用数值计算的方式求解，这样可以大大提升计算速度。</p>
+<p>令$v_{i}=\sum_{j=3}^{N}\alpha_{j}y_{j}K(x_{i},x_{j})$，则将$\alpha_{1}=(\zeta-y_{2}\alpha_{2})y_{1}$代入$W(\alpha_{1},\alpha_{2})$可以得到：</p>
+<script type="math/tex; mode=display">
+W(\alpha_{2})=\frac{1}{2}K_{11}(\zeta-\alpha_{2}y_{2})^{2}+\frac{1}{2}K_{22}\alpha_{2}^{2}+y_{2}K_{12}(\zeta-\alpha_{2}y_{2})\alpha_{2}-(\zeta-\alpha_{2}y_{2})y_{1}-\alpha_{2}+v_{1}(\zeta-\alpha_{2}y_{2})+y_{2}v_{2}\alpha_{2}</script><p>直接令$\frac{\partial W}{\partial\alpha_{2}}=0$，那么可以得到$\alpha_{2}$的解析解为$\hat\alpha_{2}=\alpha_{2}+\frac{y_{2}(E_{1}-E_{2})}{\eta}$，其中$E_{i}=\sum_{j=1}^{N}\alpha_{j}y_{j}K_{ij}+b-y_{i}$，$\eta=K_{11}+K_{22}-2K_{12}$。此时得到的$\hat\alpha_{2}$还没有考虑不等式约束$\alpha_{1},\alpha_{2}\ge 0$，由$\alpha_{1}=(\zeta-y_{2}\alpha_{2})y_{1}\ge0$与$\alpha_{2}\ge0$可以解不等式得到$\alpha_2$的上界$H$与下界$L$，即经过剪辑可以得到$\alpha_{2}$的解析解为：</p>
+<script type="math/tex; mode=display">
+\alpha_{2}^{*}=
+\begin{cases}
+H,\quad \hat\alpha_{2}>H\\
+\hat\alpha_{2},\quad L\le\hat\alpha_{2}\le H\\
+L,\quad \hat\alpha_{2}<L
+\end{cases}</script><p>另外根据$\alpha_{1}^{<em>}=(\zeta-y_{2}\alpha_{2}^{</em>})y_{1}$则可以得到$\alpha_{1}^{*}$，这样便完成了SMO算法的一组变量的更新。重复进行变量选择，解析求解，变量剪辑的过程，直到$\alpha$的所有变量都能满足文章(1)中的KKT条件为止，然后再根据文章(1)中$w$与$b$的计算公式便可以得到训练好的超平面，这样便完成了硬间隔SVM的数学推导过程，后面的文章还会继续介绍软间隔SVM的推导与核方法的应用。To be continue…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/08/29/机器学习-SVM的推导-2/" data-id="cjlf7obx8000yi4ezw410a9kf" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-机器学习-SVM的推导-3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/29/机器学习-SVM的推导-3/" class="article-date">
+  <time datetime="2018-08-29T10:42:47.000Z" itemprop="datePublished">2018-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/29/机器学习-SVM的推导-3/">[机器学习]SVM的推导(3)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="软间隔SVM的推导"><a href="#软间隔SVM的推导" class="headerlink" title="软间隔SVM的推导"></a>软间隔SVM的推导</h1><p>前文介绍了硬间隔SVM的相关推导，本文将继续介绍软间隔SVM的数学推导，即在样本不是线性可分的情况下，允许一部分样本错误分类的SVM。软间隔SVM允许一部分样本不满足约束：$y_{i}(w\cdot x_{i})\ge 0$</p>
+<p>可以将优化目标写为：</p>
+<script type="math/tex; mode=display">
+min_{w,b}\quad \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}loss(y_{i}(w\cdot x_{i}+b)-1)</script><p>其中 $C$ 是一个常数，用来衡量允许的不满足约束的程度，其中的 $loss()$ 函数可以使用 $hinge()$ 函数，即 $loss_{hinge}(z)=max(0,1-z)$</p>
+<p>那么可以将优化目标写为：</p>
+<script type="math/tex; mode=display">
+min_{w,b}\quad \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}max(0,1-y_{i}(w\cdot x_{i}+b))</script><p>引入“松弛变量” $\xi_{i}\ge 0$ ，可以将上式改写为</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+min_{w,b,\xi_{i}}\quad& \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}\xi_{i}\\
+s.t.\quad& y_{i}(w\cdot x_{i}+b)\ge1-\xi_{i}\\
+&\xi_{i}\ge0,i=1,2,...,m
+\end{align*}</script><p>与硬间隔SVM类似，上述的问题也是个二次规划的问题，可以先用拉格朗日对偶性将其转换为对应的对偶问题，再用SMO算法求解。上面问题对应的拉格朗日函数为：</p>
+<script type="math/tex; mode=display">
+L(w,b,\alpha,\xi,\mu)=\frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}\xi_{i}\\+\sum_{i=1}^{m}\alpha_{i}(1-\xi_{i}-y_{i}(w\cdot x_{i}+b))-\sum_{i=1}^{m}\mu_{i}\xi_{i}</script><p>令 $L$ 对 $w,b,\alpha$ 的偏导为 $0$ 可以得到</p>
+<script type="math/tex; mode=display">
+w=\sum_{i=1}^{m}\alpha_{i}y_{i}x_{i}\\
+0=\sum_{i=1}^{m}\alpha_{i}y_{i}\\
+C=\alpha_{i}+\mu_{i}</script><p>代入 $L(w,b,\alpha,\xi,\mu)$ 即可以将原问题化成对偶问题：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+min_ \alpha\quad &\frac{1}{2}\sum_{i=1}^{m}\sum_{j=1}^{m}\alpha_{i}\alpha_{j}y_{i}y_{j}x_{i}\cdot x_{j}-\sum_{i=1}^{m}\alpha_{i}\\
+s.t.\quad &\sum_{i=1}^{m}\alpha_{i}y_{i}=0\\
+&C\ge \alpha_{i}\ge 0\\
+&i=1,2,...,m
+\end{align*}</script><p>可以看出其与硬间隔SVM唯一的区别在于 $\alpha_{i}\ge 0$变成了 $C\ge \alpha_{i}\ge 0$，同样可以用上文中提到的SMO算法很方便的求解，唯一的区别在于剪辑的时候需要考虑两个方向。</p>
+<p>后面还会介绍SVM的核技巧以及常用核，To be continue…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/08/29/机器学习-SVM的推导-3/" data-id="cjlf7obxp0019i4ez8gub5cdx" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Cpp/" style="font-size: 15px;">Cpp</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 20px;">optimization</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/08/29/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/Cpp-谈一谈const关键字/">[Cpp]谈一谈const关键字</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/最优化-线性规划概述/">[最优化]线性规划概述</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/最优化-求解线性规划问题的单纯形算法/">[最优化]求解线性规划问题的单纯形算法</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/Cpp-Cpp函数中的参数传递/">[Cpp]Cpp函数中的参数传递</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Tang Lang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

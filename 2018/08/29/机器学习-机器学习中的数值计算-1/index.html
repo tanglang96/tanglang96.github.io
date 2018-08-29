@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>[机器学习]机器学习中的数值计算(1) | Math &amp; Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="机器学习中的数值计算机器学习算法通常需要大量的数值计算，即通过迭代求解近似值而非求得解析解。这些算法通常包括最优化和线性方程组的求解，在计算机中要通过有限位来表示各种浮点数是具有一定误差的，需要通过一些方法来保证我们的计算精度。 上溢与下溢上溢(overflow)是具有破坏力的，当大量级的数被近似为$-\infty$或者$\infty$时会发生上溢，这会导致在下一步的计算中，数字变成非数字。下溢(">
+<meta name="keywords" content="machine learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[机器学习]机器学习中的数值计算(1)">
+<meta property="og:url" content="http://yoursite.com/2018/08/29/机器学习-机器学习中的数值计算-1/index.html">
+<meta property="og:site_name" content="Math &amp; Code">
+<meta property="og:description" content="机器学习中的数值计算机器学习算法通常需要大量的数值计算，即通过迭代求解近似值而非求得解析解。这些算法通常包括最优化和线性方程组的求解，在计算机中要通过有限位来表示各种浮点数是具有一定误差的，需要通过一些方法来保证我们的计算精度。 上溢与下溢上溢(overflow)是具有破坏力的，当大量级的数被近似为$-\infty$或者$\infty$时会发生上溢，这会导致在下一步的计算中，数字变成非数字。下溢(">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://img-blog.csdn.net/20180714180718129?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:updated_time" content="2018-08-29T13:19:14.931Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[机器学习]机器学习中的数值计算(1)">
+<meta name="twitter:description" content="机器学习中的数值计算机器学习算法通常需要大量的数值计算，即通过迭代求解近似值而非求得解析解。这些算法通常包括最优化和线性方程组的求解，在计算机中要通过有限位来表示各种浮点数是具有一定误差的，需要通过一些方法来保证我们的计算精度。 上溢与下溢上溢(overflow)是具有破坏力的，当大量级的数被近似为$-\infty$或者$\infty$时会发生上溢，这会导致在下一步的计算中，数字变成非数字。下溢(">
+<meta name="twitter:image" content="https://img-blog.csdn.net/20180714180718129?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+  
+    <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Math &amp; Code</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-机器学习-机器学习中的数值计算-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/29/机器学习-机器学习中的数值计算-1/" class="article-date">
+  <time datetime="2018-08-29T10:43:03.000Z" itemprop="datePublished">2018-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      [机器学习]机器学习中的数值计算(1)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="机器学习中的数值计算"><a href="#机器学习中的数值计算" class="headerlink" title="机器学习中的数值计算"></a>机器学习中的数值计算</h1><p>机器学习算法通常需要大量的数值计算，即通过迭代求解近似值而非求得解析解。这些算法通常包括最优化和线性方程组的求解，在计算机中要通过有限位来表示各种浮点数是具有一定误差的，需要通过一些方法来保证我们的计算精度。</p>
+<h2 id="上溢与下溢"><a href="#上溢与下溢" class="headerlink" title="上溢与下溢"></a>上溢与下溢</h2><p><strong>上溢</strong>(overflow)是具有破坏力的，当大量级的数被近似为$-\infty$或者$\infty$时会发生上溢，这会导致在下一步的计算中，数字变成非数字。<br><strong>下溢</strong>(underflow)同样也是毁灭性的，即当浮点数很小时被四舍五入为0，有时候0和非0具有完全不同的性质，这样可能会导致分母为0等错误现象的发生。</p>
+<p>可以通过softmax函数来避免上溢与下溢的发生：</p>
+<script type="math/tex; mode=display">
+softmax(\vec x)_{i}=\dfrac{exp(x_{i})}{\sum^{n}_{j=1}exp(x_{j})}</script><p>为了方便讨论，假设$\vec x$中的每个元素$x_{i}=c$，当$c$很大时，分子可能会上溢，同样的当$c$很小时分母会下溢。这两个问题可以通过计算$softmax(\vec z)$解决，其中$\vec  z=\vec x-max(x_{i})$，这样的话$\vec z$中的每个元素最大为0，分子不可能会发生上溢，至于分母，其中最少有一个值为1的分量，而其它元素都是非负的，所以分母也不可能发生下溢。这样便能解决溢出的问题。</p>
+<h2 id="病态条件"><a href="#病态条件" class="headerlink" title="病态条件"></a>病态条件</h2><p>条件数指的是函数相对于输入的微小变化而变化的快慢程度。输入的轻微扰动而导致函数的迅速变化对于数值计算是有问题的。对于函数$f(x)=A^{-1}x$，当$A\in R^{n*n}$具有特征值分解的时候，其条件数为：</p>
+<script type="math/tex; mode=display">
+max_{i,j}|\frac{\lambda_{i}}{\lambda_{j}}|</script><p>即为最大特征值和最小特征值的比，当这个数很大时，其$f(x)$对于输入$x$的误差很敏感。</p>
+<h2 id="基于梯度的优化"><a href="#基于梯度的优化" class="headerlink" title="基于梯度的优化"></a>基于梯度的优化</h2><p>深度学习算法通常使用基于梯度的优化算法，传统的梯度下降由于资料众多故不再赘述，在这里重点介绍关于梯度方法的其他知识，主要包括Jacobian矩阵和Hessian矩阵。</p>
+<p>有时候我们需要计算输入输出都为向量的函数的所有偏导数，包含所有这样的偏导数的矩阵称为Jacobian矩阵。即如果有一个函数$f:R^{m}\to R^{n}$，$f$的Jacobian矩阵为$J_{i,j}=\frac{\partial}{\partial x_{j}}f(\vec x)_{i}$。</p>
+<p>对于传统的梯度下降算法我们只用到了一阶导数，有时候在用到其他优化算法（比如牛顿法）需要用到二阶导数，将所有的二阶导数构成的矩阵称之为Hessian矩阵，即：</p>
+<script type="math/tex; mode=display">
+H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</script><p>在深度学习的背景下，Hessian矩阵几乎处处是对称的。在特定方向$\vec d$上的二阶导数可以写成$\vec d^{T}H\vec d$。当$\vec d$是$H$的一个向量时，这个方向的二阶导数就是对应的特征值。</p>
+<p>Hessian矩阵的一个重要作用就是进行二阶导数测试，即判断当前的点是极大/极小值点或者是鞍点。一维情况很简单，对于多维情况，我们通过检测Hessian矩阵的特征值来判断该临界点，当Hessian矩阵是正定时，该临界点是局部极小点，同样负定时则为局部极大点。如果Hessian的特征值中至少一个是正的一个是负的，那么$x$在某个平面上是局部极大点，在某个平面是局部极小点，则为鞍点。<br><img src="https://img-blog.csdn.net/20180714180718129?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>这是关于机器学习中数值计算文章系列的第一篇，To be continue…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/08/29/机器学习-机器学习中的数值计算-1/" data-id="cjlf7obxj0014i4ezt7q9q0by" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/08/29/机器学习-利用TensorFlow训练一个简单的神经网络/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          [机器学习]利用TensorFlow训练一个简单的神经网络
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/08/29/LeetCode-207-Course-Schedule/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">[LeetCode]207. Course Schedule</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script></section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Cpp/" style="font-size: 15px;">Cpp</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 20px;">optimization</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/08/29/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/Cpp-谈一谈const关键字/">[Cpp]谈一谈const关键字</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/最优化-线性规划概述/">[最优化]线性规划概述</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/最优化-求解线性规划问题的单纯形算法/">[最优化]求解线性规划问题的单纯形算法</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/Cpp-Cpp函数中的参数传递/">[Cpp]Cpp函数中的参数传递</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Tang Lang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

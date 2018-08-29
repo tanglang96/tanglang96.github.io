@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>[LeetCode]207. Course Schedule | Math &amp; Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="该题目利用DFS和BFS来判断某个图是否能进行拓扑排序  BFS的思路是先将给定的pair组转换成格式存放的图，然后计算每个节点的入度，先找到入度为0的节点，如果未找到直接返回```false``` ，找到之后将该点的入度标记为-1，然后将其指向的节点的入度减1，循环n次，如果每次都能找到入度为0的节点，那么可以进行拓扑排序。123456789101112131415161718192021222">
+<meta name="keywords" content="algorithm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[LeetCode]207. Course Schedule">
+<meta property="og:url" content="http://yoursite.com/2018/08/29/LeetCode-207-Course-Schedule/index.html">
+<meta property="og:site_name" content="Math &amp; Code">
+<meta property="og:description" content="该题目利用DFS和BFS来判断某个图是否能进行拓扑排序  BFS的思路是先将给定的pair组转换成格式存放的图，然后计算每个节点的入度，先找到入度为0的节点，如果未找到直接返回```false``` ，找到之后将该点的入度标记为-1，然后将其指向的节点的入度减1，循环n次，如果每次都能找到入度为0的节点，那么可以进行拓扑排序。123456789101112131415161718192021222">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-08-29T13:19:01.662Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[LeetCode]207. Course Schedule">
+<meta name="twitter:description" content="该题目利用DFS和BFS来判断某个图是否能进行拓扑排序  BFS的思路是先将给定的pair组转换成格式存放的图，然后计算每个节点的入度，先找到入度为0的节点，如果未找到直接返回```false``` ，找到之后将该点的入度标记为-1，然后将其指向的节点的入度减1，循环n次，如果每次都能找到入度为0的节点，那么可以进行拓扑排序。123456789101112131415161718192021222">
+  
+    <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Math &amp; Code</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-LeetCode-207-Course-Schedule" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/29/LeetCode-207-Course-Schedule/" class="article-date">
+  <time datetime="2018-08-29T10:43:01.000Z" itemprop="datePublished">2018-08-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      [LeetCode]207. Course Schedule
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>该题目利用DFS和BFS来判断某个图是否能进行拓扑排序</p>
+<ol>
+<li><p>BFS的思路是先将给定的pair组转换成<figure class="highlight plain"><figcaption><span>格式存放的图，然后计算每个节点的入度，先找到入度为0的节点，如果未找到直接返回```false``` ，找到之后将该点的入度标记为-1，然后将其指向的节点的入度减1，循环n次，如果每次都能找到入度为0的节点，那么可以进行拓扑排序。</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">```cpp</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool canFinish(int numCourses, vector&lt;pair&lt;int, int&gt;&gt;&amp; prerequisites) &#123;</span><br><span class="line">        vector&lt;unordered_set&lt;int&gt;&gt; graph = make_graph(numCourses, prerequisites);</span><br><span class="line">        vector&lt;int&gt; degrees = compute_indegree(graph);</span><br><span class="line">        for (int i = 0; i &lt; numCourses; i++) &#123;</span><br><span class="line">            int j = 0;</span><br><span class="line">            for (; j &lt; numCourses; j++)</span><br><span class="line">                if (!degrees[j]) break;</span><br><span class="line">            if (j == numCourses) return false;</span><br><span class="line">            degrees[j] = -1;</span><br><span class="line">            for (int neigh : graph[j])</span><br><span class="line">                degrees[neigh]--;</span><br><span class="line">        &#125;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">private:</span><br><span class="line">    vector&lt;unordered_set&lt;int&gt;&gt; make_graph(int numCourses, vector&lt;pair&lt;int, int&gt;&gt;&amp; prerequisites) &#123;</span><br><span class="line">        vector&lt;unordered_set&lt;int&gt;&gt; graph(numCourses);</span><br><span class="line">        for (auto pre : prerequisites)</span><br><span class="line">            graph[pre.second].insert(pre.first);</span><br><span class="line">        return graph;</span><br><span class="line">    &#125;</span><br><span class="line">    vector&lt;int&gt; compute_indegree(vector&lt;unordered_set&lt;int&gt;&gt;&amp; graph) &#123;</span><br><span class="line">        vector&lt;int&gt; degrees(graph.size(), 0);</span><br><span class="line">        for (auto neighbors : graph)</span><br><span class="line">            for (int neigh : neighbors)</span><br><span class="line">                degrees[neigh]++;</span><br><span class="line">        return degrees;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+</li>
+<li><p>DFS的思路则是通过DFS判断图中是否有环，通过<figure class="highlight plain"><figcaption><span>作为标记数组，来标记是否当前路径已经访问过，利用```visited``` 来标记已经访问过的节点，利用```dfs_cycle()``` 来判断当前的dfs路径上是否有环</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">```cpp</span><br><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    bool canFinish(int numCourses, vector&lt;pair&lt;int, int&gt;&gt;&amp; prerequisites) &#123;</span><br><span class="line">        vector&lt;unordered_set&lt;int&gt;&gt; graph = make_graph(numCourses, prerequisites);</span><br><span class="line">        vector&lt;bool&gt; onpath(numCourses, false), visited(numCourses, false);</span><br><span class="line">        for (int i = 0; i &lt; numCourses; i++)</span><br><span class="line">            if (!visited[i] &amp;&amp; dfs_cycle(graph, i, onpath, visited))</span><br><span class="line">                return false;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">private:</span><br><span class="line">    vector&lt;unordered_set&lt;int&gt;&gt; make_graph(int numCourses, vector&lt;pair&lt;int, int&gt;&gt;&amp; prerequisites) &#123;</span><br><span class="line">        vector&lt;unordered_set&lt;int&gt;&gt; graph(numCourses);</span><br><span class="line">        for (auto pre : prerequisites)</span><br><span class="line">            graph[pre.second].insert(pre.first);</span><br><span class="line">        return graph;</span><br><span class="line">    &#125; </span><br><span class="line">    bool dfs_cycle(vector&lt;unordered_set&lt;int&gt;&gt;&amp; graph, int node, vector&lt;bool&gt;&amp; onpath, vector&lt;bool&gt;&amp; visited) &#123;</span><br><span class="line">        if (visited[node]) return false;</span><br><span class="line">        onpath[node] = visited[node] = true; </span><br><span class="line">        for (int neigh : graph[node])</span><br><span class="line">            if (onpath[neigh] || dfs_cycle(graph, neigh, onpath, visited))</span><br><span class="line">                return true;</span><br><span class="line">        return onpath[node] = false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/08/29/LeetCode-207-Course-Schedule/" data-id="cjlf7obwb000bi4ez7p0wdi20" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/08/29/机器学习-机器学习中的数值计算-1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          [机器学习]机器学习中的数值计算(1)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/08/29/最优化-求解线性方程组-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">[最优化]求解线性方程组(1)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script></section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Cpp/" style="font-size: 15px;">Cpp</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 20px;">optimization</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/08/29/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/Cpp-谈一谈const关键字/">[Cpp]谈一谈const关键字</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/最优化-线性规划概述/">[最优化]线性规划概述</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/最优化-求解线性规划问题的单纯形算法/">[最优化]求解线性规划问题的单纯形算法</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/29/Cpp-Cpp函数中的参数传递/">[Cpp]Cpp函数中的参数传递</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Tang Lang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

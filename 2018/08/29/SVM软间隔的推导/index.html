@@ -90,17 +90,17 @@
 <p>可以将优化目标写为：<br>$$<br>min_{w,b}\quad \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}loss(y_{i}(w\cdot x_{i}+b)-1)<br>$$</p>
 <p>其中 $C$ 是一个常数，用来衡量允许的不满足约束的程度，其中的 $loss()$ 函数可以使用 $hinge()$ 函数，即 $loss_{hinge}(z)=max(0,1-z)$</p>
 <p>那么可以将优化目标写为：<br>$$<br>min_{w,b}\quad \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}max(0,1-y_{i}(w\cdot x_{i}+b))<br>$$</p>
-<p>引入“松弛变量” $\xi_{i}\ge 0$ ，可以将上式改写为<br>$$<br>\begin{align<em>}<br>min_{w,b,\xi_{i}}\quad&amp; \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}\xi_{i}\<br>s.t.\quad&amp; y_{i}(w\cdot x_{i}+b)\ge1-\xi_{i}\<br>&amp;\xi_{i}\ge0,i=1,2,…,m<br>\end{align</em>}<br>$$ </p>
+<p>引入“松弛变量” $\xi_{i}\ge 0$ ，可以将上式改写为<br>$$<br>\begin{align<em>}<br>min_{w,b,\xi_{i}}\quad&amp; \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}\xi_{i}\\<br>s.t.\quad&amp; y_{i}(w\cdot x_{i}+b)\ge1-\xi_{i}\\<br>&amp;\xi_{i}\ge0,i=1,2,…,m<br>\end{align</em>}<br>$$ </p>
 <p>与硬间隔SVM类似，上述的问题也是个二次规划的问题，可以先用拉格朗日对偶性将其转换为对应的对偶问题，再用SMO算法求解。上面问题对应的拉格朗日函数为：<br>$$<br>L(w,b,\alpha,\xi,\mu)=\frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}\xi_{i}\+\sum_{i=1}^{m}\alpha_{i}(1-\xi_{i}-y_{i}(w\cdot x_{i}+b))-\sum_{i=1}^{m}\mu_{i}\xi_{i}<br>$$</p>
-<p>令 $L$ 对 $w,b,\alpha$ 的偏导为 $0$ 可以得到<br>$$<br>w=\sum_{i=1}^{m}\alpha_{i}y_{i}x_{i}\<br>0=\sum_{i=1}^{m}\alpha_{i}y_{i}\<br>C=\alpha_{i}+\mu_{i}<br>$$</p>
-<p>代入 $L(w,b,\alpha,\xi,\mu)$ 即可以将原问题化成对偶问题：<br>$$<br>\begin{align<em>}<br>min_ \alpha\quad &amp;\frac{1}{2}\sum_{i=1}^{m}\sum_{j=1}^{m}\alpha_{i}\alpha_{j}y_{i}y_{j}x_{i}\cdot x_{j}-\sum_{i=1}^{m}\alpha_{i}\<br>s.t.\quad &amp;\sum_{i=1}^{m}\alpha_{i}y_{i}=0\<br>&amp;C\ge \alpha_{i}\ge 0\<br>&amp;i=1,2,…,m<br>\end{align</em>}<br>$$</p>
+<p>令 $L$ 对 $w,b,\alpha$ 的偏导为 $0$ 可以得到<br>$$<br>w=\sum_{i=1}^{m}\alpha_{i}y_{i}x_{i}\\<br>0=\sum_{i=1}^{m}\alpha_{i}y_{i}\\<br>C=\alpha_{i}+\mu_{i}<br>$$</p>
+<p>代入 $L(w,b,\alpha,\xi,\mu)$ 即可以将原问题化成对偶问题：<br>$$<br>\begin{align<em>}<br>min_ \alpha\quad &amp;\frac{1}{2}\sum_{i=1}^{m}\sum_{j=1}^{m}\alpha_{i}\alpha_{j}y_{i}y_{j}x_{i}\cdot x_{j}-\sum_{i=1}^{m}\alpha_{i}\\<br>s.t.\quad &amp;\sum_{i=1}^{m}\alpha_{i}y_{i}=0\\<br>&amp;C\ge \alpha_{i}\ge 0\\<br>&amp;i=1,2,…,m<br>\end{align</em>}<br>$$</p>
 <p>可以看出其与硬间隔SVM唯一的区别在于 $\alpha_{i}\ge 0$变成了 $C\ge \alpha_{i}\ge 0$，同样可以用上文中提到的SMO算法很方便的求解，唯一的区别在于剪辑的时候需要考虑两个方向。</p>
 <p>后面还会介绍SVM的核技巧以及常用核，To be continue…</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/SVM软间隔的推导/" data-id="cjlew788100006oezl2liol6u" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/SVM软间隔的推导/" data-id="cjlewqjbg0000dsezp6ymd8wn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -120,7 +120,8 @@
   
 </article>
 
-</section>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script></section>
         
           <aside id="sidebar">
   

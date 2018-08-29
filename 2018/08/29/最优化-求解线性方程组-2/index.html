@@ -7,18 +7,18 @@
   
   <title>[最优化]求解线性方程组(2) | Math &amp; Code</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="求解线性方程组(2)线性方程组的最小范数解上一篇博文介绍了线性方程组的情况之一，即未知数数量小于方程个数的情况，介绍了最小二乘法，在本文中将介绍线性方程组的另一种情况，即方程个数小于未知数数量的情况，此时方程组有无限多的解，但是最接近原点的解，即范数最小的解只有一个，也就是这里将会介绍的线性方程组的最小范数解。 考虑线性方程组$Ax=b$，其中$A\in R^{m*n},m\le n$，要寻找其最">
+  <meta name="description" content="求解线性方程组(2)线性方程组的最小范数解上一篇博文介绍了线性方程组的情况之一，即未知数数量小于方程个数的情况，介绍了最小二乘法，在本文中将介绍线性方程组的另一种情况，即方程个数小于未知数数量的情况，此时方程组有无限多的解，但是最接近原点的解，即范数最小的解只有一个，也就是这里将会介绍的线性方程组的最小范数解。 考虑线性方程组Ax=b，其中A\in R^{m*n},m\le n，要寻找其最小范数解">
 <meta name="keywords" content="optimization">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[最优化]求解线性方程组(2)">
 <meta property="og:url" content="http://yoursite.com/2018/08/29/最优化-求解线性方程组-2/index.html">
 <meta property="og:site_name" content="Math &amp; Code">
-<meta property="og:description" content="求解线性方程组(2)线性方程组的最小范数解上一篇博文介绍了线性方程组的情况之一，即未知数数量小于方程个数的情况，介绍了最小二乘法，在本文中将介绍线性方程组的另一种情况，即方程个数小于未知数数量的情况，此时方程组有无限多的解，但是最接近原点的解，即范数最小的解只有一个，也就是这里将会介绍的线性方程组的最小范数解。 考虑线性方程组$Ax=b$，其中$A\in R^{m*n},m\le n$，要寻找其最">
+<meta property="og:description" content="求解线性方程组(2)线性方程组的最小范数解上一篇博文介绍了线性方程组的情况之一，即未知数数量小于方程个数的情况，介绍了最小二乘法，在本文中将介绍线性方程组的另一种情况，即方程个数小于未知数数量的情况，此时方程组有无限多的解，但是最接近原点的解，即范数最小的解只有一个，也就是这里将会介绍的线性方程组的最小范数解。 考虑线性方程组Ax=b，其中A\in R^{m*n},m\le n，要寻找其最小范数解">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-29T13:18:27.168Z">
+<meta property="og:updated_time" content="2018-08-29T15:19:58.770Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[最优化]求解线性方程组(2)">
-<meta name="twitter:description" content="求解线性方程组(2)线性方程组的最小范数解上一篇博文介绍了线性方程组的情况之一，即未知数数量小于方程个数的情况，介绍了最小二乘法，在本文中将介绍线性方程组的另一种情况，即方程个数小于未知数数量的情况，此时方程组有无限多的解，但是最接近原点的解，即范数最小的解只有一个，也就是这里将会介绍的线性方程组的最小范数解。 考虑线性方程组$Ax=b$，其中$A\in R^{m*n},m\le n$，要寻找其最">
+<meta name="twitter:description" content="求解线性方程组(2)线性方程组的最小范数解上一篇博文介绍了线性方程组的情况之一，即未知数数量小于方程个数的情况，介绍了最小二乘法，在本文中将介绍线性方程组的另一种情况，即方程个数小于未知数数量的情况，此时方程组有无限多的解，但是最接近原点的解，即范数最小的解只有一个，也就是这里将会介绍的线性方程组的最小范数解。 考虑线性方程组Ax=b，其中A\in R^{m*n},m\le n，要寻找其最小范数解">
   
     <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
   
@@ -88,25 +88,25 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="求解线性方程组-2"><a href="#求解线性方程组-2" class="headerlink" title="求解线性方程组(2)"></a>求解线性方程组(2)</h1><h2 id="线性方程组的最小范数解"><a href="#线性方程组的最小范数解" class="headerlink" title="线性方程组的最小范数解"></a>线性方程组的最小范数解</h2><p>上一篇博文介绍了线性方程组的情况之一，即未知数数量小于方程个数的情况，介绍了最小二乘法，在本文中将介绍线性方程组的另一种情况，即方程个数小于未知数数量的情况，此时方程组有无限多的解，但是最接近原点的解，即范数最小的解只有一个，也就是这里将会介绍的线性方程组的<strong>最小范数解</strong>。</p>
-<p>考虑线性方程组$Ax=b$，其中$A\in R^{m*n},m\le n$，要寻找其最小范数解，即相当于求解下列最优化问题：</p>
+<p>考虑线性方程组<script type="math/tex">Ax=b</script>，其中<script type="math/tex">A\in R^{m*n},m\le n</script>，要寻找其最小范数解，即相当于求解下列最优化问题：</p>
 <script type="math/tex; mode=display">
 minimize\ ||x||\\
 subject\  to\ Ax=b</script><p>这个问题属于等式约束的最优化问题，可以利用拉格朗日乘子法求解，在这里我们介绍另外一种方法。</p>
-<p>先给出结论，该方程组的最小范数解为$x^{*}=A^{T}(AA^{T})^{-1}b$，下面给出证明：</p>
+<p>先给出结论，该方程组的最小范数解为<script type="math/tex">x^{*}=A^{T}(AA^{T})^{-1}b</script>，下面给出证明：</p>
 <script type="math/tex; mode=display">
 ||x||^{2}=||(x-x^{*})+x^{*}||^{2}\\
-=||x-x^{*}||^{2}+||x^{*}||^{2}+2x^{*T}(x-x^{*})</script><p>令$x^{<em>}=A^{T}(AA^{T})^{-1}b$代入上式最右边项可以得到$2x^{</em>T}(x-x^{<em>})=0$，于是$||x||^{2}=||x-x^{</em>}||^{2}+||x^{<em>}||^{2}$，$||x^{</em>}||^{2}$是一个定值，而当$x\neq x^{<em>}$时，$||x-x^{</em>}||^{2}&gt;0$恒成立，因此可以得到$x=x^{*}$是该优化问题的唯一最小解，即最小范数解。</p>
-<h2 id="Kaczmarz算法"><a href="#Kaczmarz算法" class="headerlink" title="Kaczmarz算法"></a>Kaczmarz算法</h2><p>Kaczmarz算法是一种迭代求解最小范数解的算法，可以省去求解$(AA^{T})^{-1}$的步骤，使计算更为高效，假设$A\in R^{m*n}$，直接给出迭代公式如下：<br>在前$m$次迭代中，即$k=0,1,…,m-1$时，有：</p>
+=||x-x^{*}||^{2}+||x^{*}||^{2}+2x^{*T}(x-x^{*})</script><p>令<script type="math/tex">x^{*}=A^{T}(AA^{T})^{-1}b</script>代入上式最右边项可以得到<script type="math/tex">2x^{*T}(x-x^{*})=0</script>，于是<script type="math/tex">||x||^{2}=||x-x^{*}||^{2}+||x^{*}||^{2}</script>，<script type="math/tex">||x^{*}||^{2}</script>是一个定值，而当<script type="math/tex">x\neq x^{*}</script>时，<script type="math/tex">||x-x^{*}||^{2}>0</script>恒成立，因此可以得到<script type="math/tex">x=x^{*}</script>是该优化问题的唯一最小解，即最小范数解。</p>
+<h2 id="Kaczmarz算法"><a href="#Kaczmarz算法" class="headerlink" title="Kaczmarz算法"></a>Kaczmarz算法</h2><p>Kaczmarz算法是一种迭代求解最小范数解的算法，可以省去求解<script type="math/tex">(AA^{T})^{-1}</script>的步骤，使计算更为高效，假设<script type="math/tex">A\in R^{m*n}</script>，直接给出迭代公式如下：<br>在前<script type="math/tex">m</script>次迭代中，即<script type="math/tex">k=0,1,...,m-1</script>时，有：</p>
 <script type="math/tex; mode=display">
 x^{(k+1)}=x^{(k)}+\mu(b_{k+1}-a_{k+1}^{T}x^{(k)})\frac{a_{k+1}}{a_{k+1}^{T}a_{k+1}}</script><p>对于第$(m+1)$次迭代，重新使用$A$的第1行以及$b$的第1个元素，即</p>
 <script type="math/tex; mode=display">
-x^{(m+1)}=x^{(m)}+\mu(b_{1}-a_{1}^{T}x^{(m)})\frac{a_{1}}{a_{1}^{T}a_{1}}</script><p>每迭代m次便从头循环一次，$\mu$可以视为迭代算法的过程。可以证明得到在Kaczmarz算法中，如果$x^{(0)}=0$，则当$k\to \infty$时，$x^{(k)}\to x^{*}=A^{T}(AA^{T})^{-1}b$，详细证明过程在这里省略。</p>
+x^{(m+1)}=x^{(m)}+\mu(b_{1}-a_{1}^{T}x^{(m)})\frac{a_{1}}{a_{1}^{T}a_{1}}</script><p>每迭代m次便从头循环一次，<script type="math/tex">\mu</script>可以视为迭代算法的过程。可以证明得到在Kaczmarz算法中，如果<script type="math/tex">x^{(0)}=0</script>，则当<script type="math/tex">k\to \infty</script>时，<script type="math/tex">x^{(k)}\to x^{*}=A^{T}(AA^{T})^{-1}b</script>，详细证明过程在这里省略。</p>
 <p>后面的文章还会介绍线性方程组的一般解法，伪逆等相关内容，To be continue…</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/最优化-求解线性方程组-2/" data-id="cjlf7obwn000ii4ez8g6n6bp1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/最优化-求解线性方程组-2/" data-id="cjlf8oq91000ktoez1cgs24vi" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>

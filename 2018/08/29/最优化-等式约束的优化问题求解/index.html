@@ -7,18 +7,18 @@
   
   <title>[最优化]等式约束的优化问题求解 | Math &amp; Code</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="等式约束的优化问题求解基本概念本文将讨论下类形状的优化问题  minimize\quad f(x)\\ subject\  to\quad h(x)=0其中$x\in R^{n},f:R^{n}\to R,h:R^{n}\to R^{m},h=[h_{1},…,h_{m}]^{T},m\le n$，假定函数$h$连续可微，即$h\in C^{1}$。下面介绍几个基本概念： 正则点：对于满足约束$h">
+  <meta name="description" content="等式约束的优化问题求解基本概念本文将讨论下类形状的优化问题  minimize\quad f(x)\\ subject\  to\quad h(x)=0其中$x\in R^{n},f:R^{n}\to R,h:R^{n}\to R^{m},h=[h_{1},…,h_{m}]^{T},m\le n$，假定函数$h$连续可微，即$h\in C^{1}$。下面介绍几个基本概念： 正则点：对于满足约束 h">
 <meta name="keywords" content="optimization">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[最优化]等式约束的优化问题求解">
 <meta property="og:url" content="http://yoursite.com/2018/08/29/最优化-等式约束的优化问题求解/index.html">
 <meta property="og:site_name" content="Math &amp; Code">
-<meta property="og:description" content="等式约束的优化问题求解基本概念本文将讨论下类形状的优化问题  minimize\quad f(x)\\ subject\  to\quad h(x)=0其中$x\in R^{n},f:R^{n}\to R,h:R^{n}\to R^{m},h=[h_{1},…,h_{m}]^{T},m\le n$，假定函数$h$连续可微，即$h\in C^{1}$。下面介绍几个基本概念： 正则点：对于满足约束$h">
+<meta property="og:description" content="等式约束的优化问题求解基本概念本文将讨论下类形状的优化问题  minimize\quad f(x)\\ subject\  to\quad h(x)=0其中$x\in R^{n},f:R^{n}\to R,h:R^{n}\to R^{m},h=[h_{1},…,h_{m}]^{T},m\le n$，假定函数$h$连续可微，即$h\in C^{1}$。下面介绍几个基本概念： 正则点：对于满足约束 h">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-29T13:21:51.595Z">
+<meta property="og:updated_time" content="2018-08-29T15:10:05.764Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[最优化]等式约束的优化问题求解">
-<meta name="twitter:description" content="等式约束的优化问题求解基本概念本文将讨论下类形状的优化问题  minimize\quad f(x)\\ subject\  to\quad h(x)=0其中$x\in R^{n},f:R^{n}\to R,h:R^{n}\to R^{m},h=[h_{1},…,h_{m}]^{T},m\le n$，假定函数$h$连续可微，即$h\in C^{1}$。下面介绍几个基本概念： 正则点：对于满足约束$h">
+<meta name="twitter:description" content="等式约束的优化问题求解基本概念本文将讨论下类形状的优化问题  minimize\quad f(x)\\ subject\  to\quad h(x)=0其中$x\in R^{n},f:R^{n}\to R,h:R^{n}\to R^{m},h=[h_{1},…,h_{m}]^{T},m\le n$，假定函数$h$连续可微，即$h\in C^{1}$。下面介绍几个基本概念： 正则点：对于满足约束 h">
   
     <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
   
@@ -91,39 +91,39 @@
 <script type="math/tex; mode=display">
 minimize\quad f(x)\\
 subject\  to\quad h(x)=0</script><p>其中$x\in R^{n},f:R^{n}\to R,h:R^{n}\to R^{m},h=[h_{1},…,h_{m}]^{T},m\le n$，假定函数$h$连续可微，即$h\in C^{1}$。<br>下面介绍几个基本概念：</p>
-<p><strong>正则点</strong>：对于满足约束$h_{1}(x^{<em>})=0,…,h_{m}(x^{</em>})=0$的点$x^{<em>}$，如果梯度向量$\nabla h_{1}(x^{</em>}),…,\nabla h_{m}(x^{<em>})$是线性无关的，则称$x^{</em>}$是该约束的一个正则点。</p>
-<p><strong>切线空间</strong>：曲面$S={x\in R^{n}:h(x)=0}$中点$x^{<em>}$处的切线空间为集合$T(x^{</em>})=\{ y:Dh(x^{<em>})y=0\} $。可以看出切线空间$T(x^{</em>})$是矩阵$Dh(x^{<em>})$的零空间，即$T(x^{</em>})=N(Dh(x^{*}))$。</p>
-<p><strong>法线空间</strong>：曲面$S={x\in R^{n}:h(x)=0}$中点$x^{<em>}$处的法线空间为集合$N(x^{</em>})=\{ x\in R^{n}:x=Dh(x^{<em>})^{T}z,z\in R^{m}\} $。可以看出法线空间$N(x^{</em>})$是矩阵$Dh(x^{<em>})$的零空间，即$N(x^{</em>})=R(Dh(x^{*})^{T})$。</p>
-<h2 id="拉格朗日条件"><a href="#拉格朗日条件" class="headerlink" title="拉格朗日条件"></a>拉格朗日条件</h2><p>首先考虑只包含两个决策变量和一个等式约束的优化问题。令$h:R^{2}\to R$为约束函数，可知函数定义域中$x$处的梯度$\nabla h(x)$与通过该点的$h(x)$水平集正交，选择点$x^{<em>}=[x^{</em>}_{1},x^{<em>}_{1}]^{T}$使得$h(x^{</em>})=0$，且$\nabla h(x^{<em>})\neq 0$，经过点$x^{</em>}$的水平集为集合$\{ x:h(x)=0\}$。可利用曲线$x(t)$在$x^{*}$领域内进行参数化，$x(t)$是一个连续可微的向量函数$h:R\to R^{2}$：</p>
+<p><strong>正则点</strong>：对于满足约束 <script type="math/tex">h_{1}(x^{*})=0,...,h_{m}(x^{*})=0</script> 的点<script type="math/tex">x^{**}</script>，如果梯度向量 <script type="math/tex">\nabla h_{1}(x^{*}),...,\nabla h_{m}(x^{*})</script> 是线性无关的，则称<script type="math/tex">x^{*}</script>是该约束的一个正则点。</p>
+<p><strong>切线空间</strong>：曲面<script type="math/tex">S={x\in R^{n}:h(x)=0}</script>中点<script type="math/tex">x^{*}</script>处的切线空间为集合<script type="math/tex">T(x^{*})=\{ y:Dh(x^{*})y=0\}</script>。可以看出切线空间<script type="math/tex">T(x^{*})</script>是矩阵<script type="math/tex">Dh(x^{*})</script>的零空间，即<script type="math/tex">T(x^{*})=N(Dh(x^{*}))</script>。</p>
+<p><strong>法线空间</strong>：曲面<script type="math/tex">S={x\in R^{n}:h(x)=0}</script>中点<script type="math/tex">x^{*}</script>处的法线空间为集合<script type="math/tex">N(x^{*})=\{ x\in R^{n}:x=Dh(x^{*})^{T}z,z\in R^{m}\}</script>。可以看出法线空间<script type="math/tex">N(x^{*})</script>是矩阵<script type="math/tex">Dh(x^{*})</script>的零空间，即<script type="math/tex">N(x^{*})=R(Dh(x^{*})^{T})</script>。</p>
+<h2 id="拉格朗日条件"><a href="#拉格朗日条件" class="headerlink" title="拉格朗日条件"></a>拉格朗日条件</h2><p>首先考虑只包含两个决策变量和一个等式约束的优化问题。令<script type="math/tex">h:R^{2}\to R</script>为约束函数，可知函数定义域中<script type="math/tex">x</script>处的梯度<script type="math/tex">\nabla h(x)</script>与通过该点的<script type="math/tex">h(x)</script>水平集正交，选择点<script type="math/tex">x^{*}=[x^{*}_{1},x^{*}_{1}]^{T}</script>使得<script type="math/tex">h(x^{*})=0</script>，且<script type="math/tex">\nabla h(x^{*})\neq 0</script>，经过点<script type="math/tex">x^{*}</script>的水平集为集合<script type="math/tex">\{ x:h(x)=0\}</script>。可利用曲线<script type="math/tex">x(t)</script>在<script type="math/tex">x^{*}</script>领域内进行参数化，<script type="math/tex">x(t)</script>是一个连续可微的向量函数<script type="math/tex">h:R\to R^{2}</script>：</p>
 <script type="math/tex; mode=display">
-x(t)=[x_{1}(t),x_{1}(t)]^{T},t\in (a,b),x^{*}=x(t^{*}),\dot{x}(t^{*})\neq 0,t^{*}\in (a,b)</script><p>接下来可以证明，$\nabla h(x^{<em>})$与$\dot{x}(t^{</em>})$正交。由于$h$在曲线$\{x(t):t\in (a,b)\}$上是常数0，即对于所有的$t\in (a,b)$都有</p>
+x(t)=[x_{1}(t),x_{1}(t)]^{T},t\in (a,b),x^{*}=x(t^{*}),\dot{x}(t^{*})\neq 0,t^{*}\in (a,b)</script><p>接下来可以证明，<script type="math/tex">\nabla h(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交。由于<script type="math/tex">h</script>在曲线<script type="math/tex">\{x(t):t\in (a,b)\}</script>上是常数0，即对于所有的<script type="math/tex">t\in (a,b)</script>都有</p>
 <script type="math/tex; mode=display">
-h(x(t))=0</script><p>因此对于任意的$t\in(a,b)$都有</p>
+h(x(t))=0</script><p>因此对于任意的<script type="math/tex">t\in(a,b)</script>都有</p>
 <script type="math/tex; mode=display">
 \frac{d}{dt}h(x(t))=0</script><p>利用链式法则可以得到</p>
 <script type="math/tex; mode=display">
-\frac{d}{dt}h(x(t))=\nabla h(x(t))^{T}\dot{x}(t)=0</script><p>因此$\nabla h(x^{<em>})$和$\dot{x}(t^{</em>})$正交<br>当$x^{<em>}$是$f:R\to R^{2}$在满足$h(x)=0$上的极小点的时候，可以证明，$\nabla f(x^{</em>})$与$\dot{x}(t^{*})$正交，构造关于$t$的复合函数：</p>
+\frac{d}{dt}h(x(t))=\nabla h(x(t))^{T}\dot{x}(t)=0</script><p>因此<script type="math/tex">\nabla h(x^{*})</script>和<script type="math/tex">\dot{x}(t^{*})</script>正交<br>当<script type="math/tex">x^{*}</script>是<script type="math/tex">f:R\to R^{2}</script>在满足<script type="math/tex">h(x)=0</script>上的极小点的时候，可以证明，<script type="math/tex">\nabla f(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交，构造关于<script type="math/tex">t</script>的复合函数：</p>
 <script type="math/tex; mode=display">
-\phi(t)=f(x(t))</script><p>当$t=t^{*}$的时候取得极小值，根据无约束极值问题的一阶必要条件可知</p>
+\phi(t)=f(x(t))</script><p>当<script type="math/tex">t=t^{*}</script>的时候取得极小值，根据无约束极值问题的一阶必要条件可知</p>
 <script type="math/tex; mode=display">
 \frac{d\phi}{dt}(t^{*})=0</script><p>利用链式法则可以得到</p>
 <script type="math/tex; mode=display">
-\frac{d}{dt}\phi(t^{*})=\nabla f(x(t^{*}))^{T}\dot{x}(t^{*})=\nabla f(x^{*})^{T}\dot{x}(t^{*})=0</script><p>因此，$\nabla f(x^{<em>})$和$\dot{x}(t^{</em>})$正交，上面已经证明$\nabla f(x^{<em>})$与$\dot{x}(t^{</em>})$正交，那么向量$\nabla f(x^{<em>})$和$\nabla h(x^{</em>})$平行，那么可以得到这种情况下的拉格朗日定理：</p>
-<p><strong>n=2,m=3时的拉格朗日定理：</strong>设点$x^{<em>}$是函数$f:R^{2}\to R$的一个极小点，约束条件是$h(x)=0,h:R^{2}\to R$,那么$\nabla f(x^{</em>})$和$\nabla h(x^{<em>})$平行，即如果$\nabla h(x^{</em>})\neq 0$，则存在标量$\lambda^{*}$，使得</p>
+\frac{d}{dt}\phi(t^{*})=\nabla f(x(t^{*}))^{T}\dot{x}(t^{*})=\nabla f(x^{*})^{T}\dot{x}(t^{*})=0</script><p>因此，<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\dot{x}(t^{*})</script>正交，上面已经证明<script type="math/tex">\nabla f(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交，那么向量<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\nabla h(x^{*})</script>平行，那么可以得到这种情况下的拉格朗日定理：</p>
+<p><strong>n=2,m=3时的拉格朗日定理：</strong>设点<script type="math/tex">x^{*}</script>是函数<script type="math/tex">f:R^{2}\to R</script>的一个极小点，约束条件是<script type="math/tex">h(x)=0,h:R^{2}\to R</script>,那么<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\nabla h(x^{*})</script>平行，即如果<script type="math/tex">\nabla h(x^{*})\neq 0</script>，则存在标量<script type="math/tex">\lambda^{*}</script>，使得</p>
 <script type="math/tex; mode=display">
-\nabla f(x^{*})+\lambda^{*}\nabla h(x^{*})=0</script><p>其中$\lambda^{<em>}$为拉格朗日乘子。<br>将这个定理推广到一般情况下，即$f:R^{n}\to R,h:R^{n}\to R^{m},m\le n$的时候，可以得到：<br><strong>拉格朗日定理：</strong>$x^{</em>}$是$f:R^{n}\to R$的局部极小点（或极大点），约束条件为$h(x)=0,h:R^{n}\to R^{m},m\le n$。如果$x^{<em>}$是正则点，那么存在$\lambda^{</em>}\in R^{m}$使得</p>
+\nabla f(x^{*})+\lambda^{*}\nabla h(x^{*})=0</script><p>其中<script type="math/tex">\lambda^{*}</script>为拉格朗日乘子。<br>将这个定理推广到一般情况下，即<script type="math/tex">f:R^{n}\to R,h:R^{n}\to R^{m},m\le n</script>的时候，可以得到：<br><strong>拉格朗日定理：</strong><script type="math/tex">x^{*}</script>是<script type="math/tex">f:R^{n}\to R</script>的局部极小点（或极大点），约束条件为<script type="math/tex">h(x)=0,h:R^{n}\to R^{m},m\le n</script>。如果<script type="math/tex">x^{*}</script>是正则点，那么存在<script type="math/tex">\lambda^{*}\in R^{m}</script>使得</p>
 <script type="math/tex; mode=display">
-D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二阶条件" class="headerlink" title="二阶条件"></a>二阶条件</h2><p><strong>二阶必要条件：</strong>设$x^{<em>}$是$f:R^{n}\to R$在约束条件$h(x)=0,h:R^{n}\to R^{m},m\le n,f,h\in C^{2}$下的局部极小点。如果$x^{</em>}$是正则点，那么存在$\lambda^{*}\in R^{m}$使得</p>
-<p> 1.$D f(x^{<em>})+\lambda^{</em>T}D h(x^{<em>})=0^{T}$<br> 2.对于所有的$y\in T(x^{</em>})$，都有$y^{T}L(x^{<em>},\lambda^{</em>})y\ge 0$</p>
-<p><strong>二阶充分条件：</strong>函数$f,h\in C^{2}$，如果存在点$x^{<em>}\in R^{n}$和$\lambda^{</em>}\in R^{m}$，使得</p>
-<p> 1.$D f(x^{<em>})+\lambda^{</em>T}D h(x^{<em>})=0^{T}$<br> 2.对于所有的$y\in T(x^{</em>})$，都有$y^{T}L(x^{<em>},\lambda^{</em>})y&gt; 0$</p>
-<p>那么$x^{*}$是$f$在约束条件$h(x)=0$下的严格局部极小点</p>
+D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二阶条件" class="headerlink" title="二阶条件"></a>二阶条件</h2><p><strong>二阶必要条件：</strong>设<script type="math/tex">x^{*}</script>是<script type="math/tex">f:R^{n}\to R</script>在约束条件<script type="math/tex">h(x)=0,h:R^{n}\to R^{m},m\le n,f,h\in C^{2}</script>下的局部极小点。如果<script type="math/tex">x^{*}</script>是正则点，那么存在<script type="math/tex">\lambda^{*}\in R^{m}</script>使得</p>
+<p> 1.<script type="math/tex">D f(x^{*})+\lambda^{*T}D h(x^{*})=0^{T}</script><br> 2.对于所有的<script type="math/tex">y\in T(x^{*})</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*})y\ge 0</script></p>
+<p><strong>二阶充分条件：</strong>函数<script type="math/tex">f,h\in C^{2}</script>，如果存在点<script type="math/tex">x^{*}\in R^{n}</script>和<script type="math/tex">\lambda^{*}\in R^{m}</script>，使得</p>
+<p> 1.<script type="math/tex">D f(x^{*})+\lambda^{*T}D h(x^{*})=0^{T}</script><br> 2.对于所有的<script type="math/tex">y\in T(x^{*})</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*})y> 0</script></p>
+<p>那么<script type="math/tex">x^{*}</script>是<script type="math/tex">f</script>在约束条件<script type="math/tex">h(x)=0</script>下的严格局部极小点</p>
 <p>本文介绍了等式约束下的拉格朗日乘子法，后面还将会介绍不等式约束下的拉格朗日乘子法以及KKT条件等，To be continue…</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/最优化-等式约束的优化问题求解/" data-id="cjlf7obwu000oi4ezb1pole2b" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/最优化-等式约束的优化问题求解/" data-id="cjlf8oq99000rtoezonmazsru" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>

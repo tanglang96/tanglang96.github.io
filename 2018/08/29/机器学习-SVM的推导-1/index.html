@@ -7,18 +7,18 @@
   
   <title>[机器学习]SVM的推导(1) | Math &amp; Code</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="硬间隔的SVM推导SVM是机器学习中的一种经典方法，除了硬间隔SVM之外，还包括软间隔SVM，核技巧等SVM的变种，本文主要介绍硬间隔SVM的推导。 假设两类样本点是可以被准确分开的，那么则可以使用硬间隔SVM来进行分类，假设分隔的超平面方程为$w\cdot x+b=0$，则每个样本点$x_{i}$到该超平面的距离为$|w\cdot x_{i}+b|$，如果设定与超平面之间的距离为正的点为正分类，">
+  <meta name="description" content="硬间隔的SVM推导SVM是机器学习中的一种经典方法，除了硬间隔SVM之外，还包括软间隔SVM，核技巧等SVM的变种，本文主要介绍硬间隔SVM的推导。 假设两类样本点是可以被准确分开的，那么则可以使用硬间隔SVM来进行分类，假设分隔的超平面方程为w\cdot x+b=0，则每个样本点x_{i}到该超平面的距离为|w\cdot x_{i}+b|，如果设定与超平面之间的距离为正的点为正分类，即y_{i}">
 <meta name="keywords" content="machine learning">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[机器学习]SVM的推导(1)">
 <meta property="og:url" content="http://yoursite.com/2018/08/29/机器学习-SVM的推导-1/index.html">
 <meta property="og:site_name" content="Math &amp; Code">
-<meta property="og:description" content="硬间隔的SVM推导SVM是机器学习中的一种经典方法，除了硬间隔SVM之外，还包括软间隔SVM，核技巧等SVM的变种，本文主要介绍硬间隔SVM的推导。 假设两类样本点是可以被准确分开的，那么则可以使用硬间隔SVM来进行分类，假设分隔的超平面方程为$w\cdot x+b=0$，则每个样本点$x_{i}$到该超平面的距离为$|w\cdot x_{i}+b|$，如果设定与超平面之间的距离为正的点为正分类，">
+<meta property="og:description" content="硬间隔的SVM推导SVM是机器学习中的一种经典方法，除了硬间隔SVM之外，还包括软间隔SVM，核技巧等SVM的变种，本文主要介绍硬间隔SVM的推导。 假设两类样本点是可以被准确分开的，那么则可以使用硬间隔SVM来进行分类，假设分隔的超平面方程为w\cdot x+b=0，则每个样本点x_{i}到该超平面的距离为|w\cdot x_{i}+b|，如果设定与超平面之间的距离为正的点为正分类，即y_{i}">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-29T13:17:51.346Z">
+<meta property="og:updated_time" content="2018-08-29T15:28:57.429Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[机器学习]SVM的推导(1)">
-<meta name="twitter:description" content="硬间隔的SVM推导SVM是机器学习中的一种经典方法，除了硬间隔SVM之外，还包括软间隔SVM，核技巧等SVM的变种，本文主要介绍硬间隔SVM的推导。 假设两类样本点是可以被准确分开的，那么则可以使用硬间隔SVM来进行分类，假设分隔的超平面方程为$w\cdot x+b=0$，则每个样本点$x_{i}$到该超平面的距离为$|w\cdot x_{i}+b|$，如果设定与超平面之间的距离为正的点为正分类，">
+<meta name="twitter:description" content="硬间隔的SVM推导SVM是机器学习中的一种经典方法，除了硬间隔SVM之外，还包括软间隔SVM，核技巧等SVM的变种，本文主要介绍硬间隔SVM的推导。 假设两类样本点是可以被准确分开的，那么则可以使用硬间隔SVM来进行分类，假设分隔的超平面方程为w\cdot x+b=0，则每个样本点x_{i}到该超平面的距离为|w\cdot x_{i}+b|，如果设定与超平面之间的距离为正的点为正分类，即y_{i}">
   
     <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
   
@@ -88,20 +88,25 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h1 id="硬间隔的SVM推导"><a href="#硬间隔的SVM推导" class="headerlink" title="硬间隔的SVM推导"></a>硬间隔的SVM推导</h1><p>SVM是机器学习中的一种经典方法，除了硬间隔SVM之外，还包括软间隔SVM，核技巧等SVM的变种，本文主要介绍<strong>硬间隔SVM</strong>的推导。</p>
-<p>假设两类样本点是可以被准确分开的，那么则可以使用硬间隔SVM来进行分类，假设分隔的超平面方程为$w\cdot x+b=0$，则每个样本点$x_{i}$到该超平面的距离为$|w\cdot x_{i}+b|$，如果设定与超平面之间的距离为正的点为正分类，即$y_{i}=+1$，相反负距离的点为负分类，即$y_{i}=-1$，那么可以将样本点到分离超平面的距离表示为$\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)$，这称为样本点到分离超平面之间的<strong>函数距离</strong>。</p>
-<p>令$\hat{\gamma}=min(\hat{\gamma}_{i})$，即为最小函数距离。需要注意到，函数距离$\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)$在$w$和$b$同时增大某个比例倍数时，函数间隔会增大但是超平面不会发生改变，此时便需要将超平面的$w$进行约束，比如令$||w||=1$，我们可以重新定义距离为$\gamma_{i}=y_{i}(\frac{w}{||w||}\cdot x_{i}+\frac{b}{||w||})$，称之为<strong>几何距离</strong>，令$\gamma=min(\gamma_{i})$，即可以得到$\gamma=\frac{\hat\gamma}{||w||}$。</p>
+<p>假设两类样本点是可以被准确分开的，那么则可以使用硬间隔SVM来进行分类，假设分隔的超平面方程为<script type="math/tex">w\cdot x+b=0</script>，则每个样本点<script type="math/tex">x_{i}</script>到该超平面的距离为<script type="math/tex">|w\cdot x_{i}+b|</script>，如果设定与超平面之间的距离为正的点为正分类，即<script type="math/tex">y_{i}=+1</script>，相反负距离的点为负分类，即<script type="math/tex">y_{i}=-1</script>，那么可以将样本点到分离超平面的距离表示为<script type="math/tex">\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)</script>，这称为样本点到分离超平面之间的<strong>函数距离</strong>。</p>
+<p>令<script type="math/tex">\hat{\gamma}=min(\hat{\gamma}_{i})</script>，即为最小函数距离。需要注意到，函数距离<script type="math/tex">\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)</script>在<script type="math/tex">w</script>和<script type="math/tex">b</script>同时增大某个比例倍数时，函数间隔会增大但是超平面不会发生改变，此时便需要将超平面的<script type="math/tex">w</script>进行约束，比如令<script type="math/tex">||w||=1</script>，我们可以重新定义距离为<script type="math/tex">\gamma_{i}=y_{i}(\frac{w}{||w||}\cdot x_{i}+\frac{b}{||w||})</script>，称之为<strong>几何距离</strong>，令<script type="math/tex">\gamma=min(\gamma_{i})</script>，即可以得到<script type="math/tex">\gamma=\frac{\hat\gamma}{||w||}</script>。</p>
 <p>那么最大化分隔距离的优化问题即可表示如下：</p>
 <script type="math/tex; mode=display">
 \begin{align*}
 &max_{w,b}\quad \gamma \\
 &s.t.\quad y_{i}(\frac{w}{||w||}\cdot x_{i}+\frac{b}{||w||})\ge\gamma，i=1,2...n
-\end{align*}</script><p>即$$<br>\begin{align<em>}<br>&amp;max_{w,b}\quad \frac{\hat\gamma}{||w||} \\<br>&amp;s.t.\quad y_{i}(w\cdot x_{i}+b)\ge\hat \gamma，i=1,2…n<br>\end{align</em>}</p>
+\end{align*}</script><p>即</p>
 <script type="math/tex; mode=display">
-
-注意上式中，函数间隔$\hat\gamma$的取值并不会影响最优化问题的解，不妨假设$\hat\gamma=1$，并且注意到最大化$\frac{1}{||w||}$与最小化$\frac{1}{2}||w||^{2}$等价，那么上述问题即可以等价为：</script><p>\begin{align<em>}<br>&amp;min_{w,b}\quad \frac{1}{2}||w||^{2}\\<br>&amp;s.t.\quad y_{i}(w\cdot x_{i}+b)-1\ge0<br>\end{align</em>}</p>
+\begin{align*}
+&max_{w,b}\quad \frac{\hat\gamma}{||w||} \\
+&s.t.\quad y_{i}(w\cdot x_{i}+b)\ge\hat \gamma，i=1,2...n
+\end{align*}</script><p>注意上式中，函数间隔<script type="math/tex">\hat\gamma</script>的取值并不会影响最优化问题的解，不妨假设<script type="math/tex">\hat\gamma=1</script>，并且注意到最大化<script type="math/tex">\frac{1}{||w||}</script>与最小化<script type="math/tex">\frac{1}{2}||w||^{2}</script>等价，那么上述问题即可以等价为：</p>
 <script type="math/tex; mode=display">
-
-上述问题即为一个不等式约束的最优化问题，可以利用拉格朗日乘子法与KKT条件来求解，令$\alpha=[\alpha_{1},\alpha_{2},\alpha_{3},...,\alpha_{n}]^{T}$，首先构造拉格朗日函数为：$$L(w,b,\alpha)=\frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}</script><p>假设$W^{<em>},b^{</em>},\alpha^{<em>}$是优化问题的最优解，那么根据KKT条件，$W^{</em>},b^{<em>},\alpha^{</em>}$一定满足以下方程：</p>
+\begin{align*}
+&min_{w,b}\quad \frac{1}{2}||w||^{2}\\
+&s.t.\quad y_{i}(w\cdot x_{i}+b)-1\ge0
+\end{align*}</script><p>上述问题即为一个不等式约束的最优化问题，可以利用拉格朗日乘子法与KKT条件来求解，令<script type="math/tex">\alpha=[\alpha_{1},\alpha_{2},\alpha_{3},...,\alpha_{n}]^{T}</script>，首先构造拉格朗日函数为：<script type="math/tex">L(w,b,\alpha)=\frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}</script></p>
+<p>假设<script type="math/tex">W^{*},b^{*},\alpha^{*}</script>是优化问题的最优解，那么根据KKT条件，<script type="math/tex">W^{*},b^{*},\alpha^{*}</script>一定满足以下方程：</p>
 <script type="math/tex; mode=display">
 \begin{align}
 &\nabla_{w}L(w^{*},b^{*},\alpha^{*})=w^{*}-\sum_{i=1}^{N}\alpha^{*}_{i}y_{i}x_{i}=0\tag{1}\\
@@ -117,18 +122,18 @@ w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}\\
 <script type="math/tex; mode=display">
 min_{w,b}\ max_{\alpha}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i},\alpha_{i}\ge 0</script><p>即</p>
 <script type="math/tex; mode=display">
-max_{\alpha}\ min_{w,b}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i},\alpha_{i}\ge 0</script><p>其中$min_{w,b} \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}$问题的最优解由KKT条件可以得到为$w^{<em>}=\sum_{i}^{N}\alpha_{i}^{</em>}y_{i}x_{i}$，并且有$\sum_{i}^{N}\alpha_{i}^{*}y_{i}=0$，代入上式即可将原问题化为：</p>
+max_{\alpha}\ min_{w,b}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i},\alpha_{i}\ge 0</script><p>其中<script type="math/tex">min_{w,b}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}</script>问题的最优解由KKT条件可以得到为<script type="math/tex">w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}</script>，并且有<script type="math/tex">\sum_{i}^{N}\alpha_{i}^{*}y_{i}=0</script>，代入上式即可将原问题化为：</p>
 <script type="math/tex; mode=display">
 \begin{align*}
 max_{\alpha}\quad&-\frac{1}{2}\sum_{i}\sum_{j}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}\cdot x_{j})+\sum_{i}\alpha_{i}\\
 s.t.\quad&\alpha_{i}\ge 0
-\end{align*}</script><p>在求解了$\alpha^{<em>}$之后，即可根据$w^{</em>}=\sum_{i}^{N}\alpha_{i}^{<em>}y_{i}x_{i}$求得$w^{</em>}$，由于分离超平面的参数是$w^{<em>},b^{</em>}$决定的，而分离超平面由$\alpha_{i}\neq0$的$\alpha_{i},x_{i},y_{i}$决定的，因此再选取任意$j$使得$\alpha_{j}\neq0$，得到$b^{<em>}=y_{j}-w^{</em>}\cdot x_{j}$，这样便可以得到分离超平面$w^{<em>}\cdot x+b^{</em>}=0$。</p>
-<p>对于上面的求解$\alpha^{*}$的优化问题，我们在下文将会介绍SMO算法来求解<br>To be continuue…</p>
+\end{align*}</script><p>在求解了<script type="math/tex">\alpha^{*}</script>之后，即可根据<script type="math/tex">w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}</script>求得<script type="math/tex">w^{*}</script>，由于分离超平面的参数是<script type="math/tex">w^{*},b^{*}</script>决定的，而分离超平面由<script type="math/tex">\alpha_{i}\neq0</script>的<script type="math/tex">\alpha_{i},x_{i},y_{i}</script>决定的，因此再选取任意<script type="math/tex">j</script>使得<script type="math/tex">\alpha_{j}\neq0</script>，得到<script type="math/tex">b^{*}=y_{j}-w^{*}\cdot x_{j}</script>，这样便可以得到分离超平面<script type="math/tex">w^{*}\cdot x+b^{*}=0</script>。</p>
+<p>对于上面的求解<script type="math/tex">\alpha^{*}</script>的优化问题，我们在下文将会介绍SMO算法来求解<br>To be continuue…</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/机器学习-SVM的推导-1/" data-id="cjlf7obx6000wi4ez8wvw7ca2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/机器学习-SVM的推导-1/" data-id="cjlf8oq9i000ytoez9ae4zl7i" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>

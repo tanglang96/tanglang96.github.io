@@ -7,18 +7,18 @@
   
   <title>[最优化]求解线性方程组(3) | Math &amp; Code</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="求解线性方程组(3)矩阵的伪逆这里所介绍的伪逆是Moore-Penrose逆矩阵，其定义为：给定矩阵$A\in R^{mn}$，如果矩阵$A^{\dagger}\in R^{nm}$满足$AA^{\dagger}A=A$，且存在两个矩阵$U\in R^{nn},V\in R^{mm}$使得$$A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V  那么则称$A^{\dagge">
+  <meta name="description" content="求解线性方程组(3)矩阵的伪逆这里所介绍的伪逆是Moore-Penrose逆矩阵，其定义为：给定矩阵A\in R^{m*n}，如果矩阵A^{\dagger}\in R^{n*m}满足AA^{\dagger}A=A，且存在两个矩阵U\in R^{n*n},V\in R^{m*m}使得  A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V那么则称A^{\dagger}是矩阵A的">
 <meta name="keywords" content="optimization">
 <meta property="og:type" content="article">
 <meta property="og:title" content="[最优化]求解线性方程组(3)">
 <meta property="og:url" content="http://yoursite.com/2018/08/29/最优化-求解线性方程组-3/index.html">
 <meta property="og:site_name" content="Math &amp; Code">
-<meta property="og:description" content="求解线性方程组(3)矩阵的伪逆这里所介绍的伪逆是Moore-Penrose逆矩阵，其定义为：给定矩阵$A\in R^{mn}$，如果矩阵$A^{\dagger}\in R^{nm}$满足$AA^{\dagger}A=A$，且存在两个矩阵$U\in R^{nn},V\in R^{mm}$使得$$A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V  那么则称$A^{\dagge">
+<meta property="og:description" content="求解线性方程组(3)矩阵的伪逆这里所介绍的伪逆是Moore-Penrose逆矩阵，其定义为：给定矩阵A\in R^{m*n}，如果矩阵A^{\dagger}\in R^{n*m}满足AA^{\dagger}A=A，且存在两个矩阵U\in R^{n*n},V\in R^{m*m}使得  A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V那么则称A^{\dagger}是矩阵A的">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-29T13:18:14.155Z">
+<meta property="og:updated_time" content="2018-08-29T15:22:14.617Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="[最优化]求解线性方程组(3)">
-<meta name="twitter:description" content="求解线性方程组(3)矩阵的伪逆这里所介绍的伪逆是Moore-Penrose逆矩阵，其定义为：给定矩阵$A\in R^{mn}$，如果矩阵$A^{\dagger}\in R^{nm}$满足$AA^{\dagger}A=A$，且存在两个矩阵$U\in R^{nn},V\in R^{mm}$使得$$A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V  那么则称$A^{\dagge">
+<meta name="twitter:description" content="求解线性方程组(3)矩阵的伪逆这里所介绍的伪逆是Moore-Penrose逆矩阵，其定义为：给定矩阵A\in R^{m*n}，如果矩阵A^{\dagger}\in R^{n*m}满足AA^{\dagger}A=A，且存在两个矩阵U\in R^{n*n},V\in R^{m*m}使得  A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V那么则称A^{\dagger}是矩阵A的">
   
     <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
   
@@ -87,26 +87,25 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="求解线性方程组-3"><a href="#求解线性方程组-3" class="headerlink" title="求解线性方程组(3)"></a>求解线性方程组(3)</h1><h2 id="矩阵的伪逆"><a href="#矩阵的伪逆" class="headerlink" title="矩阵的伪逆"></a>矩阵的伪逆</h2><p>这里所介绍的伪逆是<strong>Moore-Penrose逆矩阵</strong>，其定义为：给定矩阵$A\in R^{m<em>n}$，如果矩阵$A^{\dagger}\in R^{n</em>m}$满足$AA^{\dagger}A=A$，且存在两个矩阵$U\in R^{n<em>n},V\in R^{m</em>m}$使得$$<br>A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V</p>
+        <h1 id="求解线性方程组-3"><a href="#求解线性方程组-3" class="headerlink" title="求解线性方程组(3)"></a>求解线性方程组(3)</h1><h2 id="矩阵的伪逆"><a href="#矩阵的伪逆" class="headerlink" title="矩阵的伪逆"></a>矩阵的伪逆</h2><p>这里所介绍的伪逆是<strong>Moore-Penrose逆矩阵</strong>，其定义为：给定矩阵<script type="math/tex">A\in R^{m*n}</script>，如果矩阵<script type="math/tex">A^{\dagger}\in R^{n*m}</script>满足<script type="math/tex">AA^{\dagger}A=A</script>，且存在两个矩阵<script type="math/tex">U\in R^{n*n},V\in R^{m*m}</script>使得</p>
 <script type="math/tex; mode=display">
-那么则称$A^{\dagger}$是矩阵$A$的**伪逆**，可以通过证明得到，矩阵的伪逆是**唯一**的。
-
-对于矩阵$A\in R^{m*n},m\ge n$且$rank(A)=n$，可以根据以上定义验证得到$A$的伪逆为</script><p>A^{\dagger}=(A^{T}A)^{-1}A^{T}</p>
+A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V</script><p>那么则称<script type="math/tex">A^{\dagger}</script>是矩阵<script type="math/tex">A</script>的<strong>伪逆</strong>，可以通过证明得到，矩阵的伪逆是<strong>唯一</strong>的。</p>
+<p>对于矩阵<script type="math/tex">A\in R^{m*n},m\ge n</script>且<script type="math/tex">rank(A)=n</script>，可以根据以上定义验证得到<script type="math/tex">A</script>的伪逆为</p>
 <script type="math/tex; mode=display">
-
-对于矩阵$A\in R^{m*n},m\le n$且$rank(A)=m$，同样根据以上定义验证得到$A$的伪逆为</script><p>A^{\dagger}=A^{T}(AA^{T})^{-1}</p>
-<p>$$</p>
-<p>以上两种情况是当矩阵为<strong>列满秩</strong>或者<strong>行满秩</strong>情况下的伪逆，而对于一般矩阵$A\in R^{m<em>n},rank(A)=r,r\le min(m,n)$，我们可以采用<em>*满秩分解</em></em>的方法来求得其伪逆。</p>
-<p>对于任意矩阵$A\in R^{m<em>n},rank(A)=r,r\le min(m,n)$，都可以将其分解为一个行满秩矩阵和列满秩矩阵的乘积：<br>即$A=BC,B\in R^{m</em>r},c\in R^{r*n},rank(A)=rank(B)=rank(C)=r$</p>
-<p>可以通过证明得到：<br>$A^{\dagger}=C^{\dagger}B^{\dagger}$，而其中$B^{\dagger}=(B^{T}B)^{-1}B^{T},C^{\dagger}=C^{T}(CC^{T})^{-1}$，即为一般矩阵的伪逆求法。</p>
-<h2 id="一般情况下线性方程组的解法"><a href="#一般情况下线性方程组的解法" class="headerlink" title="一般情况下线性方程组的解法"></a>一般情况下线性方程组的解法</h2><p>某线性方程组为$Ax=b,A\in R^{m<em>n},rank(A)=r$，向量$x^{</em>}=A^{\dagger}b$可在空间$R^{n}$中最小化$||Ax-b||^{2}$;而且在$R^{n}$中所有能够最小化$||Ax-b||^{2}$的向量中，向量$x^{*}=A^{\dagger}b$的范数最小，并且是唯一的。</p>
-<p>当$r=m$时，$A$是行满秩矩阵，此时$x^{<em>}=A^{\dagger}b=A^{T}(AA^{T})^{-1}b$，即为方程组$Ax=b$的<em>*最小范数解</em></em>。</p>
-<p>当$r=n$时，$A$是列满秩矩阵，此时$x^{<em>}=A^{\dagger}b=(A^{T}A)^{-1}A^{T}b$，即为方程组$Ax=b$的<em>*最小二乘解</em></em>。</p>
+A^{\dagger}=(A^{T}A)^{-1}A^{T}</script><p>对于矩阵<script type="math/tex">A\in R^{m*n},m\le n</script>且<script type="math/tex">rank(A)=m</script>，同样根据以上定义验证得到<script type="math/tex">A</script>的伪逆为</p>
+<script type="math/tex; mode=display">
+A^{\dagger}=A^{T}(AA^{T})^{-1}</script><p>以上两种情况是当矩阵为<strong>列满秩</strong>或者<strong>行满秩</strong>情况下的伪逆，而对于一般矩阵<script type="math/tex">A\in R^{m*n},rank(A)=r,r\le min(m,n)</script>，我们可以采用<strong>满秩分解</strong>的方法来求得其伪逆。</p>
+<p>对于任意矩阵<script type="math/tex">A\in R^{m*n},rank(A)=r,r\le min(m,n)</script>，都可以将其分解为一个行满秩矩阵和列满秩矩阵的乘积：<br>即<script type="math/tex">A=BC,B\in R^{m*r},c\in R^{r*n},rank(A)=rank(B)=rank(C)=r</script></p>
+<p>可以通过证明得到：</p>
+<p><script type="math/tex">A^{\dagger}=C^{\dagger}B^{\dagger}</script>，而其中<script type="math/tex">B^{\dagger}=(B^{T}B)^{-1}B^{T},C^{\dagger}=C^{T}(CC^{T})^{-1}</script>，即为一般矩阵的伪逆求法。</p>
+<h2 id="一般情况下线性方程组的解法"><a href="#一般情况下线性方程组的解法" class="headerlink" title="一般情况下线性方程组的解法"></a>一般情况下线性方程组的解法</h2><p>某线性方程组为<script type="math/tex">Ax=b,A\in R^{m*n},rank(A)=r</script>，向量<script type="math/tex">x^{*}=A^{\dagger}b</script>可在空间<script type="math/tex">R^{n}</script>中最小化<script type="math/tex">||Ax-b||^{2}</script>;而且在<script type="math/tex">R^{n}</script>中所有能够最小化<script type="math/tex">||Ax-b||^{2}</script>的向量中，向量<script type="math/tex">x^{*}=A^{\dagger}b</script>的范数最小，并且是唯一的。</p>
+<p>当<script type="math/tex">r=m</script>时，<script type="math/tex">A</script>是行满秩矩阵，此时<script type="math/tex">x^{*}=A^{\dagger}b=A^{T}(AA^{T})^{-1}b</script>，即为方程组<script type="math/tex">Ax=b</script>的<strong>最小范数解</strong>。</p>
+<p>当<script type="math/tex">r=n</script>时，<script type="math/tex">A</script>是列满秩矩阵，此时<script type="math/tex">x^{*}=A^{\dagger}b=(A^{T}A)^{-1}A^{T}b</script>，即为方程组<script type="math/tex">Ax=b</script>的<strong>最小二乘解</strong>。</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/最优化-求解线性方程组-3/" data-id="cjlf7obwp000ki4ezayavt7f4" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/最优化-求解线性方程组-3/" data-id="cjlf8oq94000mtoezawoe7byt" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>

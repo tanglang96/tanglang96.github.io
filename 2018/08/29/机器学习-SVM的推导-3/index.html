@@ -122,7 +122,7 @@ s.t.\quad &\sum_{i=1}^{m}\alpha_{i}y_{i}=0\\
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/机器学习-SVM的推导-3/" data-id="cjlgmzcxt0015y0ez2ijily7h" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/机器学习-SVM的推导-3/" data-id="cjlgn6egn0015k8ezyevfpdrp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -150,40 +150,12 @@ s.t.\quad &\sum_{i=1}^{m}\alpha_{i}y_{i}=0\\
 
 
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-<h1 id="软间隔SVM的推导"><a href="#软间隔SVM的推导" class="headerlink" title="软间隔SVM的推导"></a>软间隔SVM的推导</h1><p>前文介绍了硬间隔SVM的相关推导，本文将继续介绍软间隔SVM的数学推导，即在样本不是线性可分的情况下，允许一部分样本错误分类的SVM。软间隔SVM允许一部分样本不满足约束：$y_{i}(w\cdot x_{i})\ge 0$</p>
-<p>可以将优化目标写为：</p>
-<script type="math/tex; mode=display">
-min_{w,b}\quad \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}loss(y_{i}(w\cdot x_{i}+b)-1)</script><p>其中 $C$ 是一个常数，用来衡量允许的不满足约束的程度，其中的 $loss()$ 函数可以使用 $hinge()$ 函数，即 $loss_{hinge}(z)=max(0,1-z)$</p>
-<p>那么可以将优化目标写为：</p>
-<script type="math/tex; mode=display">
-min_{w,b}\quad \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}max(0,1-y_{i}(w\cdot x_{i}+b))</script><p>引入“松弛变量” $\xi_{i}\ge 0$ ，可以将上式改写为</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-min_{w,b,\xi_{i}}\quad& \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}\xi_{i}\\
-s.t.\quad& y_{i}(w\cdot x_{i}+b)\ge1-\xi_{i}\\
-&\xi_{i}\ge0,i=1,2,...,m
-\end{align*}</script><p>与硬间隔SVM类似，上述的问题也是个二次规划的问题，可以先用拉格朗日对偶性将其转换为对应的对偶问题，再用SMO算法求解。上面问题对应的拉格朗日函数为：</p>
-<script type="math/tex; mode=display">
-L(w,b,\alpha,\xi,\mu)=\frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}\xi_{i}\\+\sum_{i=1}^{m}\alpha_{i}(1-\xi_{i}-y_{i}(w\cdot x_{i}+b))-\sum_{i=1}^{m}\mu_{i}\xi_{i}</script><p>令 $L$ 对 $w,b,\alpha$ 的偏导为 $0$ 可以得到</p>
-<script type="math/tex; mode=display">
-w=\sum_{i=1}^{m}\alpha_{i}y_{i}x_{i}\\
-0=\sum_{i=1}^{m}\alpha_{i}y_{i}\\
-C=\alpha_{i}+\mu_{i}</script><p>代入 $L(w,b,\alpha,\xi,\mu)$ 即可以将原问题化成对偶问题：</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-min_ \alpha\quad &\frac{1}{2}\sum_{i=1}^{m}\sum_{j=1}^{m}\alpha_{i}\alpha_{j}y_{i}y_{j}x_{i}\cdot x_{j}-\sum_{i=1}^{m}\alpha_{i}\\
-s.t.\quad &\sum_{i=1}^{m}\alpha_{i}y_{i}=0\\
-&C\ge \alpha_{i}\ge 0\\
-&i=1,2,...,m
-\end{align*}</script><p>可以看出其与硬间隔SVM唯一的区别在于 $\alpha_{i}\ge 0$变成了 $C\ge \alpha_{i}\ge 0$，同样可以用上文中提到的SMO算法很方便的求解，唯一的区别在于剪辑的时候需要考虑两个方向。</p>
-<p>后面还会介绍SVM的核技巧以及常用核，To be continue…</p>
-
 <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
 <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
 <div id="gitalk-container"></div>     <script type="text/javascript">
     var gitalk = new Gitalk({
-        clientID: 'Lannyy',
-        clientSecret: 'c6h12o6012',
+        clientID: '2193b885b967a685e247',
+        clientSecret: '49a60c8f19873532dc3e7a6658bbff6c95ce73c9',
         repo: 'Lannyy.github.io',
         owner: 'Lannyy',
         admin: ['Lannyy'],

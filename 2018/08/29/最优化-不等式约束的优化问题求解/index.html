@@ -125,7 +125,7 @@ g(x^{*})\le0</script><p>那么在求解不等式约束的最优化问题的时�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/最优化-不等式约束的优化问题求解/" data-id="cjlgmzcxb000fy0ez9ou28xx5" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/最优化-不等式约束的优化问题求解/" data-id="cjlgn6eg5000fk8ezovuh5q86" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -158,43 +158,12 @@ g(x^{*})\le0</script><p>那么在求解不等式约束的最优化问题的时�
 
 
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-<h1 id="不等式约束的优化问题求解"><a href="#不等式约束的优化问题求解" class="headerlink" title="不等式约束的优化问题求解"></a>不等式约束的优化问题求解</h1><p>与前文讨论的只含等式约束的优化问题求解类似，含不等式约束的优化问题同样可以用拉格朗日乘子法进行求解<br>对于一般形式的优化问题：</p>
-<script type="math/tex; mode=display">
-minimize\quad f(x)\\
-subject\  to\quad h(x)=0\\
-\quad\quad g(x)\le 0</script><p>其中，<script type="math/tex">f:R^{n}\to R,h:R^{n}\to R^{m},m\le n,g:R^{n}\to R^{p}</script><br>引入下面两个定义：</p>
-<p><strong>定义1</strong>：对于一个不等式约束<script type="math/tex">g_{j}(x)\le 0</script>，如果在<script type="math/tex">x^{*}</script>处<script type="math/tex">g_{j}(x^{*})=0</script>，那么称该不等式约束是<script type="math/tex">x^{*}</script>处的起作用约束；如果在<script type="math/tex">x^{*}</script>处<script type="math/tex">g_{j}(x^{*})<0</script>，那么称该约束是<script type="math/tex">x^{*}</script>处的不起作用约束。按照惯例，总是把等式约束<script type="math/tex">h_{i}(x)</script>当作起作用的约束</p>
-<p><strong>定义2：</strong>设<script type="math/tex">x^{*}</script>满足<script type="math/tex">h(x^{*})=0,g(x^{*})\le 0</script>，设<script type="math/tex">J(x^{*})</script>为起作用不等式约束的下标集：</p>
-<script type="math/tex; mode=display">
-J(x^{*})\triangleq \{j:g_{j}(x^{*})=0\}</script><p>如果向量</p>
-<script type="math/tex; mode=display">
-\nabla h_{i}(x^{*}),\nabla g_{j}(x^{*}),1\le i\le m,j\in J(x^{*})</script><p>是线性无关的，那么称<script type="math/tex">x^{*}</script>是一个正则点</p>
-<p>下面介绍某个点是局部极小点所满足的一阶必要条件，即KKT条件。<br><strong>KKT条件：</strong>设<script type="math/tex">f,h,g\in C^{1}</script>，设<script type="math/tex">x^{*}</script>是问题<script type="math/tex">h(x)=0,g(x)\le 0</script>的一个正则点和局部极小点，那么必然存在<script type="math/tex">\lambda^{*}\in R^{m}</script>和<script type="math/tex">\mu^{*}\in R^{p}</script>，使得以下条件成立：</p>
-<script type="math/tex; mode=display">
-\mu^{*}\ge0\\
-Df(x^{*})+\lambda^{*T}Dh(x^{*})+\mu^{*T}Dg(x^{*})=0^{T}\\
-\mu^{*T}g(x^{*})=0\\
-h(x^{*})=0\\
-g(x^{*})\le0</script><p>那么在求解不等式约束的最优化问题的时候，可以搜索满足KKT条件的点，并将这些点作为极小点的候选对象。</p>
-<h2 id="二阶充分必要条件"><a href="#二阶充分必要条件" class="headerlink" title="二阶充分必要条件"></a>二阶充分必要条件</h2><p>除了一阶的KKT条件之外，求解这类问题还有二阶的充分必要条件。</p>
-<p><strong>二阶必要条件：</strong>在上述的问题中若<script type="math/tex">x^{*}</script>是极小点且<script type="math/tex">f,h,g\in C^{2}</script>。假设<script type="math/tex">x^{*}</script>是正则点，那么存在<script type="math/tex">\lambda^{*}\in R^{m}</script>和<script type="math/tex">\mu^{*}\in R^{p}</script>使得</p>
-<ol>
-<li><script type="math/tex; mode=display">\mu^{*}\ge 0,Df(x^{*})+\lambda^{*T}Dh(x^{*})+\mu^{*T}Dg(x^{*})=0^{T},\mu^{*T}g(x^{*})=0</script></li>
-<li>对于所有<script type="math/tex">y\in T(x^{*})</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*},\mu^{*})y\ge0</script>成立</li>
-</ol>
-<p><strong>二阶充分条件：</strong>假定<script type="math/tex">f,h,g\in C^{2}</script>，<script type="math/tex">x^{*}\in R^{n}</script>是一个可行点，存在向量<script type="math/tex">\lambda^{*}\in R^{m}</script>和<script type="math/tex">\mu^{*}\in R^{p}</script>使得</p>
-<ol>
-<li><script type="math/tex; mode=display">\mu^{*}\ge 0,Df(x^{*})+\lambda^{*T}Dh(x^{*})+\mu^{*T}Dg(x^{*})=0^{T},\mu^{*T}g(x^{*})=0</script></li>
-<li>对于所有<script type="math/tex">y\in \widetilde{T}(x^{*},\mu^{*}),y\neq0</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*},\mu^{*})y>0</script>成立</li>
-</ol>
-<p>那么<script type="math/tex">x^{*}</script>是优化问题<script type="math/tex">h(x)=0,g(x)\le 0</script>的严格局部极小点</p>
-
 <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
 <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
 <div id="gitalk-container"></div>     <script type="text/javascript">
     var gitalk = new Gitalk({
-        clientID: 'Lannyy',
-        clientSecret: 'c6h12o6012',
+        clientID: '2193b885b967a685e247',
+        clientSecret: '49a60c8f19873532dc3e7a6658bbff6c95ce73c9',
         repo: 'Lannyy.github.io',
         owner: 'Lannyy',
         admin: ['Lannyy'],

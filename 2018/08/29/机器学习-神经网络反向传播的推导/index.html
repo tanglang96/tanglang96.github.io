@@ -118,7 +118,7 @@ b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/机器学习-神经网络反向传播的推导/" data-id="cjlgmzcy2001hy0ez90amb8ay" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/机器学习-神经网络反向传播的推导/" data-id="cjlgn6egv001hk8ezkoasulyz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -151,34 +151,12 @@ b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
 
 
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-<h1 id="神经网络反向传播的推导"><a href="#神经网络反向传播的推导" class="headerlink" title="神经网络反向传播的推导"></a>神经网络反向传播的推导</h1><p>对于神经网络的训练过程而言，其反向传播算法是训练过程的核心，神经网络根据预测值$\hat{y}$与实际值$y$的偏差从后向前来计算损失函数对于各个参数的梯度，从而利用梯度下降的方法来优化训练神经网络的各个参数。</p>
-<p>神经网络的计算流程图如下：<br><img src="https://img-blog.csdn.net/2018060112352186?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>从该流程图可以看到，如果我们要计算神经网络的参数$W^{[1]},b^{[1]},W^{[2]},b^{[2]}$，首先需要计算$\frac{\partial L}{\partial a^{[2]}}$和$\frac{\partial a^{[2]}}{\partial z^{[2]}}$，然后根据链式法则得到$\frac{\partial L}{\partial z^{[2]}}=\frac{\partial L}{\partial a^{[2]}}\frac{\partial a^{[2]}}{\partial z^{[2]}}$。</p>
-<p>之后再计算$\frac{\partial z^{[2]}}{\partial W^{[2]}}$和$\frac{\partial z^{[2]}}{\partial b^{[2]}}$，同样根据链式法则可以得到$\frac{\partial L}{\partial W^{[2]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial W^{[2]}}$以及得到$\frac{\partial L}{\partial b^{[2]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial b^{[2]}}$。这样便得到了$dW^{[2]}$和$db^{[2]}$。</p>
-<p>另外对于$dW^{[1]}$和$db^{[1]}$的计算，需要先计算$\frac{\partial z^{[1]}}{\partial W^{[1]}}$，$\frac{\partial a^{[1]}}{\partial z^{[1]}}$和$\frac{\partial z^{[2]}}{\partial a^{[1]}}$，同样根据链式法则可以得到$\frac{\partial L}{\partial W^{[1]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial a^{[1]}}\frac{\partial a^{[1]}}{\partial z^{[1]}}\frac{\partial z^{[1]}}{\partial W^{[1]}}$，以及$\frac{\partial L}{\partial b^{[1]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial a^{[1]}}\frac{\partial a^{[1]}}{\partial z^{[1]}}\frac{\partial z^{[1]}}{\partial b^{[1]}}$。这样也得到了$dW^{[1]}$和$db^{[1]}$。</p>
-<p>在使用随机梯度下降(SGD)优化算法以及交叉熵(Cross Entropy)损失函数的时候，我们令$a^{[2]}=\hat{y}$，即损失函数：</p>
-<script type="math/tex; mode=display">L(\hat{y},y)=-(ylog\hat{y}+(1-y)log(1-\hat{y}))</script><p>使用sigmoid激活函数，即</p>
-<script type="math/tex; mode=display">a^{[1]}=\sigma(z^{[1]})=\frac{1}{1+e^{-z^{[1]}}}\\a^{[2]}=\sigma(z^{[2]})=\frac{1}{1+e^{-z^{[2]}}}</script><p>将该激活函数和损失函数代入上面的计算过程，可以得到：</p>
-<script type="math/tex; mode=display">
-dz^{[2]}=a^{[2]}-y\\
-dW^{[2]}=dz^{[2]}a^{[1]T}\\
-db^{[2]}=dz^{[2]}\\
-dz^{[1]}=W^{[2]T}dz^{[2]}*\sigma^{'}(z^{[1]})\\
-dW^{[1]}=dz^{[1]}x^{T}\\
-db^{[1]}=dz^{[1]}</script><p>在进行随机梯度下降的过程中，随机选取样本中的一个错误分类点，根据该点计算当前的$dW^{[1]},db^{[1]},dW^{[2]},db^{[2]}$，然后利用以下公式来更新$W^{[1]},b^{[1]},W^{[2]},b^{[2]}$：</p>
-<script type="math/tex; mode=display">
-W^{[2]}:=W^{[2]}-\alpha *dW^{[2]}\\
-b^{[2]}:=b^{[2]}-\alpha *db^{[2]}\\
-W^{[1]}:=W^{[1]}-\alpha *dW^{[1]}\\
-b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
-<p>对于神经网络的训练，还有批量梯度下降(Batch Gradient Descent)和小批量梯度下降(Mini-Batch Gradient Descent)，带动量的随机梯度下降(Momentum)，RMSProp，Adam等方法，后面再做详解。</p>
-<p>To be continue…</p>
-
 <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
 <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
 <div id="gitalk-container"></div>     <script type="text/javascript">
     var gitalk = new Gitalk({
-        clientID: 'Lannyy',
-        clientSecret: 'c6h12o6012',
+        clientID: '2193b885b967a685e247',
+        clientSecret: '49a60c8f19873532dc3e7a6658bbff6c95ce73c9',
         repo: 'Lannyy.github.io',
         owner: 'Lannyy',
         admin: ['Lannyy'],

@@ -124,7 +124,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/Cpp-Cpp中的顺序容器/" data-id="cjlgmzcwz0004y0ez4ep8yuhw" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/Cpp-Cpp中的顺序容器/" data-id="cjlgn6eft0004k8ezk8qiaxi1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
@@ -157,42 +157,12 @@
 
 
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
-<h1 id="C-中的顺序容器"><a href="#C-中的顺序容器" class="headerlink" title="C++中的顺序容器"></a>C++中的顺序容器</h1><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>一个容器就是一些特定类型对象的集合。顺序容器提供了控制元素存储和访问顺序的能力。<br>顺序容器类型</p>
-<ul>
-<li><strong>vector</strong>：可变大小数组，支持快速随机访问</li>
-<li><strong>deque</strong>：双端队列，支持快速随机访问</li>
-<li><strong>list</strong>：双向链表，只支持双向顺序访问</li>
-<li><strong>forward_list</strong>：单向链表，只支持单向顺序访问</li>
-<li><strong>array</strong>：固定大小数组</li>
-<li><strong>string</strong>：与vector类似，仅用于保存和字符</li>
-</ul>
-<p>选取顺序容器的一些准则：</p>
-<ol>
-<li>与内置数组相比，array是一种更安全，更容易使用的数组类型，现代C++程序应该使用标准库容器，而不是更原始的数据结构比如内置数组</li>
-<li>除非有很好的理由选择其他容器，否则使用vector</li>
-<li>其余的选择准则可以根据数组/链表/队列等数据结构的性质来判定</li>
-</ol>
-<h2 id="容器库与顺序容器操作"><a href="#容器库与顺序容器操作" class="headerlink" title="容器库与顺序容器操作"></a>容器库与顺序容器操作</h2><p>关于顺序容器的大部分操作都可以在C++的API中查到，本文不再赘述，在这里仅谈几个注意事项：<br>关于<strong>迭代器</strong>：</p>
-<ol>
-<li>迭代器的c.end()指向的是最后一个元素之后的位置，c.begin()与c.end()这样一组迭代器的范围是左闭区间，右开区间</li>
-<li>单向链表forward_list不支持迭代器的递减操作，根据单向链表的数据结构性质很容易理解</li>
-<li>begin和end相等则范围为空，不等则至少包含一个元素</li>
-<li>将一个容器创建为另一个容器的拷贝的时候，需要两个容器的类型和其元素类型都一致，在传入迭代器范围进行拷贝的时候不需要元素类型一致，只要能转换成对应元素就可以。</li>
-<li>除了string之外，指向容器的迭代器、引用和指针在swap之后都不会失效，仍指向swap之前的那些元素，但是对于string，它们都会失效。</li>
-</ol>
-<p>关于<strong>swap</strong>：未完待续<br>关于<strong>forward_list</strong>：未完待续<br>关于<strong>string</strong>：未完待续</p>
-<h2 id="关于vector的扩容"><a href="#关于vector的扩容" class="headerlink" title="关于vector的扩容"></a>关于vector的扩容</h2><p>vector对象是连续存储的，标准库实现者采取了可以减少容器空间重新分配次数的策略，当不得不获取新的内存空间时，vector和string的实现通常会分配比新的空间需求更大的内存空间，在使用该策略后，其扩张速度通常比list和deque快得多。</p>
-<p>需要注意capacity和size的区别：容器的size是指它已经保存的元素的数目；而capacity则是在不分配新的内存空间的前提下其最多能保存的元素个数。</p>
-<h2 id="容器适配器"><a href="#容器适配器" class="headerlink" title="容器适配器"></a>容器适配器</h2><p>除了顺序容器外，标准库还定义了三个顺序容器适配器：stack，queue和priority_queue。适配器(adapter)是标准库中的一个通用概念。容器，函数和迭代器都有适配器。本质上，一个适配器是一种机制，能使某种事物的行为看起来像另外一种事物一样。一个容器适配器接受一种已有的容器类型，使其行为看起来像一种不同的类型。</p>
-<p>例如，stack适配器接受一种已有的容器类型，使其行为看起来像stack一样。可以理解为利用某种顺序容器实现的stack类，并且抽象出来了pop()，push()等操作。</p>
-<p>priority_queue和queue的区别在于priority_queue可以为队列中的元素建立优先级。至于stack，queue，priority_queue三者的具体操作细节，可以查看C++的相关API。</p>
-
 <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
 <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
 <div id="gitalk-container"></div>     <script type="text/javascript">
     var gitalk = new Gitalk({
-        clientID: 'Lannyy',
-        clientSecret: 'c6h12o6012',
+        clientID: '2193b885b967a685e247',
+        clientSecret: '49a60c8f19873532dc3e7a6658bbff6c95ce73c9',
         repo: 'Lannyy.github.io',
         owner: 'Lannyy',
         admin: ['Lannyy'],

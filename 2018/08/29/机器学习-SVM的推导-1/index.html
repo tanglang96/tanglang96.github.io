@@ -137,7 +137,7 @@ s.t.\quad&\alpha_{i}\ge 0
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/机器学习-SVM的推导-1/" data-id="cjlgmodun0013ncez11jjid4m" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/机器学习-SVM的推导-1/" data-id="cjlgmzcxq0010y0ezx6sd38ni" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -169,7 +169,64 @@ s.t.\quad&\alpha_{i}\ge 0
 </article>
 
 
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script></section>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+<h1 id="硬间隔的SVM推导"><a href="#硬间隔的SVM推导" class="headerlink" title="硬间隔的SVM推导"></a>硬间隔的SVM推导</h1><p>SVM是机器学习中的一种经典方法，除了硬间隔SVM之外，还包括软间隔SVM，核技巧等SVM的变种，本文主要介绍<strong>硬间隔SVM</strong>的推导。</p>
+<p>假设两类样本点是可以被准确分开的，那么则可以使用硬间隔SVM来进行分类，假设分隔的超平面方程为<script type="math/tex">w\cdot x+b=0</script>，则每个样本点<script type="math/tex">x_{i}</script>到该超平面的距离为<script type="math/tex">|w\cdot x_{i}+b|</script>，如果设定与超平面之间的距离为正的点为正分类，即<script type="math/tex">y_{i}=+1</script>，相反负距离的点为负分类，即<script type="math/tex">y_{i}=-1</script>，那么可以将样本点到分离超平面的距离表示为<script type="math/tex">\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)</script>，这称为样本点到分离超平面之间的<strong>函数距离</strong>。</p>
+<p>令<script type="math/tex">\hat{\gamma}=min(\hat{\gamma}_{i})</script>，即为最小函数距离。需要注意到，函数距离<script type="math/tex">\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)</script>在<script type="math/tex">w</script>和<script type="math/tex">b</script>同时增大某个比例倍数时，函数间隔会增大但是超平面不会发生改变，此时便需要将超平面的<script type="math/tex">w</script>进行约束，比如令<script type="math/tex">||w||=1</script>，我们可以重新定义距离为<script type="math/tex">\gamma_{i}=y_{i}(\frac{w}{||w||}\cdot x_{i}+\frac{b}{||w||})</script>，称之为<strong>几何距离</strong>，令<script type="math/tex">\gamma=min(\gamma_{i})</script>，即可以得到<script type="math/tex">\gamma=\frac{\hat\gamma}{||w||}</script>。</p>
+<p>那么最大化分隔距离的优化问题即可表示如下：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&max_{w,b}\quad \gamma \\
+&s.t.\quad y_{i}(\frac{w}{||w||}\cdot x_{i}+\frac{b}{||w||})\ge\gamma，i=1,2...n
+\end{align*}</script><p>即</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&max_{w,b}\quad \frac{\hat\gamma}{||w||} \\
+&s.t.\quad y_{i}(w\cdot x_{i}+b)\ge\hat \gamma，i=1,2...n
+\end{align*}</script><p>注意上式中，函数间隔<script type="math/tex">\hat\gamma</script>的取值并不会影响最优化问题的解，不妨假设<script type="math/tex">\hat\gamma=1</script>，并且注意到最大化<script type="math/tex">\frac{1}{||w||}</script>与最小化<script type="math/tex">\frac{1}{2}||w||^{2}</script>等价，那么上述问题即可以等价为：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&min_{w,b}\quad \frac{1}{2}||w||^{2}\\
+&s.t.\quad y_{i}(w\cdot x_{i}+b)-1\ge0
+\end{align*}</script><p>上述问题即为一个不等式约束的最优化问题，可以利用拉格朗日乘子法与KKT条件来求解，令<script type="math/tex">\alpha=[\alpha_{1},\alpha_{2},\alpha_{3},...,\alpha_{n}]^{T}</script>，首先构造拉格朗日函数为：<script type="math/tex">L(w,b,\alpha)=\frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}</script></p>
+<p>假设<script type="math/tex">W^{*},b^{*},\alpha^{*}</script>是优化问题的最优解，那么根据KKT条件，<script type="math/tex">W^{*},b^{*},\alpha^{*}</script>一定满足以下方程：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+&\nabla_{w}L(w^{*},b^{*},\alpha^{*})=w^{*}-\sum_{i=1}^{N}\alpha^{*}_{i}y_{i}x_{i}=0\tag{1}\\
+&\nabla_{b}L(w^{*},b^{*},\alpha^{*})=-\sum_{i=1}^{N}\alpha_{i}^{*}y_{i}=0\tag{2}\\
+&\alpha_{i}^{*}(y_{i}(w^{*}\cdot x_{i}+b^{*})-1)=0\tag{3}\\
+&y_{i}(w^{*}\cdot x_{i}+b^{*})-1\ge 0\tag{4}\\
+&\alpha_{i}^{*}\ge0\tag{5}
+\end{align}</script><p>KKT条件主要包括几个方面的内容：<br>1.拉格朗日函数对于原始优化变量的梯度为0，如（1）和（2）<br>2.拉格朗日乘子和不等式约束的左式（化为标准形式）的乘积全为0，如（3）<br>3.原问题的约束条件，如（4）<br>4.拉格朗日乘子非负，如（5）</p>
+<p>由（1）和（2）可以得到：</p>
+<script type="math/tex; mode=display">
+w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}\\
+\sum_{i}^{N}\alpha_{i}^{*}y_{i}=0</script><p>根据拉格朗日对偶性，原问题可以化为：</p>
+<script type="math/tex; mode=display">
+min_{w,b}\ max_{\alpha}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i},\alpha_{i}\ge 0</script><p>即</p>
+<script type="math/tex; mode=display">
+max_{\alpha}\ min_{w,b}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i},\alpha_{i}\ge 0</script><p>其中<script type="math/tex">min_{w,b}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}</script>问题的最优解由KKT条件可以得到为<script type="math/tex">w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}</script>，并且有<script type="math/tex">\sum_{i}^{N}\alpha_{i}^{*}y_{i}=0</script>，代入上式即可将原问题化为：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+max_{\alpha}\quad&-\frac{1}{2}\sum_{i}\sum_{j}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}\cdot x_{j})+\sum_{i}\alpha_{i}\\
+s.t.\quad&\alpha_{i}\ge 0
+\end{align*}</script><p>在求解了<script type="math/tex">\alpha^{*}</script>之后，即可根据<script type="math/tex">w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}</script>求得<script type="math/tex">w^{*}</script>，由于分离超平面的参数是<script type="math/tex">w^{*},b^{*}</script>决定的，而分离超平面由<script type="math/tex">\alpha_{i}\neq0</script>的<script type="math/tex">\alpha_{i},x_{i},y_{i}</script>决定的，因此再选取任意<script type="math/tex">j</script>使得<script type="math/tex">\alpha_{j}\neq0</script>，得到<script type="math/tex">b^{*}=y_{j}-w^{*}\cdot x_{j}</script>，这样便可以得到分离超平面<script type="math/tex">w^{*}\cdot x+b^{*}=0</script>。</p>
+<p>对于上面的求解<script type="math/tex">\alpha^{*}</script>的优化问题，我们在下文将会介绍SMO算法来求解<br>To be continuue…</p>
+
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<div id="gitalk-container"></div>     <script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: 'Lannyy',
+        clientSecret: 'c6h12o6012',
+        repo: 'Lannyy.github.io',
+        owner: 'Lannyy',
+        admin: ['Lannyy'],
+        id: '2018/08/29/机器学习-SVM的推导-1/',
+        distractionFreeMode: true,
+    });
+    gitalk.render('gitalk-container');
+</script></section>
         
           <aside id="sidebar">
   

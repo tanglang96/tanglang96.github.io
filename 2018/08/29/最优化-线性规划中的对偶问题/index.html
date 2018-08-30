@@ -129,7 +129,7 @@ subject\ to\quad \lambda^{T}A\le c^{T}</script><p>注意此时由于$u,v\ge 0,\l
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/最优化-线性规划中的对偶问题/" data-id="cjlgmoduf000rncez3kvsef2r" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/最优化-线性规划中的对偶问题/" data-id="cjlgmzcxl000ty0ezt8cd5sbi" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -161,7 +161,56 @@ subject\ to\quad \lambda^{T}A\le c^{T}</script><p>注意此时由于$u,v\ge 0,\l
 </article>
 
 
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script></section>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+<h1 id="线性规划中的对偶问题"><a href="#线性规划中的对偶问题" class="headerlink" title="线性规划中的对偶问题"></a>线性规划中的对偶问题</h1><p>每个线性规划问题都有一个与之对应的对偶问题，对偶问题也是一个线性规划问题，并且对偶问题的对偶问题是原问题。原问题的最优解可以由对偶问题得到，有时候利用对偶理论求解线性规划问题更加简单，也更能了解问题的本质。在对偶理论的启发下，单纯形法的性能得到了改进，也出现了一些求解线性规划问题的非单纯形法，本文暂不详解。</p>
+<h2 id="对偶关系"><a href="#对偶关系" class="headerlink" title="对偶关系"></a>对偶关系</h2><p>考虑如下形式的对偶问题</p>
+<script type="math/tex; mode=display">
+minimize\quad c^{T}x \\
+subject\ to\quad Ax\ge  b\\
+A\ge0</script><p>将其称为原问题，其相应的对偶形式定义为</p>
+<script type="math/tex; mode=display">
+maximize\quad \lambda^{T}b \\
+subject\ to\quad \lambda^{T} A\le  c^{T}\\
+\lambda \ge0</script><p>其中$\lambda$称为对偶向量，这种对偶称为<strong>对称形式的对偶</strong>。<br>另外对于线性规划的标准形，其约束为$Ax=b$，等价于</p>
+<script type="math/tex; mode=display">
+Ax\ge b\\
+-Ax\ge -b</script><p>因此含有等式约束的原问题可以写为</p>
+<script type="math/tex; mode=display">
+minimize\quad c^{T}x\\
+subject\ to\quad \begin{bmatrix} A\\-A \end{bmatrix}x\ge \begin{bmatrix} b\\-b \end{bmatrix}\\
+x\ge 0</script><p>这与对称形式的原问题具有相同的结构，因此上述问题的对偶问题为</p>
+<script type="math/tex; mode=display">
+maximize\quad [u^{T}\ v^{T}] \begin{bmatrix} b\\-b \end{bmatrix}\\
+subject\ to\quad [u^{T}\ v^{T}] \begin{bmatrix} A\\-A \end{bmatrix}\le c^{T}\\
+u,v\ge 0</script><p>对偶问题可以整理为</p>
+<script type="math/tex; mode=display">
+maximize\quad (u-v)^{T}b\\
+subject\ to\quad (u-v)^{T}A\le c^{T}\\
+u,v\ge 0</script><p>令$\lambda=u-v$，上述问题则变为</p>
+<script type="math/tex; mode=display">
+maximize\quad \lambda^{T}b\\
+subject\ to\quad \lambda^{T}A\le c^{T}</script><p>注意此时由于$u,v\ge 0,\lambda=u-v$，没有了非负约束，将这种关系称为<strong>非对称形式的对偶</strong>。</p>
+<h2 id="对偶问题的性质"><a href="#对偶问题的性质" class="headerlink" title="对偶问题的性质"></a>对偶问题的性质</h2><p>在这里给出对偶问题的一些基本结论，暂不做证明<br><strong>弱对偶引理</strong>：假设$x$和$\lambda$分别是线性规划的原问题和对偶问题（对称形式及非对称形式）的可行解，则$x^{T}x\ge \lambda^{T}b$，即“极大值$\le$极小值”。</p>
+<p><strong>定理1</strong>：假设$x_{0}$和$\lambda_{0}$分别是原问题和对偶问题的可行解，如果$c^{T}x_{0}=\lambda_{0}^{T}b$，那么$x_{0}$和$\lambda_{0}$分别是各自问题的最优解。</p>
+<p><strong>定理2（对偶定理）</strong>：如果原问题有最优解，那么其对偶问题也有最优解，并且它们目标函数的最优解相同。</p>
+<p><strong>定理3（互补松弛条件）</strong>：$x$和$\lambda$分别是原问题和对偶问题的可行解，则它们分别是各自问题的最优解的充分必要条件为</p>
+<script type="math/tex; mode=display">
+1.\quad(c^{T}-\lambda^{T}A)x=0\\
+2.\quad\lambda^{T}(Ax-b)=0</script>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<div id="gitalk-container"></div>     <script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: 'Lannyy',
+        clientSecret: 'c6h12o6012',
+        repo: 'Lannyy.github.io',
+        owner: 'Lannyy',
+        admin: ['Lannyy'],
+        id: '2018/08/29/最优化-线性规划中的对偶问题/',
+        distractionFreeMode: true,
+    });
+    gitalk.render('gitalk-container');
+</script></section>
         
           <aside id="sidebar">
   

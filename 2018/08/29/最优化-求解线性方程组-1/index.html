@@ -122,7 +122,7 @@ x^{(k+1)}=x^{(k)}+G_{k+1}^{-1}A_{k+1}^{T}(b^{(k+1)}-A_{k+1}x^{(k)})</script><p>�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/最优化-求解线性方程组-1/" data-id="cjlgmodu7000inceznp5uj7bw" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/最优化-求解线性方程组-1/" data-id="cjlgmzcxe000ky0ezohjh1uy1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -154,7 +154,49 @@ x^{(k+1)}=x^{(k)}+G_{k+1}^{-1}A_{k+1}^{T}(b^{(k+1)}-A_{k+1}x^{(k)})</script><p>�
 </article>
 
 
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script></section>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+<h1 id="求解线性方程组（1）"><a href="#求解线性方程组（1）" class="headerlink" title="求解线性方程组（1）"></a>求解线性方程组（1）</h1><h2 id="最小二乘分析"><a href="#最小二乘分析" class="headerlink" title="最小二乘分析"></a>最小二乘分析</h2><p>在本文中将讨论线性方程组中的一种情况的求解，即考虑线性方程组</p>
+<script type="math/tex; mode=display">
+Ax=b</script><p>其中，<script type="math/tex">A\in R^{m*n},b\in R^{m},m\ge n,rank(A)=n</script>，在这种情况下，未知数的数量小于方程的数量，所以在很大可能上$b$不在$A$的值域空间中，即方程组无解，但是此时可以得到该线性方程方程的最小二乘解，即存在<script type="math/tex">x^{*}</script>使得对于所有的<script type="math/tex">x\in R^{n}</script>都有</p>
+<script type="math/tex; mode=display">
+||Ax-b||^{2}\ge ||Ax^{*}-b||^{2}</script><p>即称<script type="math/tex">x^{*}</script>为该线性方程的<strong>最小二乘解</strong>，当$b$在$A$的解空间中时，<script type="math/tex">x^{*}</script>自然就是该方程的解，最小二乘解可以通过以下公式直接计算出来：</p>
+<script type="math/tex; mode=display">
+x^{*}=(A^{T}A)^{-1}A^{T}b</script><p>证明过程如下：<br>构造目标函数</p>
+<script type="math/tex; mode=display">f(x)=||Ax-b||^{2}\\
+=(Ax-b)^{T}(Ax-b)\\
+=\frac{1}{2}x^{T}(2A^{T}A)x-x^{T}(2A^{T}b)+b^{T}b</script><p>显然函数<script type="math/tex">f</script>为二次型函数，由于<script type="math/tex">rank(A)=n</script>，因此该二次型为正定二次型，利用局部极小点的一阶必要条件可以得到极小点满足</p>
+<script type="math/tex; mode=display">
+\nabla f(x)=2A^{T}Ax-2A^{T}b=0</script><p>该方程的唯一解为<script type="math/tex">x^{*}=(A^{T}A)^{-1}A^{T}b</script>，即为最小二乘解，最小二乘法对于直线拟合等应用是很方便的算法。</p>
+<h2 id="递推最小二乘法"><a href="#递推最小二乘法" class="headerlink" title="递推最小二乘法"></a>递推最小二乘法</h2><p>上一节介绍了最小二乘法，我们可以用其来做直线拟合，如果要在拟合的数据中增加几组数据可以通过递推最小二乘法的方式来进行，即根据上次拟合的结果做部分修正即可，即利用上次拟合得到的最小二乘解<script type="math/tex">x^{*}</script>来得到数据点增加后的最小二乘解<script type="math/tex">x^{*}</script>。</p>
+<p>某个优化问题为了寻找合适的<script type="math/tex">x</script>，使得<script type="math/tex">||A_{0}x-b^{(0)}||^{2}</script>最小，已知该问题的解为<script type="math/tex">x^{(0)}=G_{0}^{-1}A_{0}^{T}b^{(0)}</script>，其中<script type="math/tex">G_{0}=A^{T}_{0}A_{0}</script>，如果增加了新的数据，用矩阵<script type="math/tex">A_{1}</script>和向量<script type="math/tex">b_{1}</script>来表示，那么这个问题即为寻找<script type="math/tex">x</script>使得</p>
+<script type="math/tex; mode=display">
+||
+\begin{bmatrix}
+A_{0}\\A_{1}
+\end{bmatrix}x-\begin{bmatrix}
+b^{(0)}\\b^{(1)}
+\end{bmatrix}||^{2}</script><p>达到最小<br>其迭代公式为：</p>
+<script type="math/tex; mode=display">
+G_{1}=G_{0}+A_{1}^{T}A_{1}\\
+x^{(1)}=x^{(0)}+G_{1}^{-1}A_{1}^{T}(b^{(1)}-A_{1}x^{(0)})</script><p>证明过程暂略，在一般情况下的迭代公式为：</p>
+<script type="math/tex; mode=display">
+G_{k+}=G_{k}+A_{k+1}^{T}A_{k+1}\\
+x^{(k+1)}=x^{(k)}+G_{k+1}^{-1}A_{k+1}^{T}(b^{(k+1)}-A_{k+1}x^{(k)})</script><p>对于线性方程组的求解，后面还将会介绍最小范数解和一般情况下的解法，以及伪逆等知识，To be continue…</p>
+
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<div id="gitalk-container"></div>     <script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: 'Lannyy',
+        clientSecret: 'c6h12o6012',
+        repo: 'Lannyy.github.io',
+        owner: 'Lannyy',
+        admin: ['Lannyy'],
+        id: '2018/08/29/最优化-求解线性方程组-1/',
+        distractionFreeMode: true,
+    });
+    gitalk.render('gitalk-container');
+</script></section>
         
           <aside id="sidebar">
   

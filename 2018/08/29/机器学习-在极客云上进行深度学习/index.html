@@ -105,7 +105,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/机器学习-在极客云上进行深度学习/" data-id="cjlgmodut001cncezq4x206op" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/29/机器学习-在极客云上进行深度学习/" data-id="cjlgmzcxy001cy0ez7hshidkz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -137,7 +137,25 @@
 </article>
 
 
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script></section>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+<h1 id="极客云-深度学习云平台"><a href="#极客云-深度学习云平台" class="headerlink" title="极客云-深度学习云平台"></a>极客云-深度学习云平台</h1><p>最近在做老师给的一个图像相关的深度学习任务，代码调试后发现电脑内存不够(8g笔记本)，后来发现了一个很好用的深度学习云服务平台<br>极客云:<a href="http://www.jikecloud.net/" target="_blank" rel="noopener">http://www.jikecloud.net/</a><br><img src="https://img-blog.csdn.net/20180629223231171?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>这个平台最大的方便之处莫过于其自带很多计算框架，每次配置各种环境的时候都被折腾得要死，各种库之间的依赖关系实在头疼。并且该平台有很多不同配置的机器进行选择，价格也很公道，今天在我用了那个tesla p100的显卡，60g内存的机器之后，就再也没有出现我之前遇到的bad_alloc问题<br><img src="https://img-blog.csdn.net/20180629223343714?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<h1 id="关于如何使用"><a href="#关于如何使用" class="headerlink" title="关于如何使用"></a>关于如何使用</h1><p>在进行训练之前可以先上传我们所使用的数据，我自己的数据大概10g左右，上传了一个晚上多一点，这个平台支持数据断点上传，并且在上传数据的时候是不会计算价格的，会默认放到/data目录下，最好是先解压上传压缩包上去，然后再在服务器上将数据解压到/input目录里，这样是最快的，因为貌似/data是机械盘，/input是固态。</p>
+<p>数据上传之后可以创建一个服务器实例了，他会提供一个ssh登陆指令直接远程登陆操作就行，也可以使用jupyter notebook和tensorboard，很方便。也可以直接在独占/共享两种方式上切换，或者换一个性能更强大的服务器。<br><img src="https://img-blog.csdn.net/2018062922402981?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>看一下我这台机子的配置<br>Tesla p100的显卡，京东价5w多。。。<br><img src="https://img-blog.csdn.net/20180629224707639?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>4核8线的志强E5<br><img src="https://img-blog.csdn.net/2018062922475828?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>60g的内存<br><img src="https://img-blog.csdn.net/20180629224823880?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>需要注意的是，在服务器关机后/input和/output的数据会被清除，在关机之前要将这两个目录下所需要的数据转移到/data目录下，这样便可以关机后一直保存。</p>
+
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<div id="gitalk-container"></div>     <script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: 'Lannyy',
+        clientSecret: 'c6h12o6012',
+        repo: 'Lannyy.github.io',
+        owner: 'Lannyy',
+        admin: ['Lannyy'],
+        id: '2018/08/29/机器学习-在极客云上进行深度学习/',
+        distractionFreeMode: true,
+    });
+    gitalk.render('gitalk-container');
+</script></section>
         
           <aside id="sidebar">
   

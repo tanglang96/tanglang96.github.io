@@ -70,6 +70,67 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-最优化-凸集的定义与常见凸集" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/31/最优化-凸集的定义与常见凸集/" class="article-date">
+  <time datetime="2018-08-31T10:41:26.000Z" itemprop="datePublished">2018-08-31</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/31/最优化-凸集的定义与常见凸集/">[最优化]凸集的定义与常见凸集</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="凸集的定义与常见凸集"><a href="#凸集的定义与常见凸集" class="headerlink" title="凸集的定义与常见凸集"></a>凸集的定义与常见凸集</h1><p>通常认为，如果某个实际问题可以表述为凸优化问题，那么事实上已经解决了这个问题，然而凸优化问题的识别还比较困难，本文将先介绍凸集的定义与常见凸集。</p>
+<h2 id="仿射集"><a href="#仿射集" class="headerlink" title="仿射集"></a>仿射集</h2><p>如果集合 <script type="math/tex">C\subseteq R^{n}</script> 是仿射的，等价于：对于任意的 <script type="math/tex">x_{1},x_{2}\in C</script> 及 <script type="math/tex">\theta \in R</script> 有 <script type="math/tex">\theta x_{1}+(1-\theta)x_{2}\in C</script> ，即 <script type="math/tex">C</script> 包含了 <script type="math/tex">C</script> 中任意两点的系数之和为1的线性组合。</p>
+<p>将其扩展到多个点的情况：如果 <script type="math/tex">\theta_{1}+\theta_{2}+...+\theta_{k}=1</script> ，我们则称具有 <script type="math/tex">\theta_{1}x_{1}+\theta_{2}x_{2}+...+\theta_{k}x_{k}</script> 形式的点为 <script type="math/tex">x_{1},x_{2},...,x_{k}</script> 的仿射组合。例如线性方程组的解集 <script type="math/tex">C=\{x|Ax=b\}</script>是一个仿射集。</p>
+<p>称由集合 <script type="math/tex">C\subseteq R^{n}</script> 中点的所有仿射组合所组成的集合为 <script type="math/tex">C</script> 的仿射包：</p>
+<script type="math/tex; mode=display">
+\mathrm{aff}\ C=\{\theta_{1}x_{1}+...+\theta_{k}x_{k}|x_{1},...,x_{k}\in C,\theta_{1}+\theta_{2}+...+\theta_{k}=1\}</script><p>仿射包是包含 <script type="math/tex">C</script> 的最小的仿射集合，即如果集合 <script type="math/tex">S</script> 满足 <script type="math/tex">C\subseteq S</script>，则 <script type="math/tex">\mathrm{aff}\ C\subseteq S</script> ，同时将集合 <script type="math/tex">C</script> 的仿射维数定义为其仿射包的维数。例如 <script type="math/tex">R^{2}</script> 上的单位圆环的维数为1，但其仿射维数为2，因为其仿射包为全空间 <script type="math/tex">R^{2}</script></p>
+<h2 id="凸集"><a href="#凸集" class="headerlink" title="凸集"></a>凸集</h2><p>如果集合 <script type="math/tex">C</script> 为凸集，那么对于任意的 <script type="math/tex">x_{1},x_{2}\in C</script> 与<script type="math/tex">0\le \theta\le 1</script>都有 <script type="math/tex">\theta x_{1}+(1-\theta)x_{2}\in C</script>，与仿射集的区别在于仿射集并没有 <script type="math/tex">\theta\ge0</script> 的要求，例如一条线段是凸集，而一条直线是仿射集。</p>
+<p>扩展到多维的情况，如果有 <script type="math/tex">\theta_{1}+\theta_{2}+...+\theta_{k}=1,\theta_{i}\ge0</script> ，则称具有 <script type="math/tex">\theta_{1}x_{1}+\theta_{2}x_{2}+...+\theta_{k}x_{k}</script> 形式的点为 <script type="math/tex">x_{1},x_{2},...,x_{k}</script> 的凸组合。</p>
+<p>称由集合 <script type="math/tex">C\subseteq R^{n}</script> 中点的所有凸组合所组成的集合为 <script type="math/tex">C</script> 的凸包：</p>
+<script type="math/tex; mode=display">
+\mathrm{conv}\ C=\{\theta_{1}x_{1}+...+\theta_{k}x_{k}|x_{1},...,x_{k}\in C,\theta_{1}+...+\theta_{k}=1,\theta_{i}\ge0\}</script><p>与仿射包同样，凸包也是包含 <script type="math/tex">C</script> 的最小的凸集，在一般情况下，设 <script type="math/tex">C\in R^{n}</script> 是凸集，<script type="math/tex">x</script> 是随机变量，并且 <script type="math/tex">x\in C</script> 的概率为1，那么 <script type="math/tex">E\ x\in C</script></p>
+<h2 id="一些重要的凸集"><a href="#一些重要的凸集" class="headerlink" title="一些重要的凸集"></a>一些重要的凸集</h2><p>识别出凸集对于识别凸优化问题较为重要，这里将介绍一些比较重要的凸集。</p>
+<p>任意的仿射集和子空间都是凸集，一些比较简单的例如空集 <script type="math/tex">\emptyset</script> ，单点集<script type="math/tex">\{x_{0}\}</script>，全空间 <script type="math/tex">R^{n}</script> ，直线/射线/线段都是凸的。</p>
+<p>还有一些比较重要的凸集如下：</p>
+<ol>
+<li>超平面 <script type="math/tex">\{x|a^{T}x=b \}</script>和半空间 <script type="math/tex">\{x|a^{T}x\le b\}</script></li>
+<li>Euclid球 <script type="math/tex">B(x_{c},r)=\{x|\ ||x-x_{c}||_{2}\le r\}</script></li>
+<li>椭球 <script type="math/tex">\xi=\{x|(x-x_{c})^{T}P^{-1}(x-x_{c})\le1\}</script></li>
+<li>范数球 <script type="math/tex">\{x|\ ||x-x_{c}||\le r\}</script>，其中 $||\cdot||<script type="math/tex">是</script>R^{n}$$ 中的范数</li>
+<li>范数锥 <script type="math/tex">C=\{(x,t)|\ ||x||\le t\}\subseteq R^{n+1}</script></li>
+<li>多面体 <script type="math/tex">P=\{x|a_{j}^{T}\le b_{j},j=1,...,m,c_{j}^{T}x=d_{j},j=1,...,p\}</script>，即为有限个半空间和超平面的交集，单纯形也为凸集，是一种特殊的多面体</li>
+<li>半正定锥 <script type="math/tex">S_{+}^{n}=\{X\in R^{n*n}|X=X^{T},X\succeq0\}</script>，即为半正定对称矩阵的集合</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/08/31/最优化-凸集的定义与常见凸集/" data-id="cjlhvoi1f0000xwez247ma85f" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-机器学习-SVM的推导-3" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/08/24/机器学习-SVM的推导-3/" class="article-date">
@@ -123,7 +184,7 @@ s.t.\quad &\sum_{i=1}^{m}\alpha_{i}y_{i}=0\\
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/24/机器学习-SVM的推导-3/" data-id="cjlhdjm730011okezl9i4cphq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/24/机器学习-SVM的推导-3/" data-id="cjlhvm5fm0013lkez280udome" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -185,7 +246,7 @@ L,\quad \hat\alpha_{2}<L
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/18/机器学习-SVM的推导-2/" data-id="cjlhdjm72000zokezj9wbg8cl" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/18/机器学习-SVM的推导-2/" data-id="cjlhvm5fj0011lkez3oiad239" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -265,7 +326,7 @@ s.t.\quad&\alpha_{i}\ge 0
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/10/机器学习-SVM的推导-1/" data-id="cjlhdjm70000wokeze0nsp4qk" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/10/机器学习-SVM的推导-1/" data-id="cjlhvm5fg000ylkez3dj89ixc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -317,60 +378,7 @@ A^{\dagger}=A^{T}(AA^{T})^{-1}</script><p>以上两种情况是当矩阵为<stro
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/26/最优化-求解线性方程组-3/" data-id="cjlhdjm6p000iokezc0q849dj" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-最优化-求解线性方程组-2" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/07/21/最优化-求解线性方程组-2/" class="article-date">
-  <time datetime="2018-07-21T10:02:02.000Z" itemprop="datePublished">2018-07-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/21/最优化-求解线性方程组-2/">[最优化]求解线性方程组(2)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="求解线性方程组-2"><a href="#求解线性方程组-2" class="headerlink" title="求解线性方程组(2)"></a>求解线性方程组(2)</h1><h2 id="线性方程组的最小范数解"><a href="#线性方程组的最小范数解" class="headerlink" title="线性方程组的最小范数解"></a>线性方程组的最小范数解</h2><p>上一篇博文介绍了线性方程组的情况之一，即未知数数量小于方程个数的情况，介绍了最小二乘法，在本文中将介绍线性方程组的另一种情况，即方程个数小于未知数数量的情况，此时方程组有无限多的解，但是最接近原点的解，即范数最小的解只有一个，也就是这里将会介绍的线性方程组的<strong>最小范数解</strong>。</p>
-<p>考虑线性方程组<script type="math/tex">Ax=b</script>，其中<script type="math/tex">A\in R^{m*n},m\le n</script>，要寻找其最小范数解，即相当于求解下列最优化问题：</p>
-<script type="math/tex; mode=display">
-minimize\ ||x||\\
-subject\  to\ Ax=b</script><p>这个问题属于等式约束的最优化问题，可以利用拉格朗日乘子法求解，在这里我们介绍另外一种方法。</p>
-<p>先给出结论，该方程组的最小范数解为<script type="math/tex">x^{*}=A^{T}(AA^{T})^{-1}b</script>，下面给出证明：</p>
-<script type="math/tex; mode=display">
-||x||^{2}=||(x-x^{*})+x^{*}||^{2}\\
-=||x-x^{*}||^{2}+||x^{*}||^{2}+2x^{*T}(x-x^{*})</script><p>令<script type="math/tex">x^{*}=A^{T}(AA^{T})^{-1}b</script>代入上式最右边项可以得到<script type="math/tex">2x^{*T}(x-x^{*})=0</script>，于是<script type="math/tex">||x||^{2}=||x-x^{*}||^{2}+||x^{*}||^{2}</script>，<script type="math/tex">||x^{*}||^{2}</script>是一个定值，而当<script type="math/tex">x\neq x^{*}</script>时，<script type="math/tex">||x-x^{*}||^{2}>0</script>恒成立，因此可以得到<script type="math/tex">x=x^{*}</script>是该优化问题的唯一最小解，即最小范数解。</p>
-<h2 id="Kaczmarz算法"><a href="#Kaczmarz算法" class="headerlink" title="Kaczmarz算法"></a>Kaczmarz算法</h2><p>Kaczmarz算法是一种迭代求解最小范数解的算法，可以省去求解<script type="math/tex">(AA^{T})^{-1}</script>的步骤，使计算更为高效，假设<script type="math/tex">A\in R^{m*n}</script>，直接给出迭代公式如下：<br>在前<script type="math/tex">m</script>次迭代中，即<script type="math/tex">k=0,1,...,m-1</script>时，有：</p>
-<script type="math/tex; mode=display">
-x^{(k+1)}=x^{(k)}+\mu(b_{k+1}-a_{k+1}^{T}x^{(k)})\frac{a_{k+1}}{a_{k+1}^{T}a_{k+1}}</script><p>对于第$(m+1)$次迭代，重新使用$A$的第1行以及$b$的第1个元素，即</p>
-<script type="math/tex; mode=display">
-x^{(m+1)}=x^{(m)}+\mu(b_{1}-a_{1}^{T}x^{(m)})\frac{a_{1}}{a_{1}^{T}a_{1}}</script><p>每迭代m次便从头循环一次，<script type="math/tex">\mu</script>可以视为迭代算法的过程。可以证明得到在Kaczmarz算法中，如果<script type="math/tex">x^{(0)}=0</script>，则当<script type="math/tex">k\to \infty</script>时，<script type="math/tex">x^{(k)}\to x^{*}=A^{T}(AA^{T})^{-1}b</script>，详细证明过程在这里省略。</p>
-<p>后面的文章还会介绍线性方程组的一般解法，伪逆等相关内容，To be continue…</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/21/最优化-求解线性方程组-2/" data-id="cjlhdjm6n000hokeztvbbk7zy" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/26/最优化-求解线性方程组-3/" data-id="cjlhvm5f0000klkezydvauuhp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -421,7 +429,7 @@ x^{(m+1)}=x^{(m)}+\mu(b_{1}-a_{1}^{T}x^{(m)})\frac{a_{1}}{a_{1}^{T}a_{1}}</scrip
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">8</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -431,7 +439,7 @@ x^{(m+1)}=x^{(m)}+\mu(b_{1}-a_{1}^{T}x^{(m)})\frac{a_{1}}{a_{1}^{T}a_{1}}</scrip
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Cpp/" style="font-size: 13.33px;">Cpp</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 16.67px;">optimization</a>
+      <a href="/tags/Cpp/" style="font-size: 15px;">Cpp</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 20px;">optimization</a>
     </div>
   </div>
 
@@ -440,7 +448,7 @@ x^{(m+1)}=x^{(m)}+\mu(b_{1}-a_{1}^{T}x^{(m)})\frac{a_{1}}{a_{1}^{T}a_{1}}</scrip
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -451,6 +459,10 @@ x^{(m+1)}=x^{(m)}+\mu(b_{1}-a_{1}^{T}x^{(m)})\frac{a_{1}}{a_{1}^{T}a_{1}}</scrip
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/08/31/最优化-凸集的定义与常见凸集/">[最优化]凸集的定义与常见凸集</a>
+          </li>
         
           <li>
             <a href="/2018/08/24/机器学习-SVM的推导-3/">[机器学习]SVM的推导(3)</a>
@@ -466,10 +478,6 @@ x^{(m+1)}=x^{(m)}+\mu(b_{1}-a_{1}^{T}x^{(m)})\frac{a_{1}}{a_{1}^{T}a_{1}}</scrip
         
           <li>
             <a href="/2018/07/26/最优化-求解线性方程组-3/">[最优化]求解线性方程组(3)</a>
-          </li>
-        
-          <li>
-            <a href="/2018/07/21/最优化-求解线性方程组-2/">[最优化]求解线性方程组(2)</a>
           </li>
         
       </ul>

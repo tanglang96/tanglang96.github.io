@@ -5,20 +5,20 @@
   
 
   
-  <title>[最优化]线性规划中的对偶问题 | Math &amp; Code</title>
+  <title>[最优化]凸集的定义与常见凸集 | Math &amp; Code</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="线性规划中的对偶问题每个线性规划问题都有一个与之对应的对偶问题，对偶问题也是一个线性规划问题，并且对偶问题的对偶问题是原问题。原问题的最优解可以由对偶问题得到，有时候利用对偶理论求解线性规划问题更加简单，也更能了解问题的本质。在对偶理论的启发下，单纯形法的性能得到了改进，也出现了一些求解线性规划问题的非单纯形法，本文暂不详解。 对偶关系考虑如下形式的对偶问题  minimize\quad c^{T">
+  <meta name="description" content="凸集的定义与常见凸集通常认为，如果某个实际问题可以表述为凸优化问题，那么事实上已经解决了这个问题，然而凸优化问题的识别还比较困难，本文将先介绍凸集的定义与常见凸集。 仿射集如果集合 C\subseteq R^{n} 是仿射的，等价于：对于任意的 x_{1},x_{2}\in C 及 \theta \in R 有 \theta x_{1}+(1-\theta)x_{2}\in C ，即 C 包含了">
 <meta name="keywords" content="optimization">
 <meta property="og:type" content="article">
-<meta property="og:title" content="[最优化]线性规划中的对偶问题">
-<meta property="og:url" content="http://yoursite.com/2018/05/11/最优化-线性规划中的对偶问题/index.html">
+<meta property="og:title" content="[最优化]凸集的定义与常见凸集">
+<meta property="og:url" content="http://yoursite.com/2018/08/31/最优化-凸集的定义与常见凸集/index.html">
 <meta property="og:site_name" content="Math &amp; Code">
-<meta property="og:description" content="线性规划中的对偶问题每个线性规划问题都有一个与之对应的对偶问题，对偶问题也是一个线性规划问题，并且对偶问题的对偶问题是原问题。原问题的最优解可以由对偶问题得到，有时候利用对偶理论求解线性规划问题更加简单，也更能了解问题的本质。在对偶理论的启发下，单纯形法的性能得到了改进，也出现了一些求解线性规划问题的非单纯形法，本文暂不详解。 对偶关系考虑如下形式的对偶问题  minimize\quad c^{T">
+<meta property="og:description" content="凸集的定义与常见凸集通常认为，如果某个实际问题可以表述为凸优化问题，那么事实上已经解决了这个问题，然而凸优化问题的识别还比较困难，本文将先介绍凸集的定义与常见凸集。 仿射集如果集合 C\subseteq R^{n} 是仿射的，等价于：对于任意的 x_{1},x_{2}\in C 及 \theta \in R 有 \theta x_{1}+(1-\theta)x_{2}\in C ，即 C 包含了">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-08-31T02:21:22.477Z">
+<meta property="og:updated_time" content="2018-08-31T10:51:18.560Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="[最优化]线性规划中的对偶问题">
-<meta name="twitter:description" content="线性规划中的对偶问题每个线性规划问题都有一个与之对应的对偶问题，对偶问题也是一个线性规划问题，并且对偶问题的对偶问题是原问题。原问题的最优解可以由对偶问题得到，有时候利用对偶理论求解线性规划问题更加简单，也更能了解问题的本质。在对偶理论的启发下，单纯形法的性能得到了改进，也出现了一些求解线性规划问题的非单纯形法，本文暂不详解。 对偶关系考虑如下形式的对偶问题  minimize\quad c^{T">
+<meta name="twitter:title" content="[最优化]凸集的定义与常见凸集">
+<meta name="twitter:description" content="凸集的定义与常见凸集通常认为，如果某个实际问题可以表述为凸优化问题，那么事实上已经解决了这个问题，然而凸优化问题的识别还比较困难，本文将先介绍凸集的定义与常见凸集。 仿射集如果集合 C\subseteq R^{n} 是仿射的，等价于：对于任意的 x_{1},x_{2}\in C 及 \theta \in R 有 \theta x_{1}+(1-\theta)x_{2}\in C ，即 C 包含了">
   
     <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
   
@@ -69,10 +69,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-最优化-线性规划中的对偶问题" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-最优化-凸集的定义与常见凸集" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/05/11/最优化-线性规划中的对偶问题/" class="article-date">
-  <time datetime="2018-05-11T05:38:34.000Z" itemprop="datePublished">2018-05-11</time>
+    <a href="/2018/08/31/最优化-凸集的定义与常见凸集/" class="article-date">
+  <time datetime="2018-08-31T10:41:26.000Z" itemprop="datePublished">2018-08-31</time>
 </a>
     
   </div>
@@ -83,7 +83,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      [最优化]线性规划中的对偶问题
+      [最优化]凸集的定义与常见凸集
     </h1>
   
 
@@ -91,45 +91,34 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="线性规划中的对偶问题"><a href="#线性规划中的对偶问题" class="headerlink" title="线性规划中的对偶问题"></a>线性规划中的对偶问题</h1><p>每个线性规划问题都有一个与之对应的对偶问题，对偶问题也是一个线性规划问题，并且对偶问题的对偶问题是原问题。原问题的最优解可以由对偶问题得到，有时候利用对偶理论求解线性规划问题更加简单，也更能了解问题的本质。在对偶理论的启发下，单纯形法的性能得到了改进，也出现了一些求解线性规划问题的非单纯形法，本文暂不详解。</p>
-<h2 id="对偶关系"><a href="#对偶关系" class="headerlink" title="对偶关系"></a>对偶关系</h2><p>考虑如下形式的对偶问题</p>
+        <h1 id="凸集的定义与常见凸集"><a href="#凸集的定义与常见凸集" class="headerlink" title="凸集的定义与常见凸集"></a>凸集的定义与常见凸集</h1><p>通常认为，如果某个实际问题可以表述为凸优化问题，那么事实上已经解决了这个问题，然而凸优化问题的识别还比较困难，本文将先介绍凸集的定义与常见凸集。</p>
+<h2 id="仿射集"><a href="#仿射集" class="headerlink" title="仿射集"></a>仿射集</h2><p>如果集合 <script type="math/tex">C\subseteq R^{n}</script> 是仿射的，等价于：对于任意的 <script type="math/tex">x_{1},x_{2}\in C</script> 及 <script type="math/tex">\theta \in R</script> 有 <script type="math/tex">\theta x_{1}+(1-\theta)x_{2}\in C</script> ，即 <script type="math/tex">C</script> 包含了 <script type="math/tex">C</script> 中任意两点的系数之和为1的线性组合。</p>
+<p>将其扩展到多个点的情况：如果 <script type="math/tex">\theta_{1}+\theta_{2}+...+\theta_{k}=1</script> ，我们则称具有 <script type="math/tex">\theta_{1}x_{1}+\theta_{2}x_{2}+...+\theta_{k}x_{k}</script> 形式的点为 <script type="math/tex">x_{1},x_{2},...,x_{k}</script> 的仿射组合。例如线性方程组的解集 <script type="math/tex">C=\{x|Ax=b\}</script>是一个仿射集。</p>
+<p>称由集合 <script type="math/tex">C\subseteq R^{n}</script> 中点的所有仿射组合所组成的集合为 <script type="math/tex">C</script> 的仿射包：</p>
 <script type="math/tex; mode=display">
-minimize\quad c^{T}x \\
-subject\ to\quad Ax\ge  b\\
-A\ge0</script><p>将其称为原问题，其相应的对偶形式定义为</p>
+\mathrm{aff}\ C=\{\theta_{1}x_{1}+...+\theta_{k}x_{k}|x_{1},...,x_{k}\in C,\theta_{1}+\theta_{2}+...+\theta_{k}=1\}</script><p>仿射包是包含 <script type="math/tex">C</script> 的最小的仿射集合，即如果集合 <script type="math/tex">S</script> 满足 <script type="math/tex">C\subseteq S</script>，则 <script type="math/tex">\mathrm{aff}\ C\subseteq S</script> ，同时将集合 <script type="math/tex">C</script> 的仿射维数定义为其仿射包的维数。例如 <script type="math/tex">R^{2}</script> 上的单位圆环的维数为1，但其仿射维数为2，因为其仿射包为全空间 <script type="math/tex">R^{2}</script></p>
+<h2 id="凸集"><a href="#凸集" class="headerlink" title="凸集"></a>凸集</h2><p>如果集合 <script type="math/tex">C</script> 为凸集，那么对于任意的 <script type="math/tex">x_{1},x_{2}\in C</script> 与<script type="math/tex">0\le \theta\le 1</script>都有 <script type="math/tex">\theta x_{1}+(1-\theta)x_{2}\in C</script>，与仿射集的区别在于仿射集并没有 <script type="math/tex">\theta\ge0</script> 的要求，例如一条线段是凸集，而一条直线是仿射集。</p>
+<p>扩展到多维的情况，如果有 <script type="math/tex">\theta_{1}+\theta_{2}+...+\theta_{k}=1,\theta_{i}\ge0</script> ，则称具有 <script type="math/tex">\theta_{1}x_{1}+\theta_{2}x_{2}+...+\theta_{k}x_{k}</script> 形式的点为 <script type="math/tex">x_{1},x_{2},...,x_{k}</script> 的凸组合。</p>
+<p>称由集合 <script type="math/tex">C\subseteq R^{n}</script> 中点的所有凸组合所组成的集合为 <script type="math/tex">C</script> 的凸包：</p>
 <script type="math/tex; mode=display">
-maximize\quad \lambda^{T}b \\
-subject\ to\quad \lambda^{T} A\le  c^{T}\\
-\lambda \ge0</script><p>其中$\lambda$称为对偶向量，这种对偶称为<strong>对称形式的对偶</strong>。<br>另外对于线性规划的标准形，其约束为$Ax=b$，等价于</p>
-<script type="math/tex; mode=display">
-Ax\ge b\\
--Ax\ge -b</script><p>因此含有等式约束的原问题可以写为</p>
-<script type="math/tex; mode=display">
-minimize\quad c^{T}x\\
-subject\ to\quad \begin{bmatrix} A\\-A \end{bmatrix}x\ge \begin{bmatrix} b\\-b \end{bmatrix}\\
-x\ge 0</script><p>这与对称形式的原问题具有相同的结构，因此上述问题的对偶问题为</p>
-<script type="math/tex; mode=display">
-maximize\quad [u^{T}\ v^{T}] \begin{bmatrix} b\\-b \end{bmatrix}\\
-subject\ to\quad [u^{T}\ v^{T}] \begin{bmatrix} A\\-A \end{bmatrix}\le c^{T}\\
-u,v\ge 0</script><p>对偶问题可以整理为</p>
-<script type="math/tex; mode=display">
-maximize\quad (u-v)^{T}b\\
-subject\ to\quad (u-v)^{T}A\le c^{T}\\
-u,v\ge 0</script><p>令$\lambda=u-v$，上述问题则变为</p>
-<script type="math/tex; mode=display">
-maximize\quad \lambda^{T}b\\
-subject\ to\quad \lambda^{T}A\le c^{T}</script><p>注意此时由于$u,v\ge 0,\lambda=u-v$，没有了非负约束，将这种关系称为<strong>非对称形式的对偶</strong>。</p>
-<h2 id="对偶问题的性质"><a href="#对偶问题的性质" class="headerlink" title="对偶问题的性质"></a>对偶问题的性质</h2><p>在这里给出对偶问题的一些基本结论，暂不做证明<br><strong>弱对偶引理</strong>：假设$x$和$\lambda$分别是线性规划的原问题和对偶问题（对称形式及非对称形式）的可行解，则$x^{T}x\ge \lambda^{T}b$，即“极大值$\le$极小值”。</p>
-<p><strong>定理1</strong>：假设$x_{0}$和$\lambda_{0}$分别是原问题和对偶问题的可行解，如果$c^{T}x_{0}=\lambda_{0}^{T}b$，那么$x_{0}$和$\lambda_{0}$分别是各自问题的最优解。</p>
-<p><strong>定理2（对偶定理）</strong>：如果原问题有最优解，那么其对偶问题也有最优解，并且它们目标函数的最优解相同。</p>
-<p><strong>定理3（互补松弛条件）</strong>：$x$和$\lambda$分别是原问题和对偶问题的可行解，则它们分别是各自问题的最优解的充分必要条件为</p>
-<script type="math/tex; mode=display">
-1.\quad(c^{T}-\lambda^{T}A)x=0\\
-2.\quad\lambda^{T}(Ax-b)=0</script>
+\mathrm{conv}\ C=\{\theta_{1}x_{1}+...+\theta_{k}x_{k}|x_{1},...,x_{k}\in C,\theta_{1}+...+\theta_{k}=1,\theta_{i}\ge0\}</script><p>与仿射包同样，凸包也是包含 <script type="math/tex">C</script> 的最小的凸集，在一般情况下，设 <script type="math/tex">C\in R^{n}</script> 是凸集，<script type="math/tex">x</script> 是随机变量，并且 <script type="math/tex">x\in C</script> 的概率为1，那么 <script type="math/tex">E\ x\in C</script></p>
+<h2 id="一些重要的凸集"><a href="#一些重要的凸集" class="headerlink" title="一些重要的凸集"></a>一些重要的凸集</h2><p>识别出凸集对于识别凸优化问题较为重要，这里将介绍一些比较重要的凸集。</p>
+<p>任意的仿射集和子空间都是凸集，一些比较简单的例如空集 <script type="math/tex">\emptyset</script> ，单点集<script type="math/tex">\{x_{0}\}</script>，全空间 <script type="math/tex">R^{n}</script> ，直线/射线/线段都是凸的。</p>
+<p>还有一些比较重要的凸集如下：</p>
+<ol>
+<li>超平面 <script type="math/tex">\{x|a^{T}x=b \}</script>和半空间 <script type="math/tex">\{x|a^{T}x\le b\}</script></li>
+<li>Euclid球 <script type="math/tex">B(x_{c},r)=\{x|\ ||x-x_{c}||_{2}\le r\}</script></li>
+<li>椭球 <script type="math/tex">\xi=\{x|(x-x_{c})^{T}P^{-1}(x-x_{c})\le1\}</script></li>
+<li>范数球 <script type="math/tex">\{x|\ ||x-x_{c}||\le r\}</script>，其中 $||\cdot||<script type="math/tex">是</script>R^{n}$$ 中的范数</li>
+<li>范数锥 <script type="math/tex">C=\{(x,t)|\ ||x||\le t\}\subseteq R^{n+1}</script></li>
+<li>多面体 <script type="math/tex">P=\{x|a_{j}^{T}\le b_{j},j=1,...,m,c_{j}^{T}x=d_{j},j=1,...,p\}</script>，即为有限个半空间和超平面的交集，单纯形也为凸集，是一种特殊的多面体</li>
+<li>半正定锥 <script type="math/tex">S_{+}^{n}=\{X\in R^{n*n}|X=X^{T},X\succeq0\}</script>，即为半正定对称矩阵的集合</li>
+</ol>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/11/最优化-线性规划中的对偶问题/" data-id="cjlhvm5f9000rlkez2u719x1y" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/31/最优化-凸集的定义与常见凸集/" data-id="cjlhvoi1f0000xwez247ma85f" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -140,19 +129,10 @@ subject\ to\quad \lambda^{T}A\le c^{T}</script><p>注意此时由于$u,v\ge 0,\l
     
 <nav id="article-nav">
   
-    <a href="/2018/05/11/Cpp-Cpp中的构造函数/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          [Cpp]Cpp中的构造函数
-        
-      </div>
-    </a>
   
-  
-    <a href="/2018/05/04/Cpp-Cpp函数中的参数传递/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2018/08/24/机器学习-SVM的推导-3/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">[Cpp]Cpp函数中的参数传递</div>
+      <div class="article-nav-title">[机器学习]SVM的推导(3)</div>
     </a>
   
 </nav>
@@ -172,7 +152,7 @@ subject\ to\quad \lambda^{T}A\le c^{T}</script><p>注意此时由于$u,v\ge 0,\l
         repo: 'Lannyy.github.io',
         owner: 'Lannyy',
         admin: ['Lannyy'],
-        id: '2018/05/11/最优化-线性规划中的对偶问题/',
+        id: '2018/08/31/最优化-凸集的定义与常见凸集/',
         distractionFreeMode: true,
     });
     gitalk.render('gitalk-container');

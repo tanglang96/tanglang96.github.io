@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>[Cpp]Cpp中的IO类 | Math &amp; Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="C++中的IO类C++语言不直接处理输入输出，而是通过一组定义在标准库中的类型来处理IO。这些类型支持从设备读取数据，向设备写入数据的IO操作，设备可以是文件，控制台窗口等。还有一些类型允许内存IO，即从string读取数据，向string写入数据等。 应用程序不只从控制台窗口进行IO操作，常常需要读写命名文件，并且使用IO操作处理string的字符会很方便，所以在istream和ostream之">
+<meta name="keywords" content="Cpp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Cpp]Cpp中的IO类">
+<meta property="og:url" content="http://yoursite.com/2018/05/18/Cpp-Cpp中的IO类/index.html">
+<meta property="og:site_name" content="Math &amp; Code">
+<meta property="og:description" content="C++中的IO类C++语言不直接处理输入输出，而是通过一组定义在标准库中的类型来处理IO。这些类型支持从设备读取数据，向设备写入数据的IO操作，设备可以是文件，控制台窗口等。还有一些类型允许内存IO，即从string读取数据，向string写入数据等。 应用程序不只从控制台窗口进行IO操作，常常需要读写命名文件，并且使用IO操作处理string的字符会很方便，所以在istream和ostream之">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-08-31T02:20:12.986Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[Cpp]Cpp中的IO类">
+<meta name="twitter:description" content="C++中的IO类C++语言不直接处理输入输出，而是通过一组定义在标准库中的类型来处理IO。这些类型支持从设备读取数据，向设备写入数据的IO操作，设备可以是文件，控制台窗口等。还有一些类型允许内存IO，即从string读取数据，向string写入数据等。 应用程序不只从控制台窗口进行IO操作，常常需要读写命名文件，并且使用IO操作处理string的字符会很方便，所以在istream和ostream之">
+  
+    <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Math &amp; Code</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">---By Frank,the best or nothing</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Cpp-Cpp中的IO类" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/05/18/Cpp-Cpp中的IO类/" class="article-date">
+  <time datetime="2018-05-18T13:11:35.000Z" itemprop="datePublished">2018-05-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      [Cpp]Cpp中的IO类
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="C-中的IO类"><a href="#C-中的IO类" class="headerlink" title="C++中的IO类"></a>C++中的IO类</h1><p>C++语言不直接处理输入输出，而是通过一组定义在标准库中的类型来处理IO。这些类型支持从设备读取数据，向设备写入数据的IO操作，设备可以是文件，控制台窗口等。还有一些类型允许内存IO，即从string读取数据，向string写入数据等。</p>
+<p>应用程序不只从控制台窗口进行IO操作，常常需要读写命名文件，并且使用IO操作处理string的字符会很方便，所以在istream和ostream之外，标准库还定义了其他的一些IO类型，分别定义在三个独立的头文件中：<strong>iostream</strong>定义了用于读写流的基本类型，<strong>fstream</strong>定义了读写命名文件的类型，<strong>sstream</strong>定义了读写内存string对象的类型。</p>
+<p>类型ifstream和istringstream都<strong>继承</strong>自istream。因此我们可以像使用istream对象一样来使用ifstream和istringstream对象。需要注意的是，不<strong>能对IO对象进行拷贝或赋值，另外读写一个IO对象会改变其状态，因此传递和返回的引用不能是const的</strong>。</p>
+<h2 id="条件状态"><a href="#条件状态" class="headerlink" title="条件状态"></a>条件状态</h2><p>IO类定义了一些函数和标志，可以帮助我们访问和操纵流的<strong>条件状态</strong>。一个流一旦发生错误，其后的IO操作都会失败，确定一个流对象的最简单的方法就是将他作为一个条件去使用：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;word)</span><br></pre></td></tr></table></figure></p>
+<p>IO库定义了一个与机器无关的iostate类型，它提供了表达流状态的完整功能：<br><strong>badbit</strong>表示系统级错误，如不可恢复的读写错误；<strong>failbit</strong>表示可恢复错误，如期望读取数值缺读取了一个字符；达到文件结束的位置时，<strong>eofbit</strong>和<strong>failbit</strong>都会被置位。<strong>goodbit</strong>的值为0表示未出现错误。如果<strong>badbit</strong>，<strong>failbit</strong>，<strong>eofbit</strong>任意一个被置位，检测流的条件都会失败。</p>
+<h2 id="输出缓冲管理"><a href="#输出缓冲管理" class="headerlink" title="输出缓冲管理"></a>输出缓冲管理</h2><p>每个输出流都有一个<strong>缓冲区</strong>，用于保存程序读写的数据，如下面的代码<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">os&lt;&lt;<span class="string">"Hello,world"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>有可能直接打印也有可能被操作系统保存到缓冲区中，随后再打印。<br>显式刷新缓冲区的几个方法：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;<span class="built_in">endl</span>;	<span class="comment">//输出字符串之后输出换行然后刷新缓冲区</span></span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;flush;	<span class="comment">//输出字符串之后直接刷新缓冲区</span></span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;ends;	<span class="comment">//输出字符串之后输出空白字符然后刷新缓冲区</span></span><br></pre></td></tr></table></figure></p>
+<p>当输入流关联到输出流的时候，任何试图从输入流读取数据的操作都会先刷新关联的输出流，标准库将cout和cin关联到一起，可以使用tie()函数手动将istream和ostream关联到一起。</p>
+<h1 id="文件输入输出"><a href="#文件输入输出" class="headerlink" title="文件输入输出"></a>文件输入输出</h1><h2 id="open和close函数"><a href="#open和close函数" class="headerlink" title="open和close函数"></a>open和close函数</h2><p>在定义了一个空文件流对象之后，可以调用open将其与文件关联起来<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ifstream <span class="title">in</span><span class="params">(ifile)</span></span>;	<span class="comment">//构造一个ifstream并打开给定文件</span></span><br><span class="line">ofstream out;	<span class="comment">//输出文件流未与任何文件相关联</span></span><br><span class="line">out.open(ifile+<span class="string">".copy"</span>)	<span class="comment">//打开指定文件</span></span><br></pre></td></tr></table></figure></p>
+<p>文件流打开之后就会保持和对应文件的关联，如果试图将这个文件流关联到另一个文件上，必须先关闭相应的文件流。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">in.close();	<span class="comment">//关闭文件</span></span><br><span class="line">in.open(ifile+<span class="string">"2"</span>);	<span class="comment">//关联到新的文件</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="文件模式"><a href="#文件模式" class="headerlink" title="文件模式"></a>文件模式</h2><p>每个流都有一个关联的文件模式，用来指出如何使用文件，每个文件流类型都定义了一个默认的文件模式，当我们未指定文件模式时，就使用默认模式。与ifstream关联的文件默认以in模式（读方式）打开；与ofstream相关联的文件默认以out模式（写方式）打开。文件模式如下表：</p>
+<ul>
+<li>in           以只读方式打开</li>
+<li>out         以写方式打开</li>
+<li>app        每次写操作前均定位到文件末尾</li>
+<li>ate         打开文件后立即定义到文件末尾</li>
+<li>trunc      截断文件</li>
+<li>binary    以二进制进行IO</li>
+</ul>
+<p>默认情况下，当打开一个ofstream时，文件的内容会被丢弃。阻止一个ofstream清空给定文件内容的方法是同时指定app模式。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ofstream <span class="title">out</span><span class="params">(<span class="string">"file1"</span>)</span>	<span class="comment">//文件会被清空</span></span></span><br><span class="line"><span class="function">ofstream <span class="title">out</span><span class="params">(<span class="string">"file"</span>,ofstream::app|ofstream::out)</span>	<span class="comment">//以app方式打开会被保存</span></span></span><br></pre></td></tr></table></figure></p>
+<p>保留ofstream打开的文件中数据的唯一办法就是指定app形式打开或者in模式打开。</p>
+<h1 id="string流"><a href="#string流" class="headerlink" title="string流"></a>string流</h1><p>sstream头文件定义了三个类型来支持内存IO，这些类型可以向string写入数据，从string读取数据，就像string是个IO流一样。</p>
+<p>当我们的工作是对整行文本进行处理，而其他的一些工作是处理行内的单个单词时，通常可以使用<strong>istringstream</strong>。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> line,word;</span><br><span class="line"><span class="built_in">vector</span>&lt;PersonInfo&gt; people;</span><br><span class="line"><span class="keyword">while</span>(getline(<span class="built_in">cin</span>,line))&#123;	<span class="comment">//不断从cin读取一行</span></span><br><span class="line">	PersonInfo info;</span><br><span class="line">	<span class="function"><span class="built_in">istringstream</span> <span class="title">record</span><span class="params">(line)</span></span>;   <span class="comment">//利用读取的这一行初始化record对象</span></span><br><span class="line">	record&gt;&gt;info.name;      <span class="comment">//从这一行中单独处理每个单词</span></span><br><span class="line">	<span class="keyword">while</span>(record&gt;&gt;word)</span><br><span class="line">		info.phones.push_back(word);</span><br><span class="line">	people.push_back(info);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在我们逐步构造输出，希望最后一行打印时，ostringstream非常有用。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;entry:people)&#123;</span><br><span class="line">	<span class="built_in">ostringstream</span> formatted,badNums;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;nums:entry.phones)&#123;</span><br><span class="line">		<span class="keyword">if</span>(!valid(nums))&#123;   <span class="comment">//如果遇到无效电话号码，则放到badNums之后一起输出</span></span><br><span class="line">			badNums&lt;&lt;<span class="string">" "</span>&lt;&lt;nums;</span><br><span class="line">		&#125;<span class="keyword">else</span></span><br><span class="line">		formatted&lt;&lt;<span class="string">" "</span>&lt;&lt;format(nums);   <span class="comment">//将正常的电话号码都放到formatted中</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(badNums.str().empty())</span><br><span class="line">		os&lt;&lt;entry.name&lt;&lt;<span class="string">" "</span>&lt;&lt;formatted.str()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="built_in">cerr</span>&lt;&lt;<span class="string">"Input error: "</span>&lt;&lt;entry.name&lt;&lt;<span class="string">" invalid number(s) "</span>&lt;&lt;badNums.str()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/05/18/Cpp-Cpp中的IO类/" data-id="cjlhdjm5f0000okezb3lpzjbd" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/05/24/机器学习-决策树和随机森林算法简介/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          [机器学习]决策树和随机森林算法简介
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/05/18/最优化-等式约束的优化问题求解/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">[最优化]等式约束的优化问题求解</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<div id="gitalk-container"></div>     <script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '2193b885b967a685e247',
+        clientSecret: '49a60c8f19873532dc3e7a6658bbff6c95ce73c9',
+        repo: 'Lannyy.github.io',
+        owner: 'Lannyy',
+        admin: ['Lannyy'],
+        id: '2018/05/18/Cpp-Cpp中的IO类/',
+        distractionFreeMode: true,
+    });
+    gitalk.render('gitalk-container');
+</script></section>
+        
+          <aside id="sidebar">
+  
+    
+<div class="widget-wrap">
+  <h3 class="widget-title">ABOUT ME</h3>
+  <ul class="widget about-me">
+    
+    <li><img class="author" title="About me" src="/images/cute.jpg" /></li>
+    
+    
+    <li>Name：Tang Lang</li>
+    
+    <li>School：Xiamen University</li>
+    
+    <li>Email：langtang1996@gmail.com</li>
+    
+    <li>QQ：1660039482</li>
+    
+  </ul>
+</div>
+
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Cpp/" style="font-size: 13.33px;">Cpp</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 16.67px;">optimization</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/08/24/机器学习-SVM的推导-3/">[机器学习]SVM的推导(3)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/18/机器学习-SVM的推导-2/">[机器学习]SVM的推导(2)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/10/机器学习-SVM的推导-1/">[机器学习]SVM的推导(1)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/26/最优化-求解线性方程组-3/">[最优化]求解线性方程组(3)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/21/最优化-求解线性方程组-2/">[最优化]求解线性方程组(2)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Tang Lang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

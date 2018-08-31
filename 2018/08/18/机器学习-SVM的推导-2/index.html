@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>[机器学习]SVM的推导(2) | Math &amp; Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="硬间隔SVM的SMO序列优化算法上一篇文章(1)我们讨论了硬间隔SVM的推导及其对偶形式，其对偶问题可以化简成以下形式： \begin{align*} min_ \alpha\quad &amp;\frac{1}{2}\sum_{i=1}^{N}\sum_{j=1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}x_{i}\cdot x_{j}-\sum_{i=1}^{N}\alpha">
+<meta name="keywords" content="machine learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[机器学习]SVM的推导(2)">
+<meta property="og:url" content="http://yoursite.com/2018/08/18/机器学习-SVM的推导-2/index.html">
+<meta property="og:site_name" content="Math &amp; Code">
+<meta property="og:description" content="硬间隔SVM的SMO序列优化算法上一篇文章(1)我们讨论了硬间隔SVM的推导及其对偶形式，其对偶问题可以化简成以下形式： \begin{align*} min_ \alpha\quad &amp;\frac{1}{2}\sum_{i=1}^{N}\sum_{j=1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}x_{i}\cdot x_{j}-\sum_{i=1}^{N}\alpha">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-08-31T01:38:17.865Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[机器学习]SVM的推导(2)">
+<meta name="twitter:description" content="硬间隔SVM的SMO序列优化算法上一篇文章(1)我们讨论了硬间隔SVM的推导及其对偶形式，其对偶问题可以化简成以下形式： \begin{align*} min_ \alpha\quad &amp;\frac{1}{2}\sum_{i=1}^{N}\sum_{j=1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}x_{i}\cdot x_{j}-\sum_{i=1}^{N}\alpha">
+  
+    <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Math &amp; Code</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">---By Frank,the best or nothing</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-机器学习-SVM的推导-2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/18/机器学习-SVM的推导-2/" class="article-date">
+  <time datetime="2018-08-18T08:54:25.000Z" itemprop="datePublished">2018-08-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      [机器学习]SVM的推导(2)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="硬间隔SVM的SMO序列优化算法"><a href="#硬间隔SVM的SMO序列优化算法" class="headerlink" title="硬间隔SVM的SMO序列优化算法"></a>硬间隔SVM的SMO序列优化算法</h1><p>上一篇文章(1)我们讨论了硬间隔SVM的推导及其对偶形式，其对偶问题可以化简成以下形式：</p>
+<script type="math/tex; mode=display">\begin{align*}
+min_ \alpha\quad &\frac{1}{2}\sum_{i=1}^{N}\sum_{j=1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}x_{i}\cdot x_{j}-\sum_{i=1}^{N}\alpha_{i}\\
+s.t.\quad &\sum_{i=1}^{N}\alpha_{i}y_{i}=0\\
+&\alpha_{i}\ge 0\\
+&i=1,2,...,N
+\end{align*}</script><p>该问题可以看作是一个以<script type="math/tex">\alpha</script>为优化变量的二阶规划问题，二阶规划问题有很多成熟的解法，针对SVM的优化有一种最为高效的SMO序列优化算法。</p>
+<h1 id="SMO序列优化算法"><a href="#SMO序列优化算法" class="headerlink" title="SMO序列优化算法"></a>SMO序列优化算法</h1><p>SMO序列优化算法先将<script type="math/tex">\alpha</script>的所有变量进行初始化，比如令<script type="math/tex">\alpha_{1},\alpha_{2},...,\alpha_{N}=0，</script>再将<script type="math/tex">\alpha</script>的其中两个分量看作变量，比如<script type="math/tex">\alpha_{1},\alpha_{2}</script>（在选取两个分量<script type="math/tex">\alpha_{i},\alpha_{j}</script>的时候，通常先取违反上文中KKT条件最严重的为<script type="math/tex">\alpha_{i}</script>，然后选取离<script type="math/tex">x_{i}</script>间隔最远的<script type="math/tex">x_{j}</script>对应的<script type="math/tex">\alpha_{j}</script>为第二个变量），其余的<script type="math/tex">\alpha_{3},\alpha_{4},...,\alpha_{N}</script>固定住，则根据约束条件<script type="math/tex">\sum_{i=1}^{N}\alpha_{i}y_{i}=0</script>可以得到<script type="math/tex">\alpha_{1}=-y_{1}\sum_{i=2}^{N}\alpha_{i}y_{i}</script>。上述问题即可以化为两个变量的二次规划问题(令<script type="math/tex">K_{ij}=x_{i}\cdot x_{j}</script>)：</p>
+<script type="math/tex; mode=display">\begin{align*}
+min_{\alpha_{1},\alpha_{2}}\quad W(\alpha_{1},\alpha_{2})=&\frac{1}{2}K_{11}\alpha_{1}^{2}+\frac{1}{2}K_{22}\alpha_{2}^{2}+y_{1}y_{2}K_{12}\alpha_{1}\alpha_{2}\\
+&-(\alpha_{1}+\alpha_{2})+y_{1}\alpha_{1}\sum_{i=3}^{N}y_{i}\alpha_{i}K_{i1}+y_{2}\alpha_{2}\sum_{i=3}^{N}y_{i}\alpha_{i}K_{i2}\\
+s.t.\quad &\alpha_{1}y_{1}+\alpha_{2}y_{2}=-\sum_{i=3}^{N}y_{i}\alpha_{i}=\zeta\\
+&\alpha_{1},\alpha_{2}\ge0
+\end{align*}</script><p>在上述二次规划问题中，由于<script type="math/tex">\alpha_{1}y_{1}+\alpha_{2}y_{2}=\zeta</script>，那么可以得到<script type="math/tex">\alpha_{1}=(\zeta-y_{2}\alpha_{2})y_{1}</script>，将该约束条件代入<script type="math/tex">W(\alpha_{1},\alpha_{2})</script>中即可以得到单变量的二次规划问题，如果先不考虑不等式约束条件，则可以直接得到解析解，不必利用数值计算的方式求解，这样可以大大提升计算速度。</p>
+<p>令<script type="math/tex">v_{i}=\sum_{j=3}^{N}\alpha_{j}y_{j}K(x_{i},x_{j})</script>，则将<script type="math/tex">\alpha_{1}=(\zeta-y_{2}\alpha_{2})y_{1}</script>代入<script type="math/tex">W(\alpha_{1},\alpha_{2})</script>可以得到：</p>
+<script type="math/tex; mode=display">
+W(\alpha_{2})=\frac{1}{2}K_{11}(\zeta-\alpha_{2}y_{2})^{2}+\frac{1}{2}K_{22}\alpha_{2}^{2}+y_{2}K_{12}(\zeta-\alpha_{2}y_{2})\alpha_{2}-(\zeta-\alpha_{2}y_{2})y_{1}-\alpha_{2}+v_{1}(\zeta-\alpha_{2}y_{2})+y_{2}v_{2}\alpha_{2}</script><p>直接令<script type="math/tex">\frac{\partial W}{\partial\alpha_{2}}=0</script>，那么可以得到<script type="math/tex">\alpha_{2}</script>的解析解为<script type="math/tex">\hat\alpha_{2}=\alpha_{2}+\frac{y_{2}(E_{1}-E_{2})}{\eta}</script>，其中<script type="math/tex">E_{i}=\sum_{j=1}^{N}\alpha_{j}y_{j}K_{ij}+b-y_{i}</script>，<script type="math/tex">\eta=K_{11}+K_{22}-2K_{12}</script>。此时得到的<script type="math/tex">\hat\alpha_{2}</script>还没有考虑不等式约束<script type="math/tex">\alpha_{1},\alpha_{2}\ge 0</script>，由<script type="math/tex">\alpha_{1}=(\zeta-y_{2}\alpha_{2})y_{1}\ge0</script>与<script type="math/tex">\alpha_{2}\ge0</script>可以解不等式得到<script type="math/tex">\alpha_2</script>的上界<script type="math/tex">H</script>与下界<script type="math/tex">L</script>，即经过剪辑可以得到<script type="math/tex">\alpha_{2}</script>的解析解为：</p>
+<script type="math/tex; mode=display">
+\alpha_{2}^{*}=
+\begin{cases}
+H,\quad \hat\alpha_{2}>H\\
+\hat\alpha_{2},\quad L\le\hat\alpha_{2}\le H\\
+L,\quad \hat\alpha_{2}<L
+\end{cases}</script><p>另外根据<script type="math/tex">\alpha_{1}^{*}=(\zeta-y_{2}\alpha_{2}^{*})y_{1}</script>则可以得到<script type="math/tex">\alpha_{1}^{*}</script>，这样便完成了SMO算法的一组变量的更新。重复进行变量选择，解析求解，变量剪辑的过程，直到<script type="math/tex">\alpha</script>的所有变量都能满足文章(1)中的KKT条件为止，然后再根据文章(1)中<script type="math/tex">w</script>与<script type="math/tex">b</script>的计算公式便可以得到训练好的超平面，这样便完成了硬间隔SVM的数学推导过程，后面的文章还会继续介绍软间隔SVM的推导与核方法的应用。To be continue…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/08/18/机器学习-SVM的推导-2/" data-id="cjlhdjm72000zokezj9wbg8cl" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/08/24/机器学习-SVM的推导-3/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          [机器学习]SVM的推导(3)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/08/10/机器学习-SVM的推导-1/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">[机器学习]SVM的推导(1)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<div id="gitalk-container"></div>     <script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '2193b885b967a685e247',
+        clientSecret: '49a60c8f19873532dc3e7a6658bbff6c95ce73c9',
+        repo: 'Lannyy.github.io',
+        owner: 'Lannyy',
+        admin: ['Lannyy'],
+        id: '2018/08/18/机器学习-SVM的推导-2/',
+        distractionFreeMode: true,
+    });
+    gitalk.render('gitalk-container');
+</script></section>
+        
+          <aside id="sidebar">
+  
+    
+<div class="widget-wrap">
+  <h3 class="widget-title">ABOUT ME</h3>
+  <ul class="widget about-me">
+    
+    <li><img class="author" title="About me" src="/images/cute.jpg" /></li>
+    
+    
+    <li>Name：Tang Lang</li>
+    
+    <li>School：Xiamen University</li>
+    
+    <li>Email：langtang1996@gmail.com</li>
+    
+    <li>QQ：1660039482</li>
+    
+  </ul>
+</div>
+
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Cpp/" style="font-size: 13.33px;">Cpp</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 16.67px;">optimization</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/08/24/机器学习-SVM的推导-3/">[机器学习]SVM的推导(3)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/18/机器学习-SVM的推导-2/">[机器学习]SVM的推导(2)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/10/机器学习-SVM的推导-1/">[机器学习]SVM的推导(1)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/26/最优化-求解线性方程组-3/">[最优化]求解线性方程组(3)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/21/最优化-求解线性方程组-2/">[最优化]求解线性方程组(2)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Tang Lang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

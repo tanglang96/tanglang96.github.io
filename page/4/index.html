@@ -70,10 +70,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-机器学习-在极客云上进行深度学习" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-机器学习-决策树和随机森林算法简介" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/29/机器学习-在极客云上进行深度学习/" class="article-date">
-  <time datetime="2018-08-29T10:43:08.000Z" itemprop="datePublished">2018-08-29</time>
+    <a href="/2018/05/24/机器学习-决策树和随机森林算法简介/" class="article-date">
+  <time datetime="2018-05-24T13:22:21.000Z" itemprop="datePublished">2018-05-24</time>
 </a>
     
   </div>
@@ -84,7 +84,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/29/机器学习-在极客云上进行深度学习/">[机器学习]在极客云上进行深度学习</a>
+      <a class="article-title" href="/2018/05/24/机器学习-决策树和随机森林算法简介/">[机器学习]决策树和随机森林算法简介</a>
     </h1>
   
 
@@ -92,14 +92,35 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="极客云-深度学习云平台"><a href="#极客云-深度学习云平台" class="headerlink" title="极客云-深度学习云平台"></a>极客云-深度学习云平台</h1><p>最近在做老师给的一个图像相关的深度学习任务，代码调试后发现电脑内存不够(8g笔记本)，后来发现了一个很好用的深度学习云服务平台<br>极客云:<a href="http://www.jikecloud.net/" target="_blank" rel="noopener">http://www.jikecloud.net/</a><br><img src="https://img-blog.csdn.net/20180629223231171?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>这个平台最大的方便之处莫过于其自带很多计算框架，每次配置各种环境的时候都被折腾得要死，各种库之间的依赖关系实在头疼。并且该平台有很多不同配置的机器进行选择，价格也很公道，今天在我用了那个tesla p100的显卡，60g内存的机器之后，就再也没有出现我之前遇到的bad_alloc问题<br><img src="https://img-blog.csdn.net/20180629223343714?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<h1 id="关于如何使用"><a href="#关于如何使用" class="headerlink" title="关于如何使用"></a>关于如何使用</h1><p>在进行训练之前可以先上传我们所使用的数据，我自己的数据大概10g左右，上传了一个晚上多一点，这个平台支持数据断点上传，并且在上传数据的时候是不会计算价格的，会默认放到/data目录下，最好是先解压上传压缩包上去，然后再在服务器上将数据解压到/input目录里，这样是最快的，因为貌似/data是机械盘，/input是固态。</p>
-<p>数据上传之后可以创建一个服务器实例了，他会提供一个ssh登陆指令直接远程登陆操作就行，也可以使用jupyter notebook和tensorboard，很方便。也可以直接在独占/共享两种方式上切换，或者换一个性能更强大的服务器。<br><img src="https://img-blog.csdn.net/2018062922402981?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>看一下我这台机子的配置<br>Tesla p100的显卡，京东价5w多。。。<br><img src="https://img-blog.csdn.net/20180629224707639?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>4核8线的志强E5<br><img src="https://img-blog.csdn.net/2018062922475828?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>60g的内存<br><img src="https://img-blog.csdn.net/20180629224823880?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>需要注意的是，在服务器关机后/input和/output的数据会被清除，在关机之前要将这两个目录下所需要的数据转移到/data目录下，这样便可以关机后一直保存。</p>
+        <h1 id="决策树和随机森林算法简介"><a href="#决策树和随机森林算法简介" class="headerlink" title="决策树和随机森林算法简介"></a>决策树和随机森林算法简介</h1><h2 id="1-决策树"><a href="#1-决策树" class="headerlink" title="1-决策树"></a>1-决策树</h2><h2 id="1-1-决策树模型的结构"><a href="#1-1-决策树模型的结构" class="headerlink" title="1.1-决策树模型的结构"></a>1.1-决策树模型的结构</h2><p>决策树（decision tree）是一种分类与回归方法，本文主要讨论用于分类的决策树，决策树的结构呈树形结构，在分类问题中，其代表基于特征对数据进行分类的过程，通常可以认为是if-then规则的集合，也可以认为是定义在特征空间与类空间上的条件概率分布。其主要优点是模型可读性好并且分类速度快。训练的时候，利用训练数据根据损失函数最小化的原则建立决策树模型。预测时对于新的数据，利用决策树进行分类。决策树的学习通常包括三个步骤：特征选择，生成决策树，对决策树进行剪枝。这些决策树的思想主要来自Quinlan在1986年提出的ID3算法和1993年提出的C4.5算法，以及Breiman等人在1984年提出的CART算法。</p>
+<p>用于分类的决策树是一种对数据进行分类的树形结构。决策树主要由节点（node）和有向边（directed edge）组成。节点有两种类型：内部节点（internal node）以及叶节点（leaf node）。内部节点表示一个特征或者属性，叶节点表示一个类。其结构如图所示：<br><img src="https://img-blog.csdn.net/20180524210204247?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="决策树算法的结构"></p>
+<h2 id="1-2-特征选择"><a href="#1-2-特征选择" class="headerlink" title="1.2-特征选择"></a>1.2-特征选择</h2><p>特征选择在于选取对训练数据具有分类能力的特征，这样可以提高决策树的学习效率，如果利用一个特征进行分类的结果与随机分类的结果没有太大差别，则称这个特征是没有分类能力的。通常扔掉这样的特征对于决策树的学习精度影响不大，通常特征选取的准则是信息增益或者信息增益比。</p>
+<p>在信息论中，熵（entropy）是表示随机变量不确定性的度量，设X是一个取有限个值得离散随机度量，其概率分布为：</p>
+<script type="math/tex; mode=display">
+P(X={ {x}_{i} })={ {p}_{i} },i=1,2,...,n</script><p>那么随机变量的熵定义为：</p>
+<script type="math/tex; mode=display">
+H(X)=-\sum\limits_{i=1}^{n}{ { {p}_{i} }\log { {p}_{i} } }</script><p>熵越大，随机变量的不确定性越大，从定义可以验证</p>
+<script type="math/tex; mode=display">
+0\le H(p)\le \log n</script><p>当<script type="math/tex">p=0</script>或<script type="math/tex">p=1</script>时<script type="math/tex">H(p)=0</script> ，随机变量完全没有不确定性，当<script type="math/tex">p=0.5</script>时，<script type="math/tex">H(p)=1</script>，熵取值最大，随机变量的不确定性最大。</p>
+<p>条件熵<script type="math/tex">H(Y|X)</script>表示在已知随机变量的条件下随机变量的不确定性。随机变量<script type="math/tex">X</script>给定的条件下随机变量<script type="math/tex">Y</script>的条件熵（conditional entropy）<script type="math/tex">H(Y|X)</script>，定义为 <script type="math/tex">X</script>给定条件下<script type="math/tex">Y</script>的条件概率分布的熵对<script type="math/tex">X</script>的数学期望</p>
+<script type="math/tex; mode=display">
+H(Y|X)=\sum\limits_{i=1}^{n}{ { {p}_{i} }H(Y|X={ {x}_{i} })}</script><p>这里<script type="math/tex">{ {p}_{i} }=P(X={ {x}_{i} }),i=1,2,...,n</script>，信息增益（information gain）表示得知特征<script type="math/tex">X</script>的信息而使得类<script type="math/tex">Y</script>的不确定性减小的程度。</p>
+<p>特征<script type="math/tex">A</script>对训练集<script type="math/tex">D</script>的信息增益<script type="math/tex">g(D,A)</script>定义为集合<script type="math/tex">D</script>的经验熵<script type="math/tex">H(D)</script>与特征<script type="math/tex">A</script>给定条件下<script type="math/tex">D</script>的经验条件熵<script type="math/tex">H(D|A)</script>之差，即</p>
+<script type="math/tex; mode=display">
+g(D|A)=H(D)-H(D|A)</script><h2 id="1-3-构建决策树的ID3算法"><a href="#1-3-构建决策树的ID3算法" class="headerlink" title="1.3-构建决策树的ID3算法"></a>1.3-构建决策树的ID3算法</h2><p>决策树的算法主要有ID3，C4.5以及CART，ID3算法的核心是在决策树各个节点上应用信息增益准则选取特征，递归构建决策树。<br>下面得到构建决策树的ID3算法：<br>输入：训练数据集D，特征集A，阈值<script type="math/tex">\varepsilon</script>；<br>输出：决策树T.</p>
+<p>（1）若D中所有实例属于同一类<script type="math/tex">{ {C}_{k} }</script>，则T为单节点树，并将<script type="math/tex">{ {C}_{k} }</script>作为该节点的类标记，返回T；<br>（2）若A=<script type="math/tex">\varnothing</script>，则T为单节点树，并将D中实例数最大的类<script type="math/tex">{ {C}_{k} }</script>作为该节点的类标记，返回T；<br>（3）否则按照信息增益算法计算A中各特征对D的信息增益，选择信息增益最大的特征<script type="math/tex">{ {A}_{g} }</script>；<br>（4）如果<script type="math/tex">{ {A}_{g} }</script>的信息增益小于阈值<script type="math/tex">\varepsilon</script>，则T为单节点树，并将D中实例数最大的类 作为该节点的类标记，返回T；<br>（5）否则，对<script type="math/tex">{ {A}_{g} }</script>的每一可能值<script type="math/tex">{ {a}_{i} }</script>，依据<script type="math/tex">{ {A}_{g} }={ {a}_{i} }</script>将D分割为若干非空子集<script type="math/tex">{ {D}_{i} }</script>，将<script type="math/tex">{ {D}_{i} }</script>中实例数最大的类作为标记，构建子节点，由节点及其子节点够成树T，返回T；对第i个子节点，以<script type="math/tex">{ {D}_{i} }</script>为训练集，以<script type="math/tex">A-\{ { {A}_{g} }\}</script>为特征集，递归地调用步1-步5，得到子树<script type="math/tex">{ {T}_{i} }</script>，返回<script type="math/tex">{ {T}_{i} }</script>。</p>
+<h2 id="2-集成学习"><a href="#2-集成学习" class="headerlink" title="2-集成学习"></a>2-集成学习</h2><p>集成学习（ensemble learning）通过构建并结合多个学习器来完成学习任务，有时候也被称为多分类器系统（multi-classfier system）、基于委员会的学习（committee-based learning）等。</p>
+<p>下图显示出集成学习的一般结构：先构建一组“个体学习器”（individual learner），再用某种策略将它们结合起来。个体学习器通常由一个现有的学习算法由训练数据产生，例如ID3决策树算法，BP神经网络算法等，此时集成中只包含同种类型的个体学习器，例如“决策树集成”中全是决策树，“神经网络集成”中全是神经网络，这样的集成是“同质”的（homogeneous）。同质集成中的个体学习器也称为“基学习器”（base learner），相应的学习算法称为“基学习算法”（base learning algorithm）。集成也可包含不同类型的个体学习器，例如同时包含决策树和神经网络，这样的集成是“异质”的（heterogenous）。异质集成中的个体学习器由不同的学习算法产生，这是就不再有基学习算法；相应的，个体学习器一般不称为基学习器，常称为“组件学习器”（component learner）或直接称为个体学习器。<br><img src="https://img-blog.csdn.net/20180524211517468?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="集成学习器"></p>
+<p>集成学习通过将多个学习器进行结合，常常可以获得比单一学习器更为显著优越的泛化性能。这对“弱学习器”（weak learner）尤为明显，因此集成学习的很多理论研究都是针对弱学习器进行的，而基学习器有时也被直接成为弱学习器。但是需要注意的是，虽然从理论上来说使用弱学习器集成足以获得好的性能，但在实践中出于种种考虑，例如希望使用较少的个体学习器，或是重用关于常见学习器的一些经验等，人们往往会使用比较强的学习器。</p>
+<p>根据个体学习器的生成方式，目前的集成学习方法大致可分为两类，即个体学习器间存在强依赖关系、必须串行生成的序列化方法，以及个体学习器间不存在强依赖关系、可同时生成的并行化方法；前者的代表是Boosting，后者的代表是Bagging和“随机森林”（Random Forest）。</p>
+<h2 id="3-随机森林算法"><a href="#3-随机森林算法" class="headerlink" title="3-随机森林算法"></a>3-随机森林算法</h2><p>随机森林（Random Forest，简称RF）[Breiman,2001a]是Bagging的一个扩展变体，RF在以决策树为基学习器构建Bagging集成的基础上，进一步在决策树的训练过程中引入了随机属性选择。具体来说，传统决策树在选择划分属性时是在当前节点的属性集合（假定有d个属性）中选择一个最优属性；而在RF中，对基决策树的每个节点，先从该节点的属性集合中随机选择一个包含k个属性的子集，然后再从这个子集中选择一个最优属性用于划分。这里的参数k控制了随机性的引入程度：若令k=d，则基决策树的构建与传统决策树相同；若令k=1，则是随机选择一个属性用于划分；一般情况下，推荐值<script type="math/tex">k={ {\log }_{2} }d</script>。</p>
+<p>随机森林简单，容易实现，计算开销小，令人惊奇的是，它在很多现实任务中表现出了强大的性能，被誉为“<strong>代表集成学习技术水平的方法</strong>”。可以看出，随机森丽对Bagging只做了小改动，但是与Bagging中基学习器的“多样性”仅通过样本扰动而来不同，随机森林中基学习器的多样性不仅来自样本扰动，还来自属性扰动，这就使得最终集成的泛化性能可通过个体学习器之间的差异度的增加而进一步提升，决策树的结构如下图：<br><img src="https://img-blog.csdn.net/20180524211653506?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
+<p>对于随机森林的编程，可以使用scikit-learn框架<br><a href="http://scikit-learn.org/stable/user_guide.html#" target="_blank" rel="noopener">http://scikit-learn.org/stable/user_guide.html#</a></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/机器学习-在极客云上进行深度学习/" data-id="cjlgnt6ka001c1kezslnwpopg" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/24/机器学习-决策树和随机森林算法简介/" data-id="cjlhdjm750014okez7kp33lgw" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -111,10 +132,10 @@
 
 
   
-    <article id="post-机器学习-利用TensorFlow训练一个简单的神经网络" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Cpp-Cpp中的IO类" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/29/机器学习-利用TensorFlow训练一个简单的神经网络/" class="article-date">
-  <time datetime="2018-08-29T10:43:05.000Z" itemprop="datePublished">2018-08-29</time>
+    <a href="/2018/05/18/Cpp-Cpp中的IO类/" class="article-date">
+  <time datetime="2018-05-18T13:11:35.000Z" itemprop="datePublished">2018-05-18</time>
 </a>
     
   </div>
@@ -125,7 +146,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/29/机器学习-利用TensorFlow训练一个简单的神经网络/">[机器学习]利用TensorFlow训练一个简单的神经网络</a>
+      <a class="article-title" href="/2018/05/18/Cpp-Cpp中的IO类/">[Cpp]Cpp中的IO类</a>
     </h1>
   
 
@@ -133,22 +154,38 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="利用TensorFlow训练一个简单的神经网络"><a href="#利用TensorFlow训练一个简单的神经网络" class="headerlink" title="利用TensorFlow训练一个简单的神经网络"></a>利用TensorFlow训练一个简单的神经网络</h1><p>我们在这里利用TensorFlow的Eager Execution 来构建模型，这样不用像以前一样创建Graph和Session了，可以使神经网络的训练更加方便快捷，下面以Iris数据集为例来训练一个神经网络，代码来自谷歌的教程。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#先导入相关的库</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import,division,print_function</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> tensorflow.contrib.eager <span class="keyword">as</span> tfe</span><br><span class="line"></span><br><span class="line">tf.enable_eager_execution()	<span class="comment">#采用eager_execution</span></span><br><span class="line"><span class="comment">#查看版本信息并检查采用eager_execution是否打开</span></span><br><span class="line">print(<span class="string">'TensorFlow Version:&#123;&#125;'</span>.format(tf.VERSION))</span><br><span class="line">print(<span class="string">'Eager execution:&#123;&#125;'</span>.format(tf.executing_eagerly()))</span><br></pre></td></tr></table></figure></p>
-<p>TensorFlow Version:1.8.0<br>Eager execution:True<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#获取数据集并显示在本地的保存位置</span><br><span class="line">train_dataset_url=&apos;http://download.tensorflow.org/data/iris_training.csv&apos;</span><br><span class="line">train_dataset_fp=tf.keras.utils.get_file(fname=os.path.basename(train_dataset_url),origin=train_dataset_url)</span><br><span class="line">print(&apos;Local copy of the dataset file:&#123;&#125;&apos;.format(train_dataset_fp))</span><br></pre></td></tr></table></figure></p>
-<p>Downloading data from <a href="http://download.tensorflow.org/data/iris_training.csv" target="_blank" rel="noopener">http://download.tensorflow.org/data/iris_training.csv</a><br>8192/2194 [================================================================================================================] - 0s 0us/step<br>Local copy of the dataset file:C:\Users\Frank.keras\datasets\iris_training.csv<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#对表格文件中的每一行进行解析，每行有5个元素，前面4个是特征，最后一个是标记</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse_csv</span><span class="params">(line)</span>:</span></span><br><span class="line">    example_defaults=[[<span class="number">0.</span>],[<span class="number">0.</span>],[<span class="number">0.</span>],[<span class="number">0.</span>],[<span class="number">0</span>]]</span><br><span class="line">    parsed_line=tf.decode_csv(line,example_defaults)</span><br><span class="line">    features=tf.reshape(parsed_line[:<span class="number">-1</span>],shape=(<span class="number">4</span>,))</span><br><span class="line">    label=tf.reshape(parsed_line[<span class="number">-1</span>],shape=())</span><br><span class="line">    <span class="keyword">return</span> features,label</span><br><span class="line">	</span><br><span class="line">train_dataset=tf.data.TextLineDataset(train_dataset_fp)	<span class="comment">#读取csv转换为dataset</span></span><br><span class="line">train_dataset=train_dataset.skip(<span class="number">1</span>)	<span class="comment">#跳过标题行</span></span><br><span class="line">train_dataset=train_dataset.map(parse_csv)	<span class="comment">#对每一行都进行映射</span></span><br><span class="line">train_dataset=train_dataset.shuffle(buffer_size=<span class="number">1000</span>)	<span class="comment">#随机打乱</span></span><br><span class="line">train_dataset=train_dataset.batch(<span class="number">32</span>)	<span class="comment">#分批</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#打印一组训练数据</span></span><br><span class="line">features,label=iter(train_dataset).next()</span><br><span class="line">print(<span class="string">'example features:'</span>,features[<span class="number">0</span>])</span><br><span class="line">print(<span class="string">'example label:'</span>,label[<span class="number">0</span>])</span><br></pre></td></tr></table></figure></p>
-<p>example features: tf.Tensor([6.8 3.  5.5 2.1], shape=(4,), dtype=float32)<br>example label: tf.Tensor(2, shape=(), dtype=int32)<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#建立神经网络模型，两个隐藏层</span></span><br><span class="line">model=tf.keras.Sequential([</span><br><span class="line">    tf.keras.layers.Dense(<span class="number">10</span>,activation=<span class="string">'relu'</span>,input_shape=(<span class="number">4</span>,)),</span><br><span class="line">    tf.keras.layers.Dense(<span class="number">10</span>,activation=<span class="string">'relu'</span>),</span><br><span class="line">    tf.keras.layers.Dense(<span class="number">3</span>)</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment">#定义损失函数为softmax后的cross_entropy，返回一个损失函数的对象</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss</span><span class="params">(model,x,y)</span>:</span></span><br><span class="line">    y_=model(x)</span><br><span class="line">    <span class="keyword">return</span> tf.losses.sparse_softmax_cross_entropy(labels=y,logits=y_)</span><br><span class="line"></span><br><span class="line"><span class="comment">#返回一个梯度对象</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">grad</span><span class="params">(model,inputs,targets)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:</span><br><span class="line">        loss_value=loss(model,inputs,targets)</span><br><span class="line">    <span class="keyword">return</span> tape.gradient(loss_value,model.variables)	<span class="comment">#返回梯度对象，传入损失函数和优化对象作为构造函数的参数</span></span><br><span class="line"></span><br><span class="line">optimizer=tf.train.GradientDescentOptimizer(learning_rate=<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line">train_loss_results=[]</span><br><span class="line">train_accuracy_results=[]</span><br><span class="line">num_epochs=<span class="number">201</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#优化过程迭代201次</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(num_epochs):</span><br><span class="line">    epoch_loss_avg=tfe.metrics.Mean()	<span class="comment">#交叉熵的平均误差对象</span></span><br><span class="line">    epoch_accuracy=tfe.metrics.Accuracy()	<span class="comment">#准确率对象</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> x,y <span class="keyword">in</span> train_dataset:</span><br><span class="line">        grads=grad(model,x,y)</span><br><span class="line">        optimizer.apply_gradients(zip(grads, model.variables),	<span class="comment">#将梯度对应的模型变量分组</span></span><br><span class="line">                              global_step=tf.train.get_or_create_global_step())</span><br><span class="line">        epoch_loss_avg(loss(model,x,y))</span><br><span class="line">        epoch_accuracy(tf.argmax(model(x),axis=<span class="number">1</span>,output_type=tf.int32),y)</span><br><span class="line">    train_loss_results.append(epoch_loss_avg.result())</span><br><span class="line">    train_accuracy_results.append(epoch_accuracy.result())</span><br><span class="line">    <span class="keyword">if</span> epoch % <span class="number">50</span> == <span class="number">0</span>:</span><br><span class="line">        print(<span class="string">"Epoch &#123;:03d&#125;: Loss: &#123;:.3f&#125;, Accuracy: &#123;:.3%&#125;"</span>.format(epoch,epoch_loss_avg.result(),epoch_accuracy.result()</span><br></pre></td></tr></table></figure></p>
-<p>Epoch 000: Loss: 1.217, Accuracy: 30.833%<br>Epoch 050: Loss: 0.524, Accuracy: 93.333%<br>Epoch 100: Loss: 0.261, Accuracy: 96.667%<br>Epoch 150: Loss: 0.169, Accuracy: 97.500%<br>Epoch 200: Loss: 0.133, Accuracy: 97.500%<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#训练过程损失函数和准确率的可视化																</span></span><br><span class="line">fig,axes=plt.subplots(<span class="number">2</span>,sharex=<span class="keyword">True</span>,figsize=(<span class="number">12</span>,<span class="number">8</span>))</span><br><span class="line">fig.suptitle(<span class="string">'Training Metrics'</span>)</span><br><span class="line">axes[<span class="number">0</span>].set_ylabel(<span class="string">"Loss"</span>, fontsize=<span class="number">14</span>)</span><br><span class="line">axes[<span class="number">0</span>].plot(train_loss_results)</span><br><span class="line"></span><br><span class="line">axes[<span class="number">1</span>].set_ylabel(<span class="string">"Accuracy"</span>, fontsize=<span class="number">14</span>)</span><br><span class="line">axes[<span class="number">1</span>].set_xlabel(<span class="string">"Epoch"</span>, fontsize=<span class="number">14</span>)</span><br><span class="line">axes[<span class="number">1</span>].plot(train_accuracy_results)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://img-blog.csdn.net/20180706222128445?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#在测试集上测试模型表现</span></span><br><span class="line">test_url = <span class="string">"http://download.tensorflow.org/data/iris_test.csv"</span></span><br><span class="line"></span><br><span class="line">test_fp = tf.keras.utils.get_file(fname=os.path.basename(test_url),</span><br><span class="line">                                  origin=test_url)</span><br><span class="line"></span><br><span class="line">test_dataset = tf.data.TextLineDataset(test_fp)</span><br><span class="line">test_dataset = test_dataset.skip(<span class="number">1</span>)</span><br><span class="line">test_dataset = test_dataset.map(parse_csv)</span><br><span class="line">test_dataset = test_dataset.shuffle(<span class="number">1000</span>)</span><br><span class="line">test_dataset = test_dataset.batch(<span class="number">32</span>)</span><br><span class="line"></span><br><span class="line">test_accuracy = tfe.metrics.Accuracy()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (x, y) <span class="keyword">in</span> test_dataset:</span><br><span class="line">  prediction = tf.argmax(model(x), axis=<span class="number">1</span>, output_type=tf.int32)</span><br><span class="line">  test_accuracy(prediction, y)</span><br><span class="line"></span><br><span class="line">print(<span class="string">"Test set accuracy: &#123;:.3%&#125;"</span>.format(test_accuracy.result()))</span><br></pre></td></tr></table></figure></p>
-<p>Test set accuracy: 100.000%<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#使用模型来进行预测</span></span><br><span class="line">class_ids = [<span class="string">"Iris setosa"</span>, <span class="string">"Iris versicolor"</span>, <span class="string">"Iris virginica"</span>]</span><br><span class="line">predict_dataset = tf.convert_to_tensor([</span><br><span class="line">    [<span class="number">5.1</span>, <span class="number">3.3</span>, <span class="number">1.7</span>, <span class="number">0.5</span>,],</span><br><span class="line">    [<span class="number">5.9</span>, <span class="number">3.0</span>, <span class="number">4.2</span>, <span class="number">1.5</span>,],</span><br><span class="line">    [<span class="number">6.9</span>, <span class="number">3.1</span>, <span class="number">5.4</span>, <span class="number">2.1</span>]</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">predictions = model(predict_dataset)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, logits <span class="keyword">in</span> enumerate(predictions):</span><br><span class="line">  class_idx = tf.argmax(logits).numpy()</span><br><span class="line">  name = class_ids[class_idx]</span><br><span class="line">  print(<span class="string">"Example &#123;&#125; prediction: &#123;&#125;"</span>.format(i, name))</span><br></pre></td></tr></table></figure></p>
-<p>Example 0 prediction: Iris setosa<br>Example 1 prediction: Iris versicolor<br>Example 2 prediction: Iris virginica</p>
+        <h1 id="C-中的IO类"><a href="#C-中的IO类" class="headerlink" title="C++中的IO类"></a>C++中的IO类</h1><p>C++语言不直接处理输入输出，而是通过一组定义在标准库中的类型来处理IO。这些类型支持从设备读取数据，向设备写入数据的IO操作，设备可以是文件，控制台窗口等。还有一些类型允许内存IO，即从string读取数据，向string写入数据等。</p>
+<p>应用程序不只从控制台窗口进行IO操作，常常需要读写命名文件，并且使用IO操作处理string的字符会很方便，所以在istream和ostream之外，标准库还定义了其他的一些IO类型，分别定义在三个独立的头文件中：<strong>iostream</strong>定义了用于读写流的基本类型，<strong>fstream</strong>定义了读写命名文件的类型，<strong>sstream</strong>定义了读写内存string对象的类型。</p>
+<p>类型ifstream和istringstream都<strong>继承</strong>自istream。因此我们可以像使用istream对象一样来使用ifstream和istringstream对象。需要注意的是，不<strong>能对IO对象进行拷贝或赋值，另外读写一个IO对象会改变其状态，因此传递和返回的引用不能是const的</strong>。</p>
+<h2 id="条件状态"><a href="#条件状态" class="headerlink" title="条件状态"></a>条件状态</h2><p>IO类定义了一些函数和标志，可以帮助我们访问和操纵流的<strong>条件状态</strong>。一个流一旦发生错误，其后的IO操作都会失败，确定一个流对象的最简单的方法就是将他作为一个条件去使用：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;word)</span><br></pre></td></tr></table></figure></p>
+<p>IO库定义了一个与机器无关的iostate类型，它提供了表达流状态的完整功能：<br><strong>badbit</strong>表示系统级错误，如不可恢复的读写错误；<strong>failbit</strong>表示可恢复错误，如期望读取数值缺读取了一个字符；达到文件结束的位置时，<strong>eofbit</strong>和<strong>failbit</strong>都会被置位。<strong>goodbit</strong>的值为0表示未出现错误。如果<strong>badbit</strong>，<strong>failbit</strong>，<strong>eofbit</strong>任意一个被置位，检测流的条件都会失败。</p>
+<h2 id="输出缓冲管理"><a href="#输出缓冲管理" class="headerlink" title="输出缓冲管理"></a>输出缓冲管理</h2><p>每个输出流都有一个<strong>缓冲区</strong>，用于保存程序读写的数据，如下面的代码<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">os&lt;&lt;<span class="string">"Hello,world"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>有可能直接打印也有可能被操作系统保存到缓冲区中，随后再打印。<br>显式刷新缓冲区的几个方法：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;<span class="built_in">endl</span>;	<span class="comment">//输出字符串之后输出换行然后刷新缓冲区</span></span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;flush;	<span class="comment">//输出字符串之后直接刷新缓冲区</span></span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;ends;	<span class="comment">//输出字符串之后输出空白字符然后刷新缓冲区</span></span><br></pre></td></tr></table></figure></p>
+<p>当输入流关联到输出流的时候，任何试图从输入流读取数据的操作都会先刷新关联的输出流，标准库将cout和cin关联到一起，可以使用tie()函数手动将istream和ostream关联到一起。</p>
+<h1 id="文件输入输出"><a href="#文件输入输出" class="headerlink" title="文件输入输出"></a>文件输入输出</h1><h2 id="open和close函数"><a href="#open和close函数" class="headerlink" title="open和close函数"></a>open和close函数</h2><p>在定义了一个空文件流对象之后，可以调用open将其与文件关联起来<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ifstream <span class="title">in</span><span class="params">(ifile)</span></span>;	<span class="comment">//构造一个ifstream并打开给定文件</span></span><br><span class="line">ofstream out;	<span class="comment">//输出文件流未与任何文件相关联</span></span><br><span class="line">out.open(ifile+<span class="string">".copy"</span>)	<span class="comment">//打开指定文件</span></span><br></pre></td></tr></table></figure></p>
+<p>文件流打开之后就会保持和对应文件的关联，如果试图将这个文件流关联到另一个文件上，必须先关闭相应的文件流。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">in.close();	<span class="comment">//关闭文件</span></span><br><span class="line">in.open(ifile+<span class="string">"2"</span>);	<span class="comment">//关联到新的文件</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="文件模式"><a href="#文件模式" class="headerlink" title="文件模式"></a>文件模式</h2><p>每个流都有一个关联的文件模式，用来指出如何使用文件，每个文件流类型都定义了一个默认的文件模式，当我们未指定文件模式时，就使用默认模式。与ifstream关联的文件默认以in模式（读方式）打开；与ofstream相关联的文件默认以out模式（写方式）打开。文件模式如下表：</p>
+<ul>
+<li>in           以只读方式打开</li>
+<li>out         以写方式打开</li>
+<li>app        每次写操作前均定位到文件末尾</li>
+<li>ate         打开文件后立即定义到文件末尾</li>
+<li>trunc      截断文件</li>
+<li>binary    以二进制进行IO</li>
+</ul>
+<p>默认情况下，当打开一个ofstream时，文件的内容会被丢弃。阻止一个ofstream清空给定文件内容的方法是同时指定app模式。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ofstream <span class="title">out</span><span class="params">(<span class="string">"file1"</span>)</span>	<span class="comment">//文件会被清空</span></span></span><br><span class="line"><span class="function">ofstream <span class="title">out</span><span class="params">(<span class="string">"file"</span>,ofstream::app|ofstream::out)</span>	<span class="comment">//以app方式打开会被保存</span></span></span><br></pre></td></tr></table></figure></p>
+<p>保留ofstream打开的文件中数据的唯一办法就是指定app形式打开或者in模式打开。</p>
+<h1 id="string流"><a href="#string流" class="headerlink" title="string流"></a>string流</h1><p>sstream头文件定义了三个类型来支持内存IO，这些类型可以向string写入数据，从string读取数据，就像string是个IO流一样。</p>
+<p>当我们的工作是对整行文本进行处理，而其他的一些工作是处理行内的单个单词时，通常可以使用<strong>istringstream</strong>。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> line,word;</span><br><span class="line"><span class="built_in">vector</span>&lt;PersonInfo&gt; people;</span><br><span class="line"><span class="keyword">while</span>(getline(<span class="built_in">cin</span>,line))&#123;	<span class="comment">//不断从cin读取一行</span></span><br><span class="line">	PersonInfo info;</span><br><span class="line">	<span class="function"><span class="built_in">istringstream</span> <span class="title">record</span><span class="params">(line)</span></span>;   <span class="comment">//利用读取的这一行初始化record对象</span></span><br><span class="line">	record&gt;&gt;info.name;      <span class="comment">//从这一行中单独处理每个单词</span></span><br><span class="line">	<span class="keyword">while</span>(record&gt;&gt;word)</span><br><span class="line">		info.phones.push_back(word);</span><br><span class="line">	people.push_back(info);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在我们逐步构造输出，希望最后一行打印时，ostringstream非常有用。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;entry:people)&#123;</span><br><span class="line">	<span class="built_in">ostringstream</span> formatted,badNums;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;nums:entry.phones)&#123;</span><br><span class="line">		<span class="keyword">if</span>(!valid(nums))&#123;   <span class="comment">//如果遇到无效电话号码，则放到badNums之后一起输出</span></span><br><span class="line">			badNums&lt;&lt;<span class="string">" "</span>&lt;&lt;nums;</span><br><span class="line">		&#125;<span class="keyword">else</span></span><br><span class="line">		formatted&lt;&lt;<span class="string">" "</span>&lt;&lt;format(nums);   <span class="comment">//将正常的电话号码都放到formatted中</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(badNums.str().empty())</span><br><span class="line">		os&lt;&lt;entry.name&lt;&lt;<span class="string">" "</span>&lt;&lt;formatted.str()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="built_in">cerr</span>&lt;&lt;<span class="string">"Input error: "</span>&lt;&lt;entry.name&lt;&lt;<span class="string">" invalid number(s) "</span>&lt;&lt;badNums.str()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/机器学习-利用TensorFlow训练一个简单的神经网络/" data-id="cjlgnt6k8001a1kezbwrf99xb" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/18/Cpp-Cpp中的IO类/" data-id="cjlhdjm5f0000okezb3lpzjbd" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
 
     </footer>
   </div>
@@ -157,10 +194,10 @@
 
 
   
-    <article id="post-机器学习-机器学习中的数值计算-1" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-最优化-等式约束的优化问题求解" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/29/机器学习-机器学习中的数值计算-1/" class="article-date">
-  <time datetime="2018-08-29T10:43:03.000Z" itemprop="datePublished">2018-08-29</time>
+    <a href="/2018/05/18/最优化-等式约束的优化问题求解/" class="article-date">
+  <time datetime="2018-05-18T13:11:35.000Z" itemprop="datePublished">2018-05-18</time>
 </a>
     
   </div>
@@ -171,7 +208,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/29/机器学习-机器学习中的数值计算-1/">[机器学习]机器学习中的数值计算(1)</a>
+      <a class="article-title" href="/2018/05/18/最优化-等式约束的优化问题求解/">[最优化]等式约束的优化问题求解</a>
     </h1>
   
 
@@ -179,28 +216,46 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="机器学习中的数值计算"><a href="#机器学习中的数值计算" class="headerlink" title="机器学习中的数值计算"></a>机器学习中的数值计算</h1><p>机器学习算法通常需要大量的数值计算，即通过迭代求解近似值而非求得解析解。这些算法通常包括最优化和线性方程组的求解，在计算机中要通过有限位来表示各种浮点数是具有一定误差的，需要通过一些方法来保证我们的计算精度。</p>
-<h2 id="上溢与下溢"><a href="#上溢与下溢" class="headerlink" title="上溢与下溢"></a>上溢与下溢</h2><p><strong>上溢</strong>(overflow)是具有破坏力的，当大量级的数被近似为$-\infty$或者$\infty$时会发生上溢，这会导致在下一步的计算中，数字变成非数字。<br><strong>下溢</strong>(underflow)同样也是毁灭性的，即当浮点数很小时被四舍五入为0，有时候0和非0具有完全不同的性质，这样可能会导致分母为0等错误现象的发生。</p>
-<p>可以通过softmax函数来避免上溢与下溢的发生：</p>
+        <h1 id="等式约束的优化问题求解"><a href="#等式约束的优化问题求解" class="headerlink" title="等式约束的优化问题求解"></a>等式约束的优化问题求解</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>本文将讨论下类形状的优化问题</p>
 <script type="math/tex; mode=display">
-softmax(\vec x)_{i}=\dfrac{exp(x_{i})}{\sum^{n}_{j=1}exp(x_{j})}</script><p>为了方便讨论，假设$\vec x$中的每个元素$x_{i}=c$，当$c$很大时，分子可能会上溢，同样的当$c$很小时分母会下溢。这两个问题可以通过计算$softmax(\vec z)$解决，其中$\vec  z=\vec x-max(x_{i})$，这样的话$\vec z$中的每个元素最大为0，分子不可能会发生上溢，至于分母，其中最少有一个值为1的分量，而其它元素都是非负的，所以分母也不可能发生下溢。这样便能解决溢出的问题。</p>
-<h2 id="病态条件"><a href="#病态条件" class="headerlink" title="病态条件"></a>病态条件</h2><p>条件数指的是函数相对于输入的微小变化而变化的快慢程度。输入的轻微扰动而导致函数的迅速变化对于数值计算是有问题的。对于函数$f(x)=A^{-1}x$，当$A\in R^{n*n}$具有特征值分解的时候，其条件数为：</p>
+minimize\quad f(x)\\
+subject\  to\quad h(x)=0</script><p>其中$x\in R^{n},f:R^{n}\to R,h:R^{n}\to R^{m},h=[h_{1},…,h_{m}]^{T},m\le n$，假定函数$h$连续可微，即$h\in C^{1}$。<br>下面介绍几个基本概念：</p>
+<p><strong>正则点</strong>：对于满足约束 <script type="math/tex">h_{1}(x^{*})=0,...,h_{m}(x^{*})=0</script> 的点<script type="math/tex">x^{**}</script>，如果梯度向量 <script type="math/tex">\nabla h_{1}(x^{*}),...,\nabla h_{m}(x^{*})</script> 是线性无关的，则称<script type="math/tex">x^{*}</script>是该约束的一个正则点。</p>
+<p><strong>切线空间</strong>：曲面<script type="math/tex">S={x\in R^{n}:h(x)=0}</script>中点<script type="math/tex">x^{*}</script>处的切线空间为集合<script type="math/tex">T(x^{*})=\{ y:Dh(x^{*})y=0\}</script>。可以看出切线空间<script type="math/tex">T(x^{*})</script>是矩阵<script type="math/tex">Dh(x^{*})</script>的零空间，即<script type="math/tex">T(x^{*})=N(Dh(x^{*}))</script>。</p>
+<p><strong>法线空间</strong>：曲面<script type="math/tex">S={x\in R^{n}:h(x)=0}</script>中点<script type="math/tex">x^{*}</script>处的法线空间为集合<script type="math/tex">N(x^{*})=\{ x\in R^{n}:x=Dh(x^{*})^{T}z,z\in R^{m}\}</script>。可以看出法线空间<script type="math/tex">N(x^{*})</script>是矩阵<script type="math/tex">Dh(x^{*})</script>的零空间，即<script type="math/tex">N(x^{*})=R(Dh(x^{*})^{T})</script>。</p>
+<h2 id="拉格朗日条件"><a href="#拉格朗日条件" class="headerlink" title="拉格朗日条件"></a>拉格朗日条件</h2><p>首先考虑只包含两个决策变量和一个等式约束的优化问题。令<script type="math/tex">h:R^{2}\to R</script>为约束函数，可知函数定义域中<script type="math/tex">x</script>处的梯度<script type="math/tex">\nabla h(x)</script>与通过该点的<script type="math/tex">h(x)</script>水平集正交，选择点<script type="math/tex">x^{*}=[x^{*}_{1},x^{*}_{1}]^{T}</script>使得<script type="math/tex">h(x^{*})=0</script>，且<script type="math/tex">\nabla h(x^{*})\neq 0</script>，经过点<script type="math/tex">x^{*}</script>的水平集为集合<script type="math/tex">\{ x:h(x)=0\}</script>。可利用曲线<script type="math/tex">x(t)</script>在<script type="math/tex">x^{*}</script>领域内进行参数化，<script type="math/tex">x(t)</script>是一个连续可微的向量函数<script type="math/tex">h:R\to R^{2}</script>：</p>
 <script type="math/tex; mode=display">
-max_{i,j}|\frac{\lambda_{i}}{\lambda_{j}}|</script><p>即为最大特征值和最小特征值的比，当这个数很大时，其$f(x)$对于输入$x$的误差很敏感。</p>
-<h2 id="基于梯度的优化"><a href="#基于梯度的优化" class="headerlink" title="基于梯度的优化"></a>基于梯度的优化</h2><p>深度学习算法通常使用基于梯度的优化算法，传统的梯度下降由于资料众多故不再赘述，在这里重点介绍关于梯度方法的其他知识，主要包括Jacobian矩阵和Hessian矩阵。</p>
-<p>有时候我们需要计算输入输出都为向量的函数的所有偏导数，包含所有这样的偏导数的矩阵称为Jacobian矩阵。即如果有一个函数$f:R^{m}\to R^{n}$，$f$的Jacobian矩阵为$J_{i,j}=\frac{\partial}{\partial x_{j}}f(\vec x)_{i}$。</p>
-<p>对于传统的梯度下降算法我们只用到了一阶导数，有时候在用到其他优化算法（比如牛顿法）需要用到二阶导数，将所有的二阶导数构成的矩阵称之为Hessian矩阵，即：</p>
+x(t)=[x_{1}(t),x_{1}(t)]^{T},t\in (a,b),x^{*}=x(t^{*}),\dot{x}(t^{*})\neq 0,t^{*}\in (a,b)</script><p>接下来可以证明，<script type="math/tex">\nabla h(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交。由于<script type="math/tex">h</script>在曲线<script type="math/tex">\{x(t):t\in (a,b)\}</script>上是常数0，即对于所有的<script type="math/tex">t\in (a,b)</script>都有</p>
 <script type="math/tex; mode=display">
-H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</script><p>在深度学习的背景下，Hessian矩阵几乎处处是对称的。在特定方向$\vec d$上的二阶导数可以写成$\vec d^{T}H\vec d$。当$\vec d$是$H$的一个向量时，这个方向的二阶导数就是对应的特征值。</p>
-<p>Hessian矩阵的一个重要作用就是进行二阶导数测试，即判断当前的点是极大/极小值点或者是鞍点。一维情况很简单，对于多维情况，我们通过检测Hessian矩阵的特征值来判断该临界点，当Hessian矩阵是正定时，该临界点是局部极小点，同样负定时则为局部极大点。如果Hessian的特征值中至少一个是正的一个是负的，那么$x$在某个平面上是局部极大点，在某个平面是局部极小点，则为鞍点。<br><img src="https://img-blog.csdn.net/20180714180718129?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>这是关于机器学习中数值计算文章系列的第一篇，To be continue…</p>
+h(x(t))=0</script><p>因此对于任意的<script type="math/tex">t\in(a,b)</script>都有</p>
+<script type="math/tex; mode=display">
+\frac{d}{dt}h(x(t))=0</script><p>利用链式法则可以得到</p>
+<script type="math/tex; mode=display">
+\frac{d}{dt}h(x(t))=\nabla h(x(t))^{T}\dot{x}(t)=0</script><p>因此<script type="math/tex">\nabla h(x^{*})</script>和<script type="math/tex">\dot{x}(t^{*})</script>正交<br>当<script type="math/tex">x^{*}</script>是<script type="math/tex">f:R\to R^{2}</script>在满足<script type="math/tex">h(x)=0</script>上的极小点的时候，可以证明，<script type="math/tex">\nabla f(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交，构造关于<script type="math/tex">t</script>的复合函数：</p>
+<script type="math/tex; mode=display">
+\phi(t)=f(x(t))</script><p>当<script type="math/tex">t=t^{*}</script>的时候取得极小值，根据无约束极值问题的一阶必要条件可知</p>
+<script type="math/tex; mode=display">
+\frac{d\phi}{dt}(t^{*})=0</script><p>利用链式法则可以得到</p>
+<script type="math/tex; mode=display">
+\frac{d}{dt}\phi(t^{*})=\nabla f(x(t^{*}))^{T}\dot{x}(t^{*})=\nabla f(x^{*})^{T}\dot{x}(t^{*})=0</script><p>因此，<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\dot{x}(t^{*})</script>正交，上面已经证明<script type="math/tex">\nabla f(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交，那么向量<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\nabla h(x^{*})</script>平行，那么可以得到这种情况下的拉格朗日定理：</p>
+<p><strong>n=2,m=3时的拉格朗日定理：</strong>设点<script type="math/tex">x^{*}</script>是函数<script type="math/tex">f:R^{2}\to R</script>的一个极小点，约束条件是<script type="math/tex">h(x)=0,h:R^{2}\to R</script>,那么<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\nabla h(x^{*})</script>平行，即如果<script type="math/tex">\nabla h(x^{*})\neq 0</script>，则存在标量<script type="math/tex">\lambda^{*}</script>，使得</p>
+<script type="math/tex; mode=display">
+\nabla f(x^{*})+\lambda^{*}\nabla h(x^{*})=0</script><p>其中<script type="math/tex">\lambda^{*}</script>为拉格朗日乘子。<br>将这个定理推广到一般情况下，即<script type="math/tex">f:R^{n}\to R,h:R^{n}\to R^{m},m\le n</script>的时候，可以得到：<br><strong>拉格朗日定理：</strong><script type="math/tex">x^{*}</script>是<script type="math/tex">f:R^{n}\to R</script>的局部极小点（或极大点），约束条件为<script type="math/tex">h(x)=0,h:R^{n}\to R^{m},m\le n</script>。如果<script type="math/tex">x^{*}</script>是正则点，那么存在<script type="math/tex">\lambda^{*}\in R^{m}</script>使得</p>
+<script type="math/tex; mode=display">
+D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二阶条件" class="headerlink" title="二阶条件"></a>二阶条件</h2><p><strong>二阶必要条件：</strong>设<script type="math/tex">x^{*}</script>是<script type="math/tex">f:R^{n}\to R</script>在约束条件<script type="math/tex">h(x)=0,h:R^{n}\to R^{m},m\le n,f,h\in C^{2}</script>下的局部极小点。如果<script type="math/tex">x^{*}</script>是正则点，那么存在<script type="math/tex">\lambda^{*}\in R^{m}</script>使得</p>
+<p> 1.<script type="math/tex">D f(x^{*})+\lambda^{*T}D h(x^{*})=0^{T}</script><br> 2.对于所有的<script type="math/tex">y\in T(x^{*})</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*})y\ge 0</script></p>
+<p><strong>二阶充分条件：</strong>函数<script type="math/tex">f,h\in C^{2}</script>，如果存在点<script type="math/tex">x^{*}\in R^{n}</script>和<script type="math/tex">\lambda^{*}\in R^{m}</script>，使得</p>
+<p> 1.<script type="math/tex">D f(x^{*})+\lambda^{*T}D h(x^{*})=0^{T}</script><br> 2.对于所有的<script type="math/tex">y\in T(x^{*})</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*})y> 0</script></p>
+<p>那么<script type="math/tex">x^{*}</script>是<script type="math/tex">f</script>在约束条件<script type="math/tex">h(x)=0</script>下的严格局部极小点</p>
+<p>本文介绍了等式约束下的拉格朗日乘子法，后面还将会介绍不等式约束下的拉格朗日乘子法以及KKT条件等，To be continue…</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/机器学习-机器学习中的数值计算-1/" data-id="cjlgnt6kc001f1kez2xp97hr6" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/18/最优化-等式约束的优化问题求解/" data-id="cjlhdjm6s000mokez0joa8r0j" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
 
     </footer>
   </div>
@@ -209,10 +264,10 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
 
 
   
-    <article id="post-LeetCode-207-Course-Schedule" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Cpp-Cpp中的构造函数" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/29/LeetCode-207-Course-Schedule/" class="article-date">
-  <time datetime="2018-08-29T10:43:01.000Z" itemprop="datePublished">2018-08-29</time>
+    <a href="/2018/05/11/Cpp-Cpp中的构造函数/" class="article-date">
+  <time datetime="2018-05-11T10:48:20.000Z" itemprop="datePublished">2018-05-11</time>
 </a>
     
   </div>
@@ -223,7 +278,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/29/LeetCode-207-Course-Schedule/">[LeetCode]207. Course Schedule</a>
+      <a class="article-title" href="/2018/05/11/Cpp-Cpp中的构造函数/">[Cpp]Cpp中的构造函数</a>
     </h1>
   
 
@@ -231,22 +286,37 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>该题目利用DFS和BFS来判断某个图是否能进行拓扑排序</p>
+        <h1 id="C-中的构造函数"><a href="#C-中的构造函数" class="headerlink" title="C++中的构造函数"></a>C++中的构造函数</h1><p>每个类都分别定义了它的对象被初始化的方式，类通过一个或多个特殊的成员函数来控制其对象的初始化过程，这些函数就叫做<strong>构造函数(constructor)</strong>。构造函数的任务是初始化类对象的数据成员，无论何时只要类的对象被创建，就会执行构造函数。</p>
+<p>构造函数的名字和类名相同，但其没有返回类型。类可以包括多个构造函数，和其他重载函数差不多，不同的构造函数之间必须在参数数量或参数类型上有所区别。</p>
+<p>构造函数不能被声明为const的，在常量对象的创建过程中，可以为其中的参数写值，知道对象创建完成才会取得const属性。</p>
+<h2 id="默认构造函数"><a href="#默认构造函数" class="headerlink" title="默认构造函数"></a>默认构造函数</h2><p>当我们没有为类提供构造函数的时候，编译器会为我们隐式地定义一个构造函数，编译器创建的构造函数又被称为<strong>合成的默认构造函数</strong>，它将按照以下规则初始化类地数据成员</p>
+<ul>
+<li>如果存在类内的初始值，用它来初始化成员</li>
+<li>如果不存在则默认初始化该成员</li>
+</ul>
+<p>合成的默认构造函数只适合非常简单的类，对于普通的类来说，必须定义它自己的构造函数，原因如下：</p>
 <ol>
-<li><p>BFS的思路是先将给定的pair组转换成vector<unordered_set>格式存放的图，然后计算每个节点的入度，先找到入度为0的节点，如果未找到直接返回false ，找到之后将该点的入度标记为-1，然后将其指向的节点的入度减1，循环n次，如果每次都能找到入度为0的节点，那么可以进行拓扑排序。</unordered_set></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">canFinish</span><span class="params">(<span class="keyword">int</span> numCourses, <span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&amp; prerequisites)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt; graph = make_graph(numCourses, prerequisites);</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; degrees = compute_indegree(graph);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numCourses; i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (; j &lt; numCourses; j++)</span><br><span class="line">                <span class="keyword">if</span> (!degrees[j]) <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">if</span> (j == numCourses) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            degrees[j] = <span class="number">-1</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> neigh : graph[j])</span><br><span class="line">                degrees[neigh]--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt; make_graph(<span class="keyword">int</span> numCourses, <span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&amp; prerequisites) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt; graph(numCourses);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> pre : prerequisites)</span><br><span class="line">            graph[pre.second].insert(pre.first);</span><br><span class="line">        <span class="keyword">return</span> graph;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; compute_indegree(<span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; graph) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; degrees(graph.size(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> neighbors : graph)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> neigh : neighbors)</span><br><span class="line">                degrees[neigh]++;</span><br><span class="line">        <span class="keyword">return</span> degrees;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>DFS的思路则是通过DFS判断图中是否有环，通过onPath作为标记数组，来标记是否当前路径已经访问过，利用visited来标记已经访问过的节点，利用dfs_cycle()来判断当前的dfs路径上是否有环</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">canFinish</span><span class="params">(<span class="keyword">int</span> numCourses, <span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&amp; prerequisites)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt; graph = make_graph(numCourses, prerequisites);</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; onpath(numCourses, <span class="literal">false</span>), visited(numCourses, <span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numCourses; i++)</span><br><span class="line">            <span class="keyword">if</span> (!visited[i] &amp;&amp; dfs_cycle(graph, i, onpath, visited))</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt; make_graph(<span class="keyword">int</span> numCourses, <span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&amp; prerequisites) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt; graph(numCourses);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> pre : prerequisites)</span><br><span class="line">            graph[pre.second].insert(pre.first);</span><br><span class="line">        <span class="keyword">return</span> graph;</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">dfs_cycle</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; graph, <span class="keyword">int</span> node, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&amp; onpath, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&amp; visited)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (visited[node]) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        onpath[node] = visited[node] = <span class="literal">true</span>; </span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> neigh : graph[node])</span><br><span class="line">            <span class="keyword">if</span> (onpath[neigh] || dfs_cycle(graph, neigh, onpath, visited))</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">return</span> onpath[node] = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+<li>编译器只有在发现类不包含任何构造函数的情况下才会创建默认的构造函数</li>
+<li>对于某些类，合成的默认构造函数可能会执行错误的操作，比如对数组或指针进行默认初始化，其值将是未定义的</li>
+<li>编译器有时候不能为某些类创建默认构造函数，如果该类里面含有其他类的成员而该类成员没有默认构造函数，则编译器不能执行默认初始化</li>
 </ol>
+<p>当且仅当我们既需要普通的构造函数也需要默认构造函数的时候，可以使用=default来定义<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sales_data</span>&#123;</span></span><br><span class="line">	Sales_data()=<span class="keyword">default</span>;  <span class="comment">//默认构造函数</span></span><br><span class="line">	Sales_data(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;s):bookNo(s)&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="构造函数初始值列表"><a href="#构造函数初始值列表" class="headerlink" title="构造函数初始值列表"></a>构造函数初始值列表</h2><p>对于Sales_data类的其他构造函数<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Sales_data(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;s):bookNo(s)&#123;&#125;  <span class="comment">//s作为bookNo的初值</span></span><br><span class="line">Sales_data(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;s,<span class="keyword">unsigned</span> n,<span class="keyword">double</span> p):bookNo(s),units_sold(n),revenue(p*n)&#123;&#125;</span><br><span class="line"><span class="comment">//s作为bookNo的初值，n作为units_sold的初值，p*n作为revenue的初值</span></span><br></pre></td></tr></table></figure></p>
+<p> 在参数列表与大括号之间新出现的部分称为构造函数初始值列表，它负责为新创建对象的一个或几个数据成员赋初值，另外需要注意构造函数不应该轻易覆盖掉类内的初始值，除非新赋的值与原值不同。</p>
+<p>需要注意，成员的初始化顺序与它们在类定义中出现的顺序一致：第一个成员先被初始化，然后第二个等等。构造函数初始值列表中初始值的前后位置关系不会影响实际的初始化顺序，因此最好令构造函数初始值的顺序与成员声明的顺序一致。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">X</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">int</span> j;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	X(<span class="keyword">int</span> val):j(val),i(j)&#123;&#125;</span><br><span class="line">	<span class="comment">//会出现错误，因为i在j之前被初始化</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<h2 id="委托构造函数"><a href="#委托构造函数" class="headerlink" title="委托构造函数"></a>委托构造函数</h2><p>C++11新标准扩展了构造函数初始值的功能，使得我们能够定义委托构造函数，一个委托构造函数使用它所属类的其他构造函数执行它自己的初始化过程，或者说把它自己的一些或全部职责委托给了其他的构造函数。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sales_data</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	Sales_data(<span class="built_in">std</span>::<span class="built_in">string</span> s,<span class="keyword">unsigned</span> cnt,<span class="keyword">double</span> price):bookNo(s),units_sold(cnt),revenue(cnt*price)&#123;&#125;</span><br><span class="line">	<span class="comment">//下面的构造函数都委托给其他的构造函数</span></span><br><span class="line">	Sales_data():Sales_data(<span class="string">" "</span>,<span class="number">0</span>,<span class="number">0</span>)&#123;&#125;</span><br><span class="line">	Sales_data(<span class="built_in">std</span>::<span class="built_in">string</span> s):Sales_data(s,<span class="number">0</span>,<span class="number">0</span>)&#123;&#125;</span><br><span class="line">	Sales_data(<span class="built_in">std</span>::istream &amp;is):Sales_data()&#123;read(is,*<span class="keyword">this</span>);&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="隐式的类类型转换"><a href="#隐式的类类型转换" class="headerlink" title="隐式的类类型转换"></a>隐式的类类型转换</h2><p>在某个类中，接受string的构造函数和接受istream的构造函数分别定义了这两种类型向该类的转换规则<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> null_book=<span class="string">"9999"</span>;</span><br><span class="line">item.combine(null_book);</span><br><span class="line"><span class="comment">//编译器用给定的string自动创建了一个Sales_data的对象</span></span><br></pre></td></tr></table></figure></p>
+<p>注意，编译器只会执行一步类型转换，例如从字面量再到string对象再到Sales_data对象的转换是不被允许的。</p>
+<p>在我们不需要进行类型转换的时候可以使用<strong>explicit</strong>关键字进行抑制<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sales_data</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	Sales_data()=<span class="keyword">default</span>;</span><br><span class="line">	explicit Sales_data(const std::string &amp;s):bookNo(s)&#123;&#125; //不能从string对象转换为Sales_data对象</span><br><span class="line">	<span class="function"><span class="keyword">explicit</span> <span class="title">Sales_data</span><span class="params">(<span class="built_in">std</span>::istream&amp;)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在不使用隐式转换的时候，另外可以使用显式转换<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">item.combine(<span class="keyword">static_cast</span>&lt;Sales_data&gt;(<span class="built_in">cin</span>));</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/LeetCode-207-Course-Schedule/" data-id="cjlgnt6jj000a1kezqy7buud1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/11/Cpp-Cpp中的构造函数/" data-id="cjlhdjm680004okezxyf03dkm" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
 
     </footer>
   </div>
@@ -255,10 +325,10 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
 
 
   
-    <article id="post-最优化-求解线性方程组-1" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-最优化-线性规划中的对偶问题" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/29/最优化-求解线性方程组-1/" class="article-date">
-  <time datetime="2018-08-29T10:42:58.000Z" itemprop="datePublished">2018-08-29</time>
+    <a href="/2018/05/11/最优化-线性规划中的对偶问题/" class="article-date">
+  <time datetime="2018-05-11T05:38:34.000Z" itemprop="datePublished">2018-05-11</time>
 </a>
     
   </div>
@@ -269,7 +339,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/29/最优化-求解线性方程组-1/">[最优化]求解线性方程组(1)</a>
+      <a class="article-title" href="/2018/05/11/最优化-线性规划中的对偶问题/">[最优化]线性规划中的对偶问题</a>
     </h1>
   
 
@@ -277,38 +347,45 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="求解线性方程组（1）"><a href="#求解线性方程组（1）" class="headerlink" title="求解线性方程组（1）"></a>求解线性方程组（1）</h1><h2 id="最小二乘分析"><a href="#最小二乘分析" class="headerlink" title="最小二乘分析"></a>最小二乘分析</h2><p>在本文中将讨论线性方程组中的一种情况的求解，即考虑线性方程组</p>
+        <h1 id="线性规划中的对偶问题"><a href="#线性规划中的对偶问题" class="headerlink" title="线性规划中的对偶问题"></a>线性规划中的对偶问题</h1><p>每个线性规划问题都有一个与之对应的对偶问题，对偶问题也是一个线性规划问题，并且对偶问题的对偶问题是原问题。原问题的最优解可以由对偶问题得到，有时候利用对偶理论求解线性规划问题更加简单，也更能了解问题的本质。在对偶理论的启发下，单纯形法的性能得到了改进，也出现了一些求解线性规划问题的非单纯形法，本文暂不详解。</p>
+<h2 id="对偶关系"><a href="#对偶关系" class="headerlink" title="对偶关系"></a>对偶关系</h2><p>考虑如下形式的对偶问题</p>
 <script type="math/tex; mode=display">
-Ax=b</script><p>其中，<script type="math/tex">A\in R^{m*n},b\in R^{m},m\ge n,rank(A)=n</script>，在这种情况下，未知数的数量小于方程的数量，所以在很大可能上$b$不在$A$的值域空间中，即方程组无解，但是此时可以得到该线性方程方程的最小二乘解，即存在<script type="math/tex">x^{*}</script>使得对于所有的<script type="math/tex">x\in R^{n}</script>都有</p>
+minimize\quad c^{T}x \\
+subject\ to\quad Ax\ge  b\\
+A\ge0</script><p>将其称为原问题，其相应的对偶形式定义为</p>
 <script type="math/tex; mode=display">
-||Ax-b||^{2}\ge ||Ax^{*}-b||^{2}</script><p>即称<script type="math/tex">x^{*}</script>为该线性方程的<strong>最小二乘解</strong>，当$b$在$A$的解空间中时，<script type="math/tex">x^{*}</script>自然就是该方程的解，最小二乘解可以通过以下公式直接计算出来：</p>
+maximize\quad \lambda^{T}b \\
+subject\ to\quad \lambda^{T} A\le  c^{T}\\
+\lambda \ge0</script><p>其中$\lambda$称为对偶向量，这种对偶称为<strong>对称形式的对偶</strong>。<br>另外对于线性规划的标准形，其约束为$Ax=b$，等价于</p>
 <script type="math/tex; mode=display">
-x^{*}=(A^{T}A)^{-1}A^{T}b</script><p>证明过程如下：<br>构造目标函数</p>
-<script type="math/tex; mode=display">f(x)=||Ax-b||^{2}\\
-=(Ax-b)^{T}(Ax-b)\\
-=\frac{1}{2}x^{T}(2A^{T}A)x-x^{T}(2A^{T}b)+b^{T}b</script><p>显然函数<script type="math/tex">f</script>为二次型函数，由于<script type="math/tex">rank(A)=n</script>，因此该二次型为正定二次型，利用局部极小点的一阶必要条件可以得到极小点满足</p>
+Ax\ge b\\
+-Ax\ge -b</script><p>因此含有等式约束的原问题可以写为</p>
 <script type="math/tex; mode=display">
-\nabla f(x)=2A^{T}Ax-2A^{T}b=0</script><p>该方程的唯一解为<script type="math/tex">x^{*}=(A^{T}A)^{-1}A^{T}b</script>，即为最小二乘解，最小二乘法对于直线拟合等应用是很方便的算法。</p>
-<h2 id="递推最小二乘法"><a href="#递推最小二乘法" class="headerlink" title="递推最小二乘法"></a>递推最小二乘法</h2><p>上一节介绍了最小二乘法，我们可以用其来做直线拟合，如果要在拟合的数据中增加几组数据可以通过递推最小二乘法的方式来进行，即根据上次拟合的结果做部分修正即可，即利用上次拟合得到的最小二乘解<script type="math/tex">x^{*}</script>来得到数据点增加后的最小二乘解<script type="math/tex">x^{*}</script>。</p>
-<p>某个优化问题为了寻找合适的<script type="math/tex">x</script>，使得<script type="math/tex">||A_{0}x-b^{(0)}||^{2}</script>最小，已知该问题的解为<script type="math/tex">x^{(0)}=G_{0}^{-1}A_{0}^{T}b^{(0)}</script>，其中<script type="math/tex">G_{0}=A^{T}_{0}A_{0}</script>，如果增加了新的数据，用矩阵<script type="math/tex">A_{1}</script>和向量<script type="math/tex">b_{1}</script>来表示，那么这个问题即为寻找<script type="math/tex">x</script>使得</p>
+minimize\quad c^{T}x\\
+subject\ to\quad \begin{bmatrix} A\\-A \end{bmatrix}x\ge \begin{bmatrix} b\\-b \end{bmatrix}\\
+x\ge 0</script><p>这与对称形式的原问题具有相同的结构，因此上述问题的对偶问题为</p>
 <script type="math/tex; mode=display">
-||
-\begin{bmatrix}
-A_{0}\\A_{1}
-\end{bmatrix}x-\begin{bmatrix}
-b^{(0)}\\b^{(1)}
-\end{bmatrix}||^{2}</script><p>达到最小<br>其迭代公式为：</p>
+maximize\quad [u^{T}\ v^{T}] \begin{bmatrix} b\\-b \end{bmatrix}\\
+subject\ to\quad [u^{T}\ v^{T}] \begin{bmatrix} A\\-A \end{bmatrix}\le c^{T}\\
+u,v\ge 0</script><p>对偶问题可以整理为</p>
 <script type="math/tex; mode=display">
-G_{1}=G_{0}+A_{1}^{T}A_{1}\\
-x^{(1)}=x^{(0)}+G_{1}^{-1}A_{1}^{T}(b^{(1)}-A_{1}x^{(0)})</script><p>证明过程暂略，在一般情况下的迭代公式为：</p>
+maximize\quad (u-v)^{T}b\\
+subject\ to\quad (u-v)^{T}A\le c^{T}\\
+u,v\ge 0</script><p>令$\lambda=u-v$，上述问题则变为</p>
 <script type="math/tex; mode=display">
-G_{k+}=G_{k}+A_{k+1}^{T}A_{k+1}\\
-x^{(k+1)}=x^{(k)}+G_{k+1}^{-1}A_{k+1}^{T}(b^{(k+1)}-A_{k+1}x^{(k)})</script><p>对于线性方程组的求解，后面还将会介绍最小范数解和一般情况下的解法，以及伪逆等知识，To be continue…</p>
-
+maximize\quad \lambda^{T}b\\
+subject\ to\quad \lambda^{T}A\le c^{T}</script><p>注意此时由于$u,v\ge 0,\lambda=u-v$，没有了非负约束，将这种关系称为<strong>非对称形式的对偶</strong>。</p>
+<h2 id="对偶问题的性质"><a href="#对偶问题的性质" class="headerlink" title="对偶问题的性质"></a>对偶问题的性质</h2><p>在这里给出对偶问题的一些基本结论，暂不做证明<br><strong>弱对偶引理</strong>：假设$x$和$\lambda$分别是线性规划的原问题和对偶问题（对称形式及非对称形式）的可行解，则$x^{T}x\ge \lambda^{T}b$，即“极大值$\le$极小值”。</p>
+<p><strong>定理1</strong>：假设$x_{0}$和$\lambda_{0}$分别是原问题和对偶问题的可行解，如果$c^{T}x_{0}=\lambda_{0}^{T}b$，那么$x_{0}$和$\lambda_{0}$分别是各自问题的最优解。</p>
+<p><strong>定理2（对偶定理）</strong>：如果原问题有最优解，那么其对偶问题也有最优解，并且它们目标函数的最优解相同。</p>
+<p><strong>定理3（互补松弛条件）</strong>：$x$和$\lambda$分别是原问题和对偶问题的可行解，则它们分别是各自问题的最优解的充分必要条件为</p>
+<script type="math/tex; mode=display">
+1.\quad(c^{T}-\lambda^{T}A)x=0\\
+2.\quad\lambda^{T}(Ax-b)=0</script>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/最优化-求解线性方程组-1/" data-id="cjlgnt6jp000i1kezznrouflv" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/11/最优化-线性规划中的对偶问题/" data-id="cjlhdjm6v000pokezl8s42vyv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -378,7 +455,7 @@ x^{(k+1)}=x^{(k)}+G_{k+1}^{-1}A_{k+1}^{T}(b^{(k+1)}-A_{k+1}x^{(k)})</script><p>�
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">25</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -391,23 +468,23 @@ x^{(k+1)}=x^{(k)}+G_{k+1}^{-1}A_{k+1}^{T}(b^{(k+1)}-A_{k+1}x^{(k)})</script><p>�
       <ul>
         
           <li>
-            <a href="/2018/08/29/hello-world/">Hello World</a>
+            <a href="/2018/08/24/机器学习-SVM的推导-3/">[机器学习]SVM的推导(3)</a>
           </li>
         
           <li>
-            <a href="/2018/08/29/Cpp-谈一谈const关键字/">[Cpp]谈一谈const关键字</a>
+            <a href="/2018/08/18/机器学习-SVM的推导-2/">[机器学习]SVM的推导(2)</a>
           </li>
         
           <li>
-            <a href="/2018/08/29/最优化-线性规划概述/">[最优化]线性规划概述</a>
+            <a href="/2018/08/10/机器学习-SVM的推导-1/">[机器学习]SVM的推导(1)</a>
           </li>
         
           <li>
-            <a href="/2018/08/29/最优化-求解线性规划问题的单纯形算法/">[最优化]求解线性规划问题的单纯形算法</a>
+            <a href="/2018/07/26/最优化-求解线性方程组-3/">[最优化]求解线性方程组(3)</a>
           </li>
         
           <li>
-            <a href="/2018/08/29/Cpp-Cpp函数中的参数传递/">[Cpp]Cpp函数中的参数传递</a>
+            <a href="/2018/07/21/最优化-求解线性方程组-2/">[最优化]求解线性方程组(2)</a>
           </li>
         
       </ul>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>[最优化]求解线性方程组(3) | Math &amp; Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="求解线性方程组(3)矩阵的伪逆这里所介绍的伪逆是Moore-Penrose逆矩阵，其定义为：给定矩阵A\in R^{m*n}，如果矩阵A^{\dagger}\in R^{n*m}满足AA^{\dagger}A=A，且存在两个矩阵U\in R^{n*n},V\in R^{m*m}使得  A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V那么则称A^{\dagger}是矩阵A的">
+<meta name="keywords" content="optimization">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[最优化]求解线性方程组(3)">
+<meta property="og:url" content="http://yoursite.com/2018/07/26/最优化-求解线性方程组-3/index.html">
+<meta property="og:site_name" content="Math &amp; Code">
+<meta property="og:description" content="求解线性方程组(3)矩阵的伪逆这里所介绍的伪逆是Moore-Penrose逆矩阵，其定义为：给定矩阵A\in R^{m*n}，如果矩阵A^{\dagger}\in R^{n*m}满足AA^{\dagger}A=A，且存在两个矩阵U\in R^{n*n},V\in R^{m*m}使得  A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V那么则称A^{\dagger}是矩阵A的">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-08-31T01:38:57.551Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[最优化]求解线性方程组(3)">
+<meta name="twitter:description" content="求解线性方程组(3)矩阵的伪逆这里所介绍的伪逆是Moore-Penrose逆矩阵，其定义为：给定矩阵A\in R^{m*n}，如果矩阵A^{\dagger}\in R^{n*m}满足AA^{\dagger}A=A，且存在两个矩阵U\in R^{n*n},V\in R^{m*m}使得  A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V那么则称A^{\dagger}是矩阵A的">
+  
+    <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Math &amp; Code</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">---By Frank,the best or nothing</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-最优化-求解线性方程组-3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/26/最优化-求解线性方程组-3/" class="article-date">
+  <time datetime="2018-07-26T14:24:16.000Z" itemprop="datePublished">2018-07-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      [最优化]求解线性方程组(3)
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="求解线性方程组-3"><a href="#求解线性方程组-3" class="headerlink" title="求解线性方程组(3)"></a>求解线性方程组(3)</h1><h2 id="矩阵的伪逆"><a href="#矩阵的伪逆" class="headerlink" title="矩阵的伪逆"></a>矩阵的伪逆</h2><p>这里所介绍的伪逆是<strong>Moore-Penrose逆矩阵</strong>，其定义为：给定矩阵<script type="math/tex">A\in R^{m*n}</script>，如果矩阵<script type="math/tex">A^{\dagger}\in R^{n*m}</script>满足<script type="math/tex">AA^{\dagger}A=A</script>，且存在两个矩阵<script type="math/tex">U\in R^{n*n},V\in R^{m*m}</script>使得</p>
+<script type="math/tex; mode=display">
+A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V</script><p>那么则称<script type="math/tex">A^{\dagger}</script>是矩阵<script type="math/tex">A</script>的<strong>伪逆</strong>，可以通过证明得到，矩阵的伪逆是<strong>唯一</strong>的。</p>
+<p>对于矩阵<script type="math/tex">A\in R^{m*n},m\ge n</script>且<script type="math/tex">rank(A)=n</script>，可以根据以上定义验证得到<script type="math/tex">A</script>的伪逆为</p>
+<script type="math/tex; mode=display">
+A^{\dagger}=(A^{T}A)^{-1}A^{T}</script><p>对于矩阵<script type="math/tex">A\in R^{m*n},m\le n</script>且<script type="math/tex">rank(A)=m</script>，同样根据以上定义验证得到<script type="math/tex">A</script>的伪逆为</p>
+<script type="math/tex; mode=display">
+A^{\dagger}=A^{T}(AA^{T})^{-1}</script><p>以上两种情况是当矩阵为<strong>列满秩</strong>或者<strong>行满秩</strong>情况下的伪逆，而对于一般矩阵<script type="math/tex">A\in R^{m*n},rank(A)=r,r\le min(m,n)</script>，我们可以采用<strong>满秩分解</strong>的方法来求得其伪逆。</p>
+<p>对于任意矩阵<script type="math/tex">A\in R^{m*n},rank(A)=r,r\le min(m,n)</script>，都可以将其分解为一个行满秩矩阵和列满秩矩阵的乘积：<br>即<script type="math/tex">A=BC,B\in R^{m*r},c\in R^{r*n},rank(A)=rank(B)=rank(C)=r</script></p>
+<p>可以通过证明得到：</p>
+<p><script type="math/tex">A^{\dagger}=C^{\dagger}B^{\dagger}</script>，而其中<script type="math/tex">B^{\dagger}=(B^{T}B)^{-1}B^{T},C^{\dagger}=C^{T}(CC^{T})^{-1}</script>，即为一般矩阵的伪逆求法。</p>
+<h2 id="一般情况下线性方程组的解法"><a href="#一般情况下线性方程组的解法" class="headerlink" title="一般情况下线性方程组的解法"></a>一般情况下线性方程组的解法</h2><p>某线性方程组为<script type="math/tex">Ax=b,A\in R^{m*n},rank(A)=r</script>，向量<script type="math/tex">x^{*}=A^{\dagger}b</script>可在空间<script type="math/tex">R^{n}</script>中最小化<script type="math/tex">||Ax-b||^{2}</script>;而且在<script type="math/tex">R^{n}</script>中所有能够最小化<script type="math/tex">||Ax-b||^{2}</script>的向量中，向量<script type="math/tex">x^{*}=A^{\dagger}b</script>的范数最小，并且是唯一的。</p>
+<p>当<script type="math/tex">r=m</script>时，<script type="math/tex">A</script>是行满秩矩阵，此时<script type="math/tex">x^{*}=A^{\dagger}b=A^{T}(AA^{T})^{-1}b</script>，即为方程组<script type="math/tex">Ax=b</script>的<strong>最小范数解</strong>。</p>
+<p>当<script type="math/tex">r=n</script>时，<script type="math/tex">A</script>是列满秩矩阵，此时<script type="math/tex">x^{*}=A^{\dagger}b=(A^{T}A)^{-1}A^{T}b</script>，即为方程组<script type="math/tex">Ax=b</script>的<strong>最小二乘解</strong>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/07/26/最优化-求解线性方程组-3/" data-id="cjlhdjm6p000iokezc0q849dj" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/08/10/机器学习-SVM的推导-1/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          [机器学习]SVM的推导(1)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/07/21/最优化-求解线性方程组-2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">[最优化]求解线性方程组(2)</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<div id="gitalk-container"></div>     <script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '2193b885b967a685e247',
+        clientSecret: '49a60c8f19873532dc3e7a6658bbff6c95ce73c9',
+        repo: 'Lannyy.github.io',
+        owner: 'Lannyy',
+        admin: ['Lannyy'],
+        id: '2018/07/26/最优化-求解线性方程组-3/',
+        distractionFreeMode: true,
+    });
+    gitalk.render('gitalk-container');
+</script></section>
+        
+          <aside id="sidebar">
+  
+    
+<div class="widget-wrap">
+  <h3 class="widget-title">ABOUT ME</h3>
+  <ul class="widget about-me">
+    
+    <li><img class="author" title="About me" src="/images/cute.jpg" /></li>
+    
+    
+    <li>Name：Tang Lang</li>
+    
+    <li>School：Xiamen University</li>
+    
+    <li>Email：langtang1996@gmail.com</li>
+    
+    <li>QQ：1660039482</li>
+    
+  </ul>
+</div>
+
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Cpp/" style="font-size: 13.33px;">Cpp</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 16.67px;">optimization</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/08/24/机器学习-SVM的推导-3/">[机器学习]SVM的推导(3)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/18/机器学习-SVM的推导-2/">[机器学习]SVM的推导(2)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/10/机器学习-SVM的推导-1/">[机器学习]SVM的推导(1)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/26/最优化-求解线性方程组-3/">[最优化]求解线性方程组(3)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/21/最优化-求解线性方程组-2/">[最优化]求解线性方程组(2)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Tang Lang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

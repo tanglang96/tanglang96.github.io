@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>[最优化]等式约束的优化问题求解 | Math &amp; Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="等式约束的优化问题求解基本概念本文将讨论下类形状的优化问题  minimize\quad f(x)\\ subject\  to\quad h(x)=0其中$x\in R^{n},f:R^{n}\to R,h:R^{n}\to R^{m},h=[h_{1},…,h_{m}]^{T},m\le n$，假定函数$h$连续可微，即$h\in C^{1}$。下面介绍几个基本概念： 正则点：对于满足约束 h">
+<meta name="keywords" content="optimization">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[最优化]等式约束的优化问题求解">
+<meta property="og:url" content="http://yoursite.com/2018/05/18/最优化-等式约束的优化问题求解/index.html">
+<meta property="og:site_name" content="Math &amp; Code">
+<meta property="og:description" content="等式约束的优化问题求解基本概念本文将讨论下类形状的优化问题  minimize\quad f(x)\\ subject\  to\quad h(x)=0其中$x\in R^{n},f:R^{n}\to R,h:R^{n}\to R^{m},h=[h_{1},…,h_{m}]^{T},m\le n$，假定函数$h$连续可微，即$h\in C^{1}$。下面介绍几个基本概念： 正则点：对于满足约束 h">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2018-08-31T02:20:39.393Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[最优化]等式约束的优化问题求解">
+<meta name="twitter:description" content="等式约束的优化问题求解基本概念本文将讨论下类形状的优化问题  minimize\quad f(x)\\ subject\  to\quad h(x)=0其中$x\in R^{n},f:R^{n}\to R,h:R^{n}\to R^{m},h=[h_{1},…,h_{m}]^{T},m\le n$，假定函数$h$连续可微，即$h\in C^{1}$。下面介绍几个基本概念： 正则点：对于满足约束 h">
+  
+    <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Math &amp; Code</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">---By Frank,the best or nothing</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-最优化-等式约束的优化问题求解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/05/18/最优化-等式约束的优化问题求解/" class="article-date">
+  <time datetime="2018-05-18T13:11:35.000Z" itemprop="datePublished">2018-05-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      [最优化]等式约束的优化问题求解
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="等式约束的优化问题求解"><a href="#等式约束的优化问题求解" class="headerlink" title="等式约束的优化问题求解"></a>等式约束的优化问题求解</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>本文将讨论下类形状的优化问题</p>
+<script type="math/tex; mode=display">
+minimize\quad f(x)\\
+subject\  to\quad h(x)=0</script><p>其中$x\in R^{n},f:R^{n}\to R,h:R^{n}\to R^{m},h=[h_{1},…,h_{m}]^{T},m\le n$，假定函数$h$连续可微，即$h\in C^{1}$。<br>下面介绍几个基本概念：</p>
+<p><strong>正则点</strong>：对于满足约束 <script type="math/tex">h_{1}(x^{*})=0,...,h_{m}(x^{*})=0</script> 的点<script type="math/tex">x^{**}</script>，如果梯度向量 <script type="math/tex">\nabla h_{1}(x^{*}),...,\nabla h_{m}(x^{*})</script> 是线性无关的，则称<script type="math/tex">x^{*}</script>是该约束的一个正则点。</p>
+<p><strong>切线空间</strong>：曲面<script type="math/tex">S={x\in R^{n}:h(x)=0}</script>中点<script type="math/tex">x^{*}</script>处的切线空间为集合<script type="math/tex">T(x^{*})=\{ y:Dh(x^{*})y=0\}</script>。可以看出切线空间<script type="math/tex">T(x^{*})</script>是矩阵<script type="math/tex">Dh(x^{*})</script>的零空间，即<script type="math/tex">T(x^{*})=N(Dh(x^{*}))</script>。</p>
+<p><strong>法线空间</strong>：曲面<script type="math/tex">S={x\in R^{n}:h(x)=0}</script>中点<script type="math/tex">x^{*}</script>处的法线空间为集合<script type="math/tex">N(x^{*})=\{ x\in R^{n}:x=Dh(x^{*})^{T}z,z\in R^{m}\}</script>。可以看出法线空间<script type="math/tex">N(x^{*})</script>是矩阵<script type="math/tex">Dh(x^{*})</script>的零空间，即<script type="math/tex">N(x^{*})=R(Dh(x^{*})^{T})</script>。</p>
+<h2 id="拉格朗日条件"><a href="#拉格朗日条件" class="headerlink" title="拉格朗日条件"></a>拉格朗日条件</h2><p>首先考虑只包含两个决策变量和一个等式约束的优化问题。令<script type="math/tex">h:R^{2}\to R</script>为约束函数，可知函数定义域中<script type="math/tex">x</script>处的梯度<script type="math/tex">\nabla h(x)</script>与通过该点的<script type="math/tex">h(x)</script>水平集正交，选择点<script type="math/tex">x^{*}=[x^{*}_{1},x^{*}_{1}]^{T}</script>使得<script type="math/tex">h(x^{*})=0</script>，且<script type="math/tex">\nabla h(x^{*})\neq 0</script>，经过点<script type="math/tex">x^{*}</script>的水平集为集合<script type="math/tex">\{ x:h(x)=0\}</script>。可利用曲线<script type="math/tex">x(t)</script>在<script type="math/tex">x^{*}</script>领域内进行参数化，<script type="math/tex">x(t)</script>是一个连续可微的向量函数<script type="math/tex">h:R\to R^{2}</script>：</p>
+<script type="math/tex; mode=display">
+x(t)=[x_{1}(t),x_{1}(t)]^{T},t\in (a,b),x^{*}=x(t^{*}),\dot{x}(t^{*})\neq 0,t^{*}\in (a,b)</script><p>接下来可以证明，<script type="math/tex">\nabla h(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交。由于<script type="math/tex">h</script>在曲线<script type="math/tex">\{x(t):t\in (a,b)\}</script>上是常数0，即对于所有的<script type="math/tex">t\in (a,b)</script>都有</p>
+<script type="math/tex; mode=display">
+h(x(t))=0</script><p>因此对于任意的<script type="math/tex">t\in(a,b)</script>都有</p>
+<script type="math/tex; mode=display">
+\frac{d}{dt}h(x(t))=0</script><p>利用链式法则可以得到</p>
+<script type="math/tex; mode=display">
+\frac{d}{dt}h(x(t))=\nabla h(x(t))^{T}\dot{x}(t)=0</script><p>因此<script type="math/tex">\nabla h(x^{*})</script>和<script type="math/tex">\dot{x}(t^{*})</script>正交<br>当<script type="math/tex">x^{*}</script>是<script type="math/tex">f:R\to R^{2}</script>在满足<script type="math/tex">h(x)=0</script>上的极小点的时候，可以证明，<script type="math/tex">\nabla f(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交，构造关于<script type="math/tex">t</script>的复合函数：</p>
+<script type="math/tex; mode=display">
+\phi(t)=f(x(t))</script><p>当<script type="math/tex">t=t^{*}</script>的时候取得极小值，根据无约束极值问题的一阶必要条件可知</p>
+<script type="math/tex; mode=display">
+\frac{d\phi}{dt}(t^{*})=0</script><p>利用链式法则可以得到</p>
+<script type="math/tex; mode=display">
+\frac{d}{dt}\phi(t^{*})=\nabla f(x(t^{*}))^{T}\dot{x}(t^{*})=\nabla f(x^{*})^{T}\dot{x}(t^{*})=0</script><p>因此，<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\dot{x}(t^{*})</script>正交，上面已经证明<script type="math/tex">\nabla f(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交，那么向量<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\nabla h(x^{*})</script>平行，那么可以得到这种情况下的拉格朗日定理：</p>
+<p><strong>n=2,m=3时的拉格朗日定理：</strong>设点<script type="math/tex">x^{*}</script>是函数<script type="math/tex">f:R^{2}\to R</script>的一个极小点，约束条件是<script type="math/tex">h(x)=0,h:R^{2}\to R</script>,那么<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\nabla h(x^{*})</script>平行，即如果<script type="math/tex">\nabla h(x^{*})\neq 0</script>，则存在标量<script type="math/tex">\lambda^{*}</script>，使得</p>
+<script type="math/tex; mode=display">
+\nabla f(x^{*})+\lambda^{*}\nabla h(x^{*})=0</script><p>其中<script type="math/tex">\lambda^{*}</script>为拉格朗日乘子。<br>将这个定理推广到一般情况下，即<script type="math/tex">f:R^{n}\to R,h:R^{n}\to R^{m},m\le n</script>的时候，可以得到：<br><strong>拉格朗日定理：</strong><script type="math/tex">x^{*}</script>是<script type="math/tex">f:R^{n}\to R</script>的局部极小点（或极大点），约束条件为<script type="math/tex">h(x)=0,h:R^{n}\to R^{m},m\le n</script>。如果<script type="math/tex">x^{*}</script>是正则点，那么存在<script type="math/tex">\lambda^{*}\in R^{m}</script>使得</p>
+<script type="math/tex; mode=display">
+D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二阶条件" class="headerlink" title="二阶条件"></a>二阶条件</h2><p><strong>二阶必要条件：</strong>设<script type="math/tex">x^{*}</script>是<script type="math/tex">f:R^{n}\to R</script>在约束条件<script type="math/tex">h(x)=0,h:R^{n}\to R^{m},m\le n,f,h\in C^{2}</script>下的局部极小点。如果<script type="math/tex">x^{*}</script>是正则点，那么存在<script type="math/tex">\lambda^{*}\in R^{m}</script>使得</p>
+<p> 1.<script type="math/tex">D f(x^{*})+\lambda^{*T}D h(x^{*})=0^{T}</script><br> 2.对于所有的<script type="math/tex">y\in T(x^{*})</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*})y\ge 0</script></p>
+<p><strong>二阶充分条件：</strong>函数<script type="math/tex">f,h\in C^{2}</script>，如果存在点<script type="math/tex">x^{*}\in R^{n}</script>和<script type="math/tex">\lambda^{*}\in R^{m}</script>，使得</p>
+<p> 1.<script type="math/tex">D f(x^{*})+\lambda^{*T}D h(x^{*})=0^{T}</script><br> 2.对于所有的<script type="math/tex">y\in T(x^{*})</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*})y> 0</script></p>
+<p>那么<script type="math/tex">x^{*}</script>是<script type="math/tex">f</script>在约束条件<script type="math/tex">h(x)=0</script>下的严格局部极小点</p>
+<p>本文介绍了等式约束下的拉格朗日乘子法，后面还将会介绍不等式约束下的拉格朗日乘子法以及KKT条件等，To be continue…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/05/18/最优化-等式约束的优化问题求解/" data-id="cjlhdjm6s000mokez0joa8r0j" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/05/18/Cpp-Cpp中的IO类/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          [Cpp]Cpp中的IO类
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/05/11/Cpp-Cpp中的构造函数/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">[Cpp]Cpp中的构造函数</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<div id="gitalk-container"></div>     <script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '2193b885b967a685e247',
+        clientSecret: '49a60c8f19873532dc3e7a6658bbff6c95ce73c9',
+        repo: 'Lannyy.github.io',
+        owner: 'Lannyy',
+        admin: ['Lannyy'],
+        id: '2018/05/18/最优化-等式约束的优化问题求解/',
+        distractionFreeMode: true,
+    });
+    gitalk.render('gitalk-container');
+</script></section>
+        
+          <aside id="sidebar">
+  
+    
+<div class="widget-wrap">
+  <h3 class="widget-title">ABOUT ME</h3>
+  <ul class="widget about-me">
+    
+    <li><img class="author" title="About me" src="/images/cute.jpg" /></li>
+    
+    
+    <li>Name：Tang Lang</li>
+    
+    <li>School：Xiamen University</li>
+    
+    <li>Email：langtang1996@gmail.com</li>
+    
+    <li>QQ：1660039482</li>
+    
+  </ul>
+</div>
+
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">8</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Cpp/" style="font-size: 13.33px;">Cpp</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 16.67px;">optimization</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/08/24/机器学习-SVM的推导-3/">[机器学习]SVM的推导(3)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/18/机器学习-SVM的推导-2/">[机器学习]SVM的推导(2)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/10/机器学习-SVM的推导-1/">[机器学习]SVM的推导(1)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/26/最优化-求解线性方程组-3/">[最优化]求解线性方程组(3)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/07/21/最优化-求解线性方程组-2/">[最优化]求解线性方程组(2)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Tang Lang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

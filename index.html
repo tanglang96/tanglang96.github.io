@@ -70,10 +70,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-机器学习-SVM的推导-3" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/29/hello-world/" class="article-date">
-  <time datetime="2018-08-29T14:03:14.412Z" itemprop="datePublished">2018-08-29</time>
+    <a href="/2018/08/24/机器学习-SVM的推导-3/" class="article-date">
+  <time datetime="2018-08-24T02:50:36.000Z" itemprop="datePublished">2018-08-24</time>
 </a>
     
   </div>
@@ -84,7 +84,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/29/hello-world/">Hello World</a>
+      <a class="article-title" href="/2018/08/24/机器学习-SVM的推导-3/">[机器学习]SVM的推导(3)</a>
     </h1>
   
 
@@ -92,67 +92,41 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+        <h1 id="软间隔SVM的推导"><a href="#软间隔SVM的推导" class="headerlink" title="软间隔SVM的推导"></a>软间隔SVM的推导</h1><p>前文介绍了硬间隔SVM的相关推导，本文将继续介绍软间隔SVM的数学推导，即在样本不是线性可分的情况下，允许一部分样本错误分类的SVM。软间隔SVM允许一部分样本不满足约束：$y_{i}(w\cdot x_{i})\ge 0$</p>
+<p>可以将优化目标写为：</p>
+<script type="math/tex; mode=display">
+min_{w,b}\quad \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}loss(y_{i}(w\cdot x_{i}+b)-1)</script><p>其中 $C$ 是一个常数，用来衡量允许的不满足约束的程度，其中的 $loss()$ 函数可以使用 $hinge()$ 函数，即 $loss_{hinge}(z)=max(0,1-z)$</p>
+<p>那么可以将优化目标写为：</p>
+<script type="math/tex; mode=display">
+min_{w,b}\quad \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}max(0,1-y_{i}(w\cdot x_{i}+b))</script><p>引入“松弛变量” $\xi_{i}\ge 0$ ，可以将上式改写为</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+min_{w,b,\xi_{i}}\quad& \frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}\xi_{i}\\
+s.t.\quad& y_{i}(w\cdot x_{i}+b)\ge1-\xi_{i}\\
+&\xi_{i}\ge0,i=1,2,...,m
+\end{align*}</script><p>与硬间隔SVM类似，上述的问题也是个二次规划的问题，可以先用拉格朗日对偶性将其转换为对应的对偶问题，再用SMO算法求解。上面问题对应的拉格朗日函数为：</p>
+<script type="math/tex; mode=display">
+L(w,b,\alpha,\xi,\mu)=\frac{1}{2}||w||^{2}+C\sum_{i=1}^{m}\xi_{i}\\+\sum_{i=1}^{m}\alpha_{i}(1-\xi_{i}-y_{i}(w\cdot x_{i}+b))-\sum_{i=1}^{m}\mu_{i}\xi_{i}</script><p>令 $L$ 对 $w,b,\alpha$ 的偏导为 $0$ 可以得到</p>
+<script type="math/tex; mode=display">
+w=\sum_{i=1}^{m}\alpha_{i}y_{i}x_{i}\\
+0=\sum_{i=1}^{m}\alpha_{i}y_{i}\\
+C=\alpha_{i}+\mu_{i}</script><p>代入 $L(w,b,\alpha,\xi,\mu)$ 即可以将原问题化成对偶问题：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+min_ \alpha\quad &\frac{1}{2}\sum_{i=1}^{m}\sum_{j=1}^{m}\alpha_{i}\alpha_{j}y_{i}y_{j}x_{i}\cdot x_{j}-\sum_{i=1}^{m}\alpha_{i}\\
+s.t.\quad &\sum_{i=1}^{m}\alpha_{i}y_{i}=0\\
+&C\ge \alpha_{i}\ge 0\\
+&i=1,2,...,m
+\end{align*}</script><p>可以看出其与硬间隔SVM唯一的区别在于 $\alpha_{i}\ge 0$变成了 $C\ge \alpha_{i}\ge 0$，同样可以用上文中提到的SMO算法很方便的求解，唯一的区别在于剪辑的时候需要考虑两个方向。</p>
+<p>后面还会介绍SVM的核技巧以及常用核，To be continue…</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/hello-world/" data-id="cjlgnt6jl000d1kezqw9zk2nh" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/24/机器学习-SVM的推导-3/" data-id="cjlhdjm730011okezl9i4cphq" class="article-share-link">Share</a>
       
       
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Cpp-谈一谈const关键字" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/29/Cpp-谈一谈const关键字/" class="article-date">
-  <time datetime="2018-08-29T10:43:40.000Z" itemprop="datePublished">2018-08-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/29/Cpp-谈一谈const关键字/">[Cpp]谈一谈const关键字</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="C-中的const关键字"><a href="#C-中的const关键字" class="headerlink" title="C++中的const关键字"></a>C++中的const关键字</h1><h2 id="const关键字的作用"><a href="#const关键字的作用" class="headerlink" title="const关键字的作用"></a>const关键字的作用</h2><p>在编程的时候我们常常需要定义一种变量，但是这种变量的值是不变的，例如定义pi=3.14，e=2.72或者定义一种材料的弹性模量等，这时候需要用到const关键字<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> pi=<span class="number">3.14</span>;</span><br><span class="line"><span class="keyword">const</span> e=<span class="number">2.72</span>;</span><br><span class="line"><span class="keyword">const</span> E=<span class="number">2.3</span>;</span><br></pre></td></tr></table></figure></p>
-<p>另外还有一种需求，由于C++程序常由多个文件组成，有时候需要在一个文件里面定义const变量，在其他文件里面声明并使用它，这时候需要在声明和定义时加上extern关键字<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//声明并定义一个const变量</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">const</span> <span class="keyword">int</span> buffSize=<span class="number">100</span>;</span><br><span class="line"><span class="comment">//在其他文件中使用该变量的时候需要声明</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">const</span> <span class="keyword">int</span> buffSize;</span><br><span class="line">------------------------------------</span><br><span class="line"><span class="comment">//需要注意的是，extern关键字是将变量的声明和定义分开的一种手段</span></span><br><span class="line"><span class="comment">//变量能且只能被定义一次，但是可以多次声明</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> i;	<span class="comment">//声明一个变量但不定义</span></span><br><span class="line"><span class="keyword">int</span> i;	<span class="comment">//声明并定义</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> i=<span class="number">100</span>;</span><br><span class="line"><span class="comment">//这里会出现错误，任意包含显式初始化的声明也成为定义，抵消了extern的作用</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">const</span> <span class="keyword">int</span> buffSize=<span class="number">100</span>;</span><br><span class="line"><span class="comment">//上面的语句可以看作一种特殊情况，同时进行了声明和定义</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="const的引用"><a href="#const的引用" class="headerlink" title="const的引用"></a>const的引用</h2><p>C++中的引用可以看作是一个对象的别名，对const的引用也常称为常量引用，这种引用即可以绑定到常量对象上也可以绑定到非常量对象上，但是并不能将一个非const引用绑定到常量对象上</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> ci=<span class="number">1024</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> &amp;r1=ci;	<span class="comment">//将一个常量引用绑定到常量对象上</span></span><br><span class="line">r1=<span class="number">42</span>;</span><br><span class="line"><span class="keyword">int</span> &amp;r2=ci;		<span class="comment">//错误，将一个非常量引用绑定到常量对象上</span></span><br></pre></td></tr></table></figure>
-<p>将一个常量引用绑定到非常量对象上是允许的，但是不能通过这个常量引用来修改非常量对象的值<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> i=<span class="number">42</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> &amp;r=i;</span><br><span class="line">r=<span class="number">0</span>;	<span class="comment">//错误，利用常量引用来改变非常量对象的值</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="const与指针"><a href="#const与指针" class="headerlink" title="const与指针"></a>const与指针</h2><p>指针和引用不同，引用不是对象，但指针本身也是一种对象，因此可以定义指向常量的指针和常量指针，当然也有指向常量的常量指针，当指针本身是个常量的时候，也称作<strong>顶层const</strong>，当指针指向一个常量的时候，称作<strong>底层const</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> errNumb=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> *<span class="keyword">const</span> curErr=&amp;errNumb;	<span class="comment">//定义指向非常量对象的常量指针</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> pi=<span class="number">3.14</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">double</span> *<span class="keyword">const</span> pip=&amp;pi;	<span class="comment">//定义指向常量对象的常量指针</span></span><br></pre></td></tr></table></figure></p>
-<p>对于底层const，即指向常量的指针，同常量引用一样，也没有要求指向的对象一定是常量对象。但是在指向的对象不是常量对象时，不能通过这个指针来修改这个非常量对象的值，但可以通过别的手段来修改这个对象的值<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> errNumb=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> *curErr=&amp;errNumb;	<span class="comment">//指向非常量对象的常量指针</span></span><br></pre></td></tr></table></figure></p>
-<p>对于顶层const，即一个常量指针，该指针本身的值不能改变，例如不能通过改变该指针的值来得到索引数组元素，但是如果指向的是非常量对象，通过该指针的值来修改其指向对象的值是完全允许的<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> errNumb=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> *<span class="keyword">const</span> curErr=&amp;errNumb;</span><br><span class="line">*curErr=<span class="number">0</span>;	<span class="comment">//通过常量指针来修改其指向对象的值是允许的</span></span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/Cpp-谈一谈const关键字/" data-id="cjlgnt6jh00081kezolc6g13e" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
 
     </footer>
   </div>
@@ -161,10 +135,10 @@
 
 
   
-    <article id="post-最优化-线性规划概述" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-机器学习-SVM的推导-2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/29/最优化-线性规划概述/" class="article-date">
-  <time datetime="2018-08-29T10:43:38.000Z" itemprop="datePublished">2018-08-29</time>
+    <a href="/2018/08/18/机器学习-SVM的推导-2/" class="article-date">
+  <time datetime="2018-08-18T08:54:25.000Z" itemprop="datePublished">2018-08-18</time>
 </a>
     
   </div>
@@ -175,7 +149,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/29/最优化-线性规划概述/">[最优化]线性规划概述</a>
+      <a class="article-title" href="/2018/08/18/机器学习-SVM的推导-2/">[机器学习]SVM的推导(2)</a>
     </h1>
   
 
@@ -183,36 +157,167 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="线性规划"><a href="#线性规划" class="headerlink" title="线性规划"></a>线性规划</h1><p>在最优化问题中有一类问题被称作线性规划问题，属于有约束下的优化问题，线性规划是在<strong>线性约束条件</strong>下（等式或不等式）<strong>求解线性目标函数极值</strong>的问题。</p>
-<h2 id="线性规划问题的标准模型"><a href="#线性规划问题的标准模型" class="headerlink" title="线性规划问题的标准模型"></a>线性规划问题的标准模型</h2><p>线性规划的<strong>标准模型</strong>为</p>
+        <h1 id="硬间隔SVM的SMO序列优化算法"><a href="#硬间隔SVM的SMO序列优化算法" class="headerlink" title="硬间隔SVM的SMO序列优化算法"></a>硬间隔SVM的SMO序列优化算法</h1><p>上一篇文章(1)我们讨论了硬间隔SVM的推导及其对偶形式，其对偶问题可以化简成以下形式：</p>
+<script type="math/tex; mode=display">\begin{align*}
+min_ \alpha\quad &\frac{1}{2}\sum_{i=1}^{N}\sum_{j=1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}x_{i}\cdot x_{j}-\sum_{i=1}^{N}\alpha_{i}\\
+s.t.\quad &\sum_{i=1}^{N}\alpha_{i}y_{i}=0\\
+&\alpha_{i}\ge 0\\
+&i=1,2,...,N
+\end{align*}</script><p>该问题可以看作是一个以<script type="math/tex">\alpha</script>为优化变量的二阶规划问题，二阶规划问题有很多成熟的解法，针对SVM的优化有一种最为高效的SMO序列优化算法。</p>
+<h1 id="SMO序列优化算法"><a href="#SMO序列优化算法" class="headerlink" title="SMO序列优化算法"></a>SMO序列优化算法</h1><p>SMO序列优化算法先将<script type="math/tex">\alpha</script>的所有变量进行初始化，比如令<script type="math/tex">\alpha_{1},\alpha_{2},...,\alpha_{N}=0，</script>再将<script type="math/tex">\alpha</script>的其中两个分量看作变量，比如<script type="math/tex">\alpha_{1},\alpha_{2}</script>（在选取两个分量<script type="math/tex">\alpha_{i},\alpha_{j}</script>的时候，通常先取违反上文中KKT条件最严重的为<script type="math/tex">\alpha_{i}</script>，然后选取离<script type="math/tex">x_{i}</script>间隔最远的<script type="math/tex">x_{j}</script>对应的<script type="math/tex">\alpha_{j}</script>为第二个变量），其余的<script type="math/tex">\alpha_{3},\alpha_{4},...,\alpha_{N}</script>固定住，则根据约束条件<script type="math/tex">\sum_{i=1}^{N}\alpha_{i}y_{i}=0</script>可以得到<script type="math/tex">\alpha_{1}=-y_{1}\sum_{i=2}^{N}\alpha_{i}y_{i}</script>。上述问题即可以化为两个变量的二次规划问题(令<script type="math/tex">K_{ij}=x_{i}\cdot x_{j}</script>)：</p>
+<script type="math/tex; mode=display">\begin{align*}
+min_{\alpha_{1},\alpha_{2}}\quad W(\alpha_{1},\alpha_{2})=&\frac{1}{2}K_{11}\alpha_{1}^{2}+\frac{1}{2}K_{22}\alpha_{2}^{2}+y_{1}y_{2}K_{12}\alpha_{1}\alpha_{2}\\
+&-(\alpha_{1}+\alpha_{2})+y_{1}\alpha_{1}\sum_{i=3}^{N}y_{i}\alpha_{i}K_{i1}+y_{2}\alpha_{2}\sum_{i=3}^{N}y_{i}\alpha_{i}K_{i2}\\
+s.t.\quad &\alpha_{1}y_{1}+\alpha_{2}y_{2}=-\sum_{i=3}^{N}y_{i}\alpha_{i}=\zeta\\
+&\alpha_{1},\alpha_{2}\ge0
+\end{align*}</script><p>在上述二次规划问题中，由于<script type="math/tex">\alpha_{1}y_{1}+\alpha_{2}y_{2}=\zeta</script>，那么可以得到<script type="math/tex">\alpha_{1}=(\zeta-y_{2}\alpha_{2})y_{1}</script>，将该约束条件代入<script type="math/tex">W(\alpha_{1},\alpha_{2})</script>中即可以得到单变量的二次规划问题，如果先不考虑不等式约束条件，则可以直接得到解析解，不必利用数值计算的方式求解，这样可以大大提升计算速度。</p>
+<p>令<script type="math/tex">v_{i}=\sum_{j=3}^{N}\alpha_{j}y_{j}K(x_{i},x_{j})</script>，则将<script type="math/tex">\alpha_{1}=(\zeta-y_{2}\alpha_{2})y_{1}</script>代入<script type="math/tex">W(\alpha_{1},\alpha_{2})</script>可以得到：</p>
 <script type="math/tex; mode=display">
-minimize\quad c^{T}x\\
-subject\ to\ Ax=b\\x\ge0</script><p>所有的线性规划问题都可以转化成以上的标准型，例如某线性规划问题具有以下形式，与标准型不同的是，该形式用了不等式约束</p>
+W(\alpha_{2})=\frac{1}{2}K_{11}(\zeta-\alpha_{2}y_{2})^{2}+\frac{1}{2}K_{22}\alpha_{2}^{2}+y_{2}K_{12}(\zeta-\alpha_{2}y_{2})\alpha_{2}-(\zeta-\alpha_{2}y_{2})y_{1}-\alpha_{2}+v_{1}(\zeta-\alpha_{2}y_{2})+y_{2}v_{2}\alpha_{2}</script><p>直接令<script type="math/tex">\frac{\partial W}{\partial\alpha_{2}}=0</script>，那么可以得到<script type="math/tex">\alpha_{2}</script>的解析解为<script type="math/tex">\hat\alpha_{2}=\alpha_{2}+\frac{y_{2}(E_{1}-E_{2})}{\eta}</script>，其中<script type="math/tex">E_{i}=\sum_{j=1}^{N}\alpha_{j}y_{j}K_{ij}+b-y_{i}</script>，<script type="math/tex">\eta=K_{11}+K_{22}-2K_{12}</script>。此时得到的<script type="math/tex">\hat\alpha_{2}</script>还没有考虑不等式约束<script type="math/tex">\alpha_{1},\alpha_{2}\ge 0</script>，由<script type="math/tex">\alpha_{1}=(\zeta-y_{2}\alpha_{2})y_{1}\ge0</script>与<script type="math/tex">\alpha_{2}\ge0</script>可以解不等式得到<script type="math/tex">\alpha_2</script>的上界<script type="math/tex">H</script>与下界<script type="math/tex">L</script>，即经过剪辑可以得到<script type="math/tex">\alpha_{2}</script>的解析解为：</p>
 <script type="math/tex; mode=display">
-minimize\quad c^{T}x\\
-subject\ to\ Ax\ge b\\x\ge0</script><p>可以通过引入剩余变量$y$的方式，将以上问题转化为标准型</p>
-<script type="math/tex; mode=display">
-minimize\quad c^{T}x\\
-subject\ to\ Ax-I_{m}y=\begin{bmatrix} A & -I_{m}\end{bmatrix}\begin{bmatrix} x \\ y\end{bmatrix}=b\\x\ge0,y\ge0</script><p>如果约束条件具有以下形式：</p>
-<script type="math/tex; mode=display">
-Ax\le b\\
-x\ge 0</script><p>可以通过引入剩余变量$y$，将约束条件转换为</p>
-<script type="math/tex; mode=display">
-Ax+I_{m} y =\begin{bmatrix} A & I_{m}\end{bmatrix}\begin{bmatrix} x \\ y\end{bmatrix}=b\\x\ge0,y\ge0</script><h2 id="线性规划问题的基本解"><a href="#线性规划问题的基本解" class="headerlink" title="线性规划问题的基本解"></a>线性规划问题的基本解</h2><p>上文提到，任何线性规划问题都可以转换为标准型，即约束条件为线性等式，决策变量非负。</p>
-<p>考虑方程$Ax=b$，其中$rank(A)=m$，为了求解这类问题，通常从矩阵$A$的一部分列向量入手。为方便起见，可以将$A$中的列向量重新进行排序，将感兴趣的列向量排在前列。具体来说，从$A$中选取m个线性无关的向量组成方阵$B$，对$A$的列向量重新排序，可以使$B$中的列向量位于$A$的前m列，即$A$可以写为分块矩阵$A=[B,D]$，其中$D$是$m*(n-m)$矩阵，它由$A$中剩余的列向量组成。矩阵$B$是非奇异的，因此求解方程$Bx_{B}=b$可以得到唯一解$x_{B}=B^{-1}b$。令$x$为n维向量，它的前m个元素等于$x_B$，其余元素为零，即$x=[s_{B}^{T},0^{T}]^{T}$,则$x$是方程$Ax=b$的一个解。</p>
-<p>$[x_{B}^{T},0^{T}]^{T}$是$Ax=b$在$B$下的<strong>基本解</strong>，向量$x_{B}$中的元素称为基变量，$B$中的列向量称为基本列向量。</p>
-<p><strong>退化的基本解</strong>—-&gt;基本解中的某些基变量为0<br><strong>可行解</strong>—-&gt;满足$Ax=0,x\ge 0$的向量$x$<br><strong>基本可行解</strong>—-&gt;某个可行解也是基本解<br><strong>退化的基本可行解</strong>—-&gt;某个基本可行解是退化的基本解</p>
-<p>在求解线性规划问题时，<strong>仅需要考虑基本可行解</strong>，因为目标函数的最优解如果存在，那么一定是在某个基本可行解上得到。</p>
-<p><strong>线性规划基本定理</strong><br>1.如果存在可行解，那么一定存在基本可行解<br>2.如果存在最优可行解，那么一定存在最优基本可行解</p>
-<p>线性规划基本定理将线性规划问题的求解转换为在有限数量的基本可行解上进行搜索，这极大地缩减了求解的工作量。</p>
-<p>从<strong>几何</strong>的角度来看，标准线性规划中的约束$Ax=b,x\ge 0$中的点集是凸集，即对于任何$x,y\in \Theta$和实数$\alpha$，$0&lt;\alpha &lt;1$，有$\alpha x+(1-\alpha)y\in \Theta$，对于凸集内的点$x$，如果在$\Theta$中找不到两个不同的点$x_{1}$和$x_{2}$使$x=\alpha x_{1}+(1-\alpha)x_{2}$成立则称$x$是极点，可以通过证明得到，<strong>约束集的极点与基本可行解是等价的</strong>。</p>
-<p>从某个极点转移到另一个相邻极点的算法就是单纯性法求解线性规划问题的思路，后面的文章将对单纯形法以及对偶等概念进行详细介绍。</p>
-<p>To be continue…</p>
+\alpha_{2}^{*}=
+\begin{cases}
+H,\quad \hat\alpha_{2}>H\\
+\hat\alpha_{2},\quad L\le\hat\alpha_{2}\le H\\
+L,\quad \hat\alpha_{2}<L
+\end{cases}</script><p>另外根据<script type="math/tex">\alpha_{1}^{*}=(\zeta-y_{2}\alpha_{2}^{*})y_{1}</script>则可以得到<script type="math/tex">\alpha_{1}^{*}</script>，这样便完成了SMO算法的一组变量的更新。重复进行变量选择，解析求解，变量剪辑的过程，直到<script type="math/tex">\alpha</script>的所有变量都能满足文章(1)中的KKT条件为止，然后再根据文章(1)中<script type="math/tex">w</script>与<script type="math/tex">b</script>的计算公式便可以得到训练好的超平面，这样便完成了硬间隔SVM的数学推导过程，后面的文章还会继续介绍软间隔SVM的推导与核方法的应用。To be continue…</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/最优化-线性规划概述/" data-id="cjlgnt6k0000w1kezbgklngfh" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/18/机器学习-SVM的推导-2/" data-id="cjlhdjm72000zokezj9wbg8cl" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-机器学习-SVM的推导-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/10/机器学习-SVM的推导-1/" class="article-date">
+  <time datetime="2018-08-10T14:36:53.000Z" itemprop="datePublished">2018-08-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/10/机器学习-SVM的推导-1/">[机器学习]SVM的推导(1)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="硬间隔的SVM推导"><a href="#硬间隔的SVM推导" class="headerlink" title="硬间隔的SVM推导"></a>硬间隔的SVM推导</h1><p>SVM是机器学习中的一种经典方法，除了硬间隔SVM之外，还包括软间隔SVM，核技巧等SVM的变种，本文主要介绍<strong>硬间隔SVM</strong>的推导。</p>
+<p>假设两类样本点是可以被准确分开的，那么则可以使用硬间隔SVM来进行分类，假设分隔的超平面方程为<script type="math/tex">w\cdot x+b=0</script>，则每个样本点<script type="math/tex">x_{i}</script>到该超平面的距离为<script type="math/tex">|w\cdot x_{i}+b|</script>，如果设定与超平面之间的距离为正的点为正分类，即<script type="math/tex">y_{i}=+1</script>，相反负距离的点为负分类，即<script type="math/tex">y_{i}=-1</script>，那么可以将样本点到分离超平面的距离表示为<script type="math/tex">\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)</script>，这称为样本点到分离超平面之间的<strong>函数距离</strong>。</p>
+<p>令<script type="math/tex">\hat{\gamma}=min(\hat{\gamma}_{i})</script>，即为最小函数距离。需要注意到，函数距离<script type="math/tex">\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)</script>在<script type="math/tex">w</script>和<script type="math/tex">b</script>同时增大某个比例倍数时，函数间隔会增大但是超平面不会发生改变，此时便需要将超平面的<script type="math/tex">w</script>进行约束，比如令<script type="math/tex">||w||=1</script>，我们可以重新定义距离为<script type="math/tex">\gamma_{i}=y_{i}(\frac{w}{||w||}\cdot x_{i}+\frac{b}{||w||})</script>，称之为<strong>几何距离</strong>，令<script type="math/tex">\gamma=min(\gamma_{i})</script>，即可以得到<script type="math/tex">\gamma=\frac{\hat\gamma}{||w||}</script>。</p>
+<p>那么最大化分隔距离的优化问题即可表示如下：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&max_{w,b}\quad \gamma \\
+&s.t.\quad y_{i}(\frac{w}{||w||}\cdot x_{i}+\frac{b}{||w||})\ge\gamma，i=1,2...n
+\end{align*}</script><p>即</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&max_{w,b}\quad \frac{\hat\gamma}{||w||} \\
+&s.t.\quad y_{i}(w\cdot x_{i}+b)\ge\hat \gamma，i=1,2...n
+\end{align*}</script><p>注意上式中，函数间隔<script type="math/tex">\hat\gamma</script>的取值并不会影响最优化问题的解，不妨假设<script type="math/tex">\hat\gamma=1</script>，并且注意到最大化<script type="math/tex">\frac{1}{||w||}</script>与最小化<script type="math/tex">\frac{1}{2}||w||^{2}</script>等价，那么上述问题即可以等价为：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&min_{w,b}\quad \frac{1}{2}||w||^{2}\\
+&s.t.\quad y_{i}(w\cdot x_{i}+b)-1\ge0
+\end{align*}</script><p>上述问题即为一个不等式约束的最优化问题，可以利用拉格朗日乘子法与KKT条件来求解，令<script type="math/tex">\alpha=[\alpha_{1},\alpha_{2},\alpha_{3},...,\alpha_{n}]^{T}</script>，首先构造拉格朗日函数为：<script type="math/tex">L(w,b,\alpha)=\frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}</script></p>
+<p>假设<script type="math/tex">W^{*},b^{*},\alpha^{*}</script>是优化问题的最优解，那么根据KKT条件，<script type="math/tex">W^{*},b^{*},\alpha^{*}</script>一定满足以下方程：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+&\nabla_{w}L(w^{*},b^{*},\alpha^{*})=w^{*}-\sum_{i=1}^{N}\alpha^{*}_{i}y_{i}x_{i}=0\tag{1}\\
+&\nabla_{b}L(w^{*},b^{*},\alpha^{*})=-\sum_{i=1}^{N}\alpha_{i}^{*}y_{i}=0\tag{2}\\
+&\alpha_{i}^{*}(y_{i}(w^{*}\cdot x_{i}+b^{*})-1)=0\tag{3}\\
+&y_{i}(w^{*}\cdot x_{i}+b^{*})-1\ge 0\tag{4}\\
+&\alpha_{i}^{*}\ge0\tag{5}
+\end{align}</script><p>KKT条件主要包括几个方面的内容：<br>1.拉格朗日函数对于原始优化变量的梯度为0，如（1）和（2）<br>2.拉格朗日乘子和不等式约束的左式（化为标准形式）的乘积全为0，如（3）<br>3.原问题的约束条件，如（4）<br>4.拉格朗日乘子非负，如（5）</p>
+<p>由（1）和（2）可以得到：</p>
+<script type="math/tex; mode=display">
+w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}\\
+\sum_{i}^{N}\alpha_{i}^{*}y_{i}=0</script><p>根据拉格朗日对偶性，原问题可以化为：</p>
+<script type="math/tex; mode=display">
+min_{w,b}\ max_{\alpha}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i},\alpha_{i}\ge 0</script><p>即</p>
+<script type="math/tex; mode=display">
+max_{\alpha}\ min_{w,b}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i},\alpha_{i}\ge 0</script><p>其中<script type="math/tex">min_{w,b}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}</script>问题的最优解由KKT条件可以得到为<script type="math/tex">w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}</script>，并且有<script type="math/tex">\sum_{i}^{N}\alpha_{i}^{*}y_{i}=0</script>，代入上式即可将原问题化为：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+max_{\alpha}\quad&-\frac{1}{2}\sum_{i}\sum_{j}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}\cdot x_{j})+\sum_{i}\alpha_{i}\\
+s.t.\quad&\alpha_{i}\ge 0
+\end{align*}</script><p>在求解了<script type="math/tex">\alpha^{*}</script>之后，即可根据<script type="math/tex">w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}</script>求得<script type="math/tex">w^{*}</script>，由于分离超平面的参数是<script type="math/tex">w^{*},b^{*}</script>决定的，而分离超平面由<script type="math/tex">\alpha_{i}\neq0</script>的<script type="math/tex">\alpha_{i},x_{i},y_{i}</script>决定的，因此再选取任意<script type="math/tex">j</script>使得<script type="math/tex">\alpha_{j}\neq0</script>，得到<script type="math/tex">b^{*}=y_{j}-w^{*}\cdot x_{j}</script>，这样便可以得到分离超平面<script type="math/tex">w^{*}\cdot x+b^{*}=0</script>。</p>
+<p>对于上面的求解<script type="math/tex">\alpha^{*}</script>的优化问题，我们在下文将会介绍SMO算法来求解<br>To be continuue…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/08/10/机器学习-SVM的推导-1/" data-id="cjlhdjm70000wokeze0nsp4qk" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-最优化-求解线性方程组-3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/26/最优化-求解线性方程组-3/" class="article-date">
+  <time datetime="2018-07-26T14:24:16.000Z" itemprop="datePublished">2018-07-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/最优化-求解线性方程组-3/">[最优化]求解线性方程组(3)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="求解线性方程组-3"><a href="#求解线性方程组-3" class="headerlink" title="求解线性方程组(3)"></a>求解线性方程组(3)</h1><h2 id="矩阵的伪逆"><a href="#矩阵的伪逆" class="headerlink" title="矩阵的伪逆"></a>矩阵的伪逆</h2><p>这里所介绍的伪逆是<strong>Moore-Penrose逆矩阵</strong>，其定义为：给定矩阵<script type="math/tex">A\in R^{m*n}</script>，如果矩阵<script type="math/tex">A^{\dagger}\in R^{n*m}</script>满足<script type="math/tex">AA^{\dagger}A=A</script>，且存在两个矩阵<script type="math/tex">U\in R^{n*n},V\in R^{m*m}</script>使得</p>
+<script type="math/tex; mode=display">
+A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V</script><p>那么则称<script type="math/tex">A^{\dagger}</script>是矩阵<script type="math/tex">A</script>的<strong>伪逆</strong>，可以通过证明得到，矩阵的伪逆是<strong>唯一</strong>的。</p>
+<p>对于矩阵<script type="math/tex">A\in R^{m*n},m\ge n</script>且<script type="math/tex">rank(A)=n</script>，可以根据以上定义验证得到<script type="math/tex">A</script>的伪逆为</p>
+<script type="math/tex; mode=display">
+A^{\dagger}=(A^{T}A)^{-1}A^{T}</script><p>对于矩阵<script type="math/tex">A\in R^{m*n},m\le n</script>且<script type="math/tex">rank(A)=m</script>，同样根据以上定义验证得到<script type="math/tex">A</script>的伪逆为</p>
+<script type="math/tex; mode=display">
+A^{\dagger}=A^{T}(AA^{T})^{-1}</script><p>以上两种情况是当矩阵为<strong>列满秩</strong>或者<strong>行满秩</strong>情况下的伪逆，而对于一般矩阵<script type="math/tex">A\in R^{m*n},rank(A)=r,r\le min(m,n)</script>，我们可以采用<strong>满秩分解</strong>的方法来求得其伪逆。</p>
+<p>对于任意矩阵<script type="math/tex">A\in R^{m*n},rank(A)=r,r\le min(m,n)</script>，都可以将其分解为一个行满秩矩阵和列满秩矩阵的乘积：<br>即<script type="math/tex">A=BC,B\in R^{m*r},c\in R^{r*n},rank(A)=rank(B)=rank(C)=r</script></p>
+<p>可以通过证明得到：</p>
+<p><script type="math/tex">A^{\dagger}=C^{\dagger}B^{\dagger}</script>，而其中<script type="math/tex">B^{\dagger}=(B^{T}B)^{-1}B^{T},C^{\dagger}=C^{T}(CC^{T})^{-1}</script>，即为一般矩阵的伪逆求法。</p>
+<h2 id="一般情况下线性方程组的解法"><a href="#一般情况下线性方程组的解法" class="headerlink" title="一般情况下线性方程组的解法"></a>一般情况下线性方程组的解法</h2><p>某线性方程组为<script type="math/tex">Ax=b,A\in R^{m*n},rank(A)=r</script>，向量<script type="math/tex">x^{*}=A^{\dagger}b</script>可在空间<script type="math/tex">R^{n}</script>中最小化<script type="math/tex">||Ax-b||^{2}</script>;而且在<script type="math/tex">R^{n}</script>中所有能够最小化<script type="math/tex">||Ax-b||^{2}</script>的向量中，向量<script type="math/tex">x^{*}=A^{\dagger}b</script>的范数最小，并且是唯一的。</p>
+<p>当<script type="math/tex">r=m</script>时，<script type="math/tex">A</script>是行满秩矩阵，此时<script type="math/tex">x^{*}=A^{\dagger}b=A^{T}(AA^{T})^{-1}b</script>，即为方程组<script type="math/tex">Ax=b</script>的<strong>最小范数解</strong>。</p>
+<p>当<script type="math/tex">r=n</script>时，<script type="math/tex">A</script>是列满秩矩阵，此时<script type="math/tex">x^{*}=A^{\dagger}b=(A^{T}A)^{-1}A^{T}b</script>，即为方程组<script type="math/tex">Ax=b</script>的<strong>最小二乘解</strong>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/07/26/最优化-求解线性方程组-3/" data-id="cjlhdjm6p000iokezc0q849dj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -224,10 +329,10 @@ Ax+I_{m} y =\begin{bmatrix} A & I_{m}\end{bmatrix}\begin{bmatrix} x \\ y\end{bma
 
 
   
-    <article id="post-最优化-求解线性规划问题的单纯形算法" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-最优化-求解线性方程组-2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/08/29/最优化-求解线性规划问题的单纯形算法/" class="article-date">
-  <time datetime="2018-08-29T10:43:36.000Z" itemprop="datePublished">2018-08-29</time>
+    <a href="/2018/07/21/最优化-求解线性方程组-2/" class="article-date">
+  <time datetime="2018-07-21T10:02:02.000Z" itemprop="datePublished">2018-07-21</time>
 </a>
     
   </div>
@@ -238,7 +343,7 @@ Ax+I_{m} y =\begin{bmatrix} A & I_{m}\end{bmatrix}\begin{bmatrix} x \\ y\end{bma
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/29/最优化-求解线性规划问题的单纯形算法/">[最优化]求解线性规划问题的单纯形算法</a>
+      <a class="article-title" href="/2018/07/21/最优化-求解线性方程组-2/">[最优化]求解线性方程组(2)</a>
     </h1>
   
 
@@ -246,106 +351,29 @@ Ax+I_{m} y =\begin{bmatrix} A & I_{m}\end{bmatrix}\begin{bmatrix} x \\ y\end{bma
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="单纯形算法"><a href="#单纯形算法" class="headerlink" title="单纯形算法"></a>单纯形算法</h1><p>1947年，丹齐格提出了一种求解线性规划问题的方法，即今天所称的单纯形法，这是一种简洁且高效的算法，被誉为20世纪对科学发展和工程实践影响最大的十大算法之一。<br>上文提到线性规划问题的最优解一定是基本可行解，单纯形法的思路即在不同的基向量下求不同的<strong>基本可行解</strong>，然后找到最优的解。从几何的角度来看，也就是从一个极点转换到另一个极点，直至找到最优极点的过程。<br>那么这样的话可以把算法分成<strong>三个子问题</strong>，1.如何从一个基本可行解转换到另一个基本可行解。2.如何确定应该转移到哪个极点。3.什么时候停止转移操作，即如何判断当前基本可行解是否为最优解。</p>
-<h2 id="极点的转移"><a href="#极点的转移" class="headerlink" title="极点的转移"></a>极点的转移</h2><p>线性规划的标准型为</p>
+        <h1 id="求解线性方程组-2"><a href="#求解线性方程组-2" class="headerlink" title="求解线性方程组(2)"></a>求解线性方程组(2)</h1><h2 id="线性方程组的最小范数解"><a href="#线性方程组的最小范数解" class="headerlink" title="线性方程组的最小范数解"></a>线性方程组的最小范数解</h2><p>上一篇博文介绍了线性方程组的情况之一，即未知数数量小于方程个数的情况，介绍了最小二乘法，在本文中将介绍线性方程组的另一种情况，即方程个数小于未知数数量的情况，此时方程组有无限多的解，但是最接近原点的解，即范数最小的解只有一个，也就是这里将会介绍的线性方程组的<strong>最小范数解</strong>。</p>
+<p>考虑线性方程组<script type="math/tex">Ax=b</script>，其中<script type="math/tex">A\in R^{m*n},m\le n</script>，要寻找其最小范数解，即相当于求解下列最优化问题：</p>
 <script type="math/tex; mode=display">
-minimize\quad c^{T}x\\
-subject\ to\quad Ax=b\\
-x\ge0</script><p>考虑到方程$Ax=b$，展开成如下规范型的方程组</p>
+minimize\ ||x||\\
+subject\  to\ Ax=b</script><p>这个问题属于等式约束的最优化问题，可以利用拉格朗日乘子法求解，在这里我们介绍另外一种方法。</p>
+<p>先给出结论，该方程组的最小范数解为<script type="math/tex">x^{*}=A^{T}(AA^{T})^{-1}b</script>，下面给出证明：</p>
 <script type="math/tex; mode=display">
-x_{1}+y_{1\ m+1}x_{m+1}+...+y_{1n}x_{n}=y_{10}\\
-x_{2}+y_{2\ m+1}x_{m+1}+...+y_{2n}x_{n}=y_{20}\\
-\vdots\\
-x_{m}+y_{m\ m+1}x_{m+1}+...+y_{mn}x_{n}=y_{m0}</script><p>可以将该方程组转换为$[I_{m},Y_{m,n-m}]x=y_{0}$，这种形式的方程组$Ax=b$称为<strong>典式</strong>，方程组的典式与原方程组的解是相同的，在典式表达式中，与基列向量对应的变量为基变量，其他的变量为非基变量，即在方程$[I_{m},Y_{m,n-m}]x=y_{0}$中，$x_{1},x_{2}…,x_{m}$为基变量，其他的变量是非基变量。考虑增广矩阵规范型$[I_{m},Y_{m,n-m},y_{0}]$，其最后一列的各元素是向量$b$关于基{$a_{1},…,a_{m}$}的坐标。</p>
-<p>现在考虑增广矩阵的更新，即用某个非基变量替换某个基变量，求新的基变量对应的典式表达式，比如用非基变量$a_{q},m&lt;q\le n$替换基变量$a_{p},1\le p\le m$。在原矩阵上，$a_{q}$可以表示为</p>
+||x||^{2}=||(x-x^{*})+x^{*}||^{2}\\
+=||x-x^{*}||^{2}+||x^{*}||^{2}+2x^{*T}(x-x^{*})</script><p>令<script type="math/tex">x^{*}=A^{T}(AA^{T})^{-1}b</script>代入上式最右边项可以得到<script type="math/tex">2x^{*T}(x-x^{*})=0</script>，于是<script type="math/tex">||x||^{2}=||x-x^{*}||^{2}+||x^{*}||^{2}</script>，<script type="math/tex">||x^{*}||^{2}</script>是一个定值，而当<script type="math/tex">x\neq x^{*}</script>时，<script type="math/tex">||x-x^{*}||^{2}>0</script>恒成立，因此可以得到<script type="math/tex">x=x^{*}</script>是该优化问题的唯一最小解，即最小范数解。</p>
+<h2 id="Kaczmarz算法"><a href="#Kaczmarz算法" class="headerlink" title="Kaczmarz算法"></a>Kaczmarz算法</h2><p>Kaczmarz算法是一种迭代求解最小范数解的算法，可以省去求解<script type="math/tex">(AA^{T})^{-1}</script>的步骤，使计算更为高效，假设<script type="math/tex">A\in R^{m*n}</script>，直接给出迭代公式如下：<br>在前<script type="math/tex">m</script>次迭代中，即<script type="math/tex">k=0,1,...,m-1</script>时，有：</p>
 <script type="math/tex; mode=display">
-a_{q}=\sum_{i=1}^{m}y_{iq}a_{i}=\sum_{i=1\\i\ne p}^{m}y_{iq}a_{i}+y_{pq}a_{p}</script><p>注意仅当$y_{pq}\ne 0$时，向量组{$a_{1},…,a_{p-1},a_{q},a_{p+1},…,a_{m}$}才是线性无关的，才能形成一组基。<br>可以由上述方程求解出</p>
+x^{(k+1)}=x^{(k)}+\mu(b_{k+1}-a_{k+1}^{T}x^{(k)})\frac{a_{k+1}}{a_{k+1}^{T}a_{k+1}}</script><p>对于第$(m+1)$次迭代，重新使用$A$的第1行以及$b$的第1个元素，即</p>
 <script type="math/tex; mode=display">
-a_{p}=\frac{1}{y_{pq}}a_{q}-\sum_{i=1\\i\ne p}^{m}\frac{y_{iq}}{y_{pq}}a_{i}</script><p>利用原来的增广矩阵，可以将任意向量$a_{j}(m&lt;j\le n)$表示为</p>
-<script type="math/tex; mode=display">
-a_{j}=y_{1j}a_{1}+y_{2j}a_{2}+...+y_{mj}a_{m}</script><p>将$a_{p}$的表达式代入可以得到</p>
-<script type="math/tex; mode=display">
-a_{j}=\sum_{i=1\\i\ne p}^{m}(y_{ij}-\frac {y_{pj}}{y_{pq}}y_{iq})a_{i}+\frac{y_{pj}}{y_{pq}}a_{q}</script><p>利用$y_{ij}^{‘}$表示新的增广矩阵中的元素，由上式可得</p>
-<script type="math/tex; mode=display">
-y_{ij}^{'}=y_{ij}-\frac{y_{pj}}{y_{pq}}y_{iq},i\ne p\\
-y_{pj}^{'}=\frac{y_{pj}}{y_{pq}}</script><p>利用以上公式对矩阵的变换称为关于元素$(p,q)$的<strong>枢轴变换</strong>，以上即为从一个极点转换到另一个极点的公式。</p>
-<h2 id="确定转移的极点"><a href="#确定转移的极点" class="headerlink" title="确定转移的极点"></a>确定转移的极点</h2><p>确定转移的极点即将向量组转换到另一组坐标系上，详细来说就是将向量组中m个向量之一取出，从另外n-m个向量中选择一个向量加入到基向量组形成新的基。我们记为将$a_{p}$向量取出（出基），将$a_{q}$向量加入（入基），又可以将这个问题分为两部分，即分别确定$p$和$q$。<br>对于$q$的确定，先看枢轴变换的公式如下</p>
-<script type="math/tex; mode=display">
-y_{ij}^{'}=y_{ij}-\frac{y_{pj}}{y_{pq}}y_{iq},i\ne p\\
-y_{pj}^{'}=\frac{y_{pj}}{y_{pq}}</script><p>再看另一种方法将一个非基变量$a_{q}$变成基向量<br>利用当前的基向量来表示向量$a_{q}$</p>
-<script type="math/tex; mode=display">
-a_{q}=y_{1q}a_{1}+y_{2q}a_{2}+...+y_{mq}a_{m}</script><p>上式两边同时乘上$\epsilon&gt;0$可以得到</p>
-<script type="math/tex; mode=display">
-\epsilon a_{q}=\epsilon y_{1q}a_{1}+\epsilon y_{2q}a_{2}+...+\epsilon y_{mq}a_{m}</script><p>将基本解$x=[y_{10},…,y_{m0},0,…,0]^T$代入方程$Ax=b$可以得到</p>
-<script type="math/tex; mode=display">
-y_{10}a_{1}+...+y_{m0}a_{m}=b</script><p>联立上面两个等式，可以得到</p>
-<script type="math/tex; mode=display">
-(y_{10}-\epsilon y_{1q})a_{1}+(y_{20}-\epsilon y_{2q})a_{2}+...+(y_{m0}-\epsilon y_{mq})a_{m}+\epsilon a_{q}=b</script><p>即向量$[y_{10}-\epsilon y_{1q},…,y_{m0}-\epsilon y_{mq},0,…,\epsilon,…,0]$是方程$Ax=b$的一个解，当$\epsilon$不断增大，向量的前m个元素中首次出现0，此时可以得到一个基本可行解，变换过后的基本可行解对应的目标函数值为</p>
-<script type="math/tex; mode=display">
-z=c_{1}(y_{10}-y_{1q}\epsilon)+...+c_{m}(y_{m0}-y_{mq}\epsilon)+c_{q}\epsilon\\
-=z_{0}+[c_{q}-(c_{1}y_{1q}+...+c_{m}y_{mq})]\epsilon</script><p>其中，$z_{0}=c_{1}y_{10}+…+c_{m}y_{m0}$，令$z_{q}=c_{1}y_{1q}+…+c_{m}y_{mq}$，可以得到$z=z_{0}+(c_{q}-z_{q})\epsilon$，当$z-z_{0}=(c_{q}-z_{q})\epsilon&lt;0$时，说明基本可行解对应的目标函数值变小了，即认为这个向量加入基向量组后是有益的。</p>
-<p>那么可以对每一个$q,m&lt;q\le n$计算$c_{q}-z_{q}$，令$r_{i}=0(i=1,…,m),r_{i}=c_{i}-z_{i}(i=m+1,…,n)$，称$r_{i}$为第$i$个<strong>简化价值系数</strong>，也称为<strong>检验数</strong>。可以通过证明得到，<strong>当且仅当相应的检验数都是非负的时候，该基本可行解是最优解</strong>。</p>
-<p>即可以通过计算检验数的方法来判断当前解是否为最优解，当检验数中有负数的时候，则说明当前解不是最优解，可以通过将第$q$个向量加入基向量组的方法减小目标函数值，如果有多个负数，则选择检验数最小的第$q$个向量加入基向量组。</p>
-<p>上面确定了$q$的选择方法，下面来介绍一下如何确定出基向量$a_{p}$，由上文可知，对于向量$[y_{10}-\epsilon y_{1q},…,y_{m0}-\epsilon y_{mq},0,…,\epsilon,…,0]$，当$\epsilon$不断增大，在前$m$个元素中会有第$i$个元素$y_{i0}-\epsilon y_{iq}$最先等于0，那么我们则选择$a_{i}$作为出基向量$a_{p}$，即$p=arg min_{i}\{y_{i0}/y_{iq}:y_{iq}&gt;0\}$，需要注意的是，如果不存在$y_{iq}&gt;0$，则问题有无界解，停止运算，另外如果同时出现多个0元素，那么得到退化的基本可行解，此时选择最小的$p$值。</p>
-<h2 id="确定停止条件"><a href="#确定停止条件" class="headerlink" title="确定停止条件"></a>确定停止条件</h2><p>上文介绍了如何选择转移的极点数，在确定$q$的时候，计算检验数，若所有的检验数都是非负，那么此时的基本可行解是最优解，停止计算。另外在确定$p$的时候，若随着$\epsilon$不断增大，向量的前m个元素也随之增大，即对于$0&lt;i\le m,y_{iq}&lt;0$，那么该问题有无界解，也停止计算。</p>
-<h2 id="单纯形算法-1"><a href="#单纯形算法-1" class="headerlink" title="单纯形算法"></a>单纯形算法</h2><p>上文介绍了单纯形算法几个子问题的处理方法，下面来总结一下<strong>单纯形算法</strong><br><strong>1.</strong>根据初始基本可行解构造增广矩阵规范型；<br><strong>2.</strong>计算非基变量的检验数；<br><strong>3.</strong>如果对于所有$j$都有$r_{j}\le 0$，则停止计算，当前基本可行解是最优解，否则进入下一步<br><strong>4.</strong>在小于0的检验数中选择检验数最小的$q$<br><strong>5.</strong>如果不存在$y_{iq}&gt;0$，则停止计算，问题有无界解；否则计算$p=arg min_{i}\{y_{i0}/y_{iq}:y_{iq&gt;0}\}$，如果得到多个满足条件的下标$i$，令$p$为最小的下标值。<br><strong>6.</strong>以元素$(p,q)$作为枢轴元素，进行枢轴变换，更新增广矩阵规范型。<br><strong>7.</strong>转到步骤2</p>
-<p>另外对于单纯形算法，还有其矩阵表达式，对于寻找初始基本可行解所遇到的困难，又提出了<strong>两阶段单纯形法</strong>，为了减小计算量，又提出了<strong>修正单纯形法</strong>等等。</p>
-<p>To be continue…</p>
+x^{(m+1)}=x^{(m)}+\mu(b_{1}-a_{1}^{T}x^{(m)})\frac{a_{1}}{a_{1}^{T}a_{1}}</script><p>每迭代m次便从头循环一次，<script type="math/tex">\mu</script>可以视为迭代算法的过程。可以证明得到在Kaczmarz算法中，如果<script type="math/tex">x^{(0)}=0</script>，则当<script type="math/tex">k\to \infty</script>时，<script type="math/tex">x^{(k)}\to x^{*}=A^{T}(AA^{T})^{-1}b</script>，详细证明过程在这里省略。</p>
+<p>后面的文章还会介绍线性方程组的一般解法，伪逆等相关内容，To be continue…</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/最优化-求解线性规划问题的单纯形算法/" data-id="cjlgnt6jt000m1kezueakwq38" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/21/最优化-求解线性方程组-2/" data-id="cjlhdjm6n000hokeztvbbk7zy" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Cpp-Cpp函数中的参数传递" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/29/Cpp-Cpp函数中的参数传递/" class="article-date">
-  <time datetime="2018-08-29T10:43:33.000Z" itemprop="datePublished">2018-08-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/29/Cpp-Cpp函数中的参数传递/">[Cpp]Cpp函数中的参数传递</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="C-函数中的参数传递"><a href="#C-函数中的参数传递" class="headerlink" title="C++函数中的参数传递"></a>C++函数中的参数传递</h1><p>在C++程序中，调用函数的时候需要向函数传入一个参数，除了空参数(void)之外，参数传递分为<strong>引用传递</strong>和<strong>值传递</strong>两种</p>
-<h2 id="引用传递和值传递"><a href="#引用传递和值传递" class="headerlink" title="引用传递和值传递"></a>引用传递和值传递</h2><p>当形参是引用类型时，称之对应的实参被<strong>引用传递</strong>，或者函数被<strong>传引用调用</strong>。和其他引用一样，引用形参也是它绑定的对象的别名；即引用形参是它对应的实参的别名。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reset</span><span class="params">(<span class="keyword">int</span> &amp;i)</span></span>&#123;</span><br><span class="line">		i=<span class="number">0</span>;   <span class="comment">//i的值会改变</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>当初始化一个非引用类型的参数时，初始值被拷贝给变量，实参的值被拷贝给形参，形参和实参是两个独立的对象。我们说这样的实参被值传递，或者函数被传值调用。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reset</span><span class="params">(<span class="keyword">int</span> i)</span></span>&#123;</span><br><span class="line">		i=<span class="number">0</span>;   <span class="comment">//实参i的值并不会改变</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>需要注意的是，如果传入一个指针对象，则可以通过指针来改变其指向对象的值，这在C语言中很常见，但是在C++中如果有这种需求则应该使用引用传递来实现。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">reset</span><span class="params">(<span class="keyword">int</span> *i)</span></span>&#123;</span><br><span class="line">		*i=<span class="number">0</span>;   <span class="comment">//指针i所指向对象的值同样会改变</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>另外，在传入字面常量的时候，如果字面常量较大，最好避免拷贝操作的值传递，而使用引用传递，需要注意的是，这里的引用传递必须将形参定义为底层const，因为不能把字面值传递给非const引用形参<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span>::<span class="function">size_type <span class="title">find_char</span><span class="params">(<span class="built_in">string</span> &amp;s,<span class="keyword">char</span> c)</span></span>;</span><br><span class="line"><span class="comment">//该函数第一个形参应该使用const string &amp;s，否则编译时会出现错误</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="含有可变形参的函数"><a href="#含有可变形参的函数" class="headerlink" title="含有可变形参的函数"></a>含有可变形参的函数</h2><p>为了编写能处理不同数量实参的函数，C++11新标准提供了两种主要的方法：如果所有实参类型相同，可以传递一个名为<strong>initializer_list</strong>的标准库类型；如果实参的类型不同，我们可以编写一种特殊的函数，也就是所谓的可变参数模板，这里不作详解。</p>
-<p>使用以下形式编写输出错误信息的函数，使其可以作用于可变数量的实参<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">error_msg</span><span class="params">(<span class="built_in">initializer_list</span>&lt;<span class="built_in">string</span>&gt; i1)</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">auto</span> beg=i1.begin();beg!=i1.end();beg++)&#123;</span><br><span class="line">		<span class="built_in">cout</span>&lt;&lt;*beg&lt;&lt;<span class="string">" "</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="形参默认初始化"><a href="#形参默认初始化" class="headerlink" title="形参默认初始化"></a>形参默认初始化</h2><p>某些函数有这样一种形参，在函数的很多次调用中它们都被赋予一个相同的值，此时，我们把这个反复出现的值称为函数的<strong>默认实参</strong>。需要注意的是，一旦某个形参被赋予了默认值，它后面的所有形参都必须有默认值。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="built_in">string</span>::size_type sz;</span><br><span class="line"><span class="comment">//在声明中定义函数实参的默认值</span></span><br><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">screen</span><span class="params">(sz ht=<span class="number">24</span>,sz wid=<span class="number">80</span>,<span class="keyword">char</span> backgrnd=<span class="string">' '</span>)</span></span>;</span><br><span class="line"><span class="built_in">string</span> window;</span><br><span class="line">window=screen();	<span class="comment">//等价于screen(24,80,' ')</span></span><br></pre></td></tr></table></figure></p>
-<p>对于函数的声明来说，通常的习惯就是将其放在头文件中，并且每个函数只声明一次，但是多次声明也是允许的。但是需要注意，在给定的作用域中一个形参只能被赋予一次默认实参。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="built_in">string</span> <span class="title">screen</span><span class="params">(sz,sz,<span class="keyword">char</span>=<span class="string">'*'</span>)</span></span>;	<span class="comment">//错误，重复声明</span></span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/29/Cpp-Cpp函数中的参数传递/" data-id="cjlgnt6jd00051kezfv36l93l" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
 
     </footer>
   </div>
@@ -412,7 +440,7 @@ z=c_{1}(y_{10}-y_{1q}\epsilon)+...+c_{m}(y_{m0}-y_{mq}\epsilon)+c_{q}\epsilon\\
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">25</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -425,23 +453,23 @@ z=c_{1}(y_{10}-y_{1q}\epsilon)+...+c_{m}(y_{m0}-y_{mq}\epsilon)+c_{q}\epsilon\\
       <ul>
         
           <li>
-            <a href="/2018/08/29/hello-world/">Hello World</a>
+            <a href="/2018/08/24/机器学习-SVM的推导-3/">[机器学习]SVM的推导(3)</a>
           </li>
         
           <li>
-            <a href="/2018/08/29/Cpp-谈一谈const关键字/">[Cpp]谈一谈const关键字</a>
+            <a href="/2018/08/18/机器学习-SVM的推导-2/">[机器学习]SVM的推导(2)</a>
           </li>
         
           <li>
-            <a href="/2018/08/29/最优化-线性规划概述/">[最优化]线性规划概述</a>
+            <a href="/2018/08/10/机器学习-SVM的推导-1/">[机器学习]SVM的推导(1)</a>
           </li>
         
           <li>
-            <a href="/2018/08/29/最优化-求解线性规划问题的单纯形算法/">[最优化]求解线性规划问题的单纯形算法</a>
+            <a href="/2018/07/26/最优化-求解线性方程组-3/">[最优化]求解线性方程组(3)</a>
           </li>
         
           <li>
-            <a href="/2018/08/29/Cpp-Cpp函数中的参数传递/">[Cpp]Cpp函数中的参数传递</a>
+            <a href="/2018/07/21/最优化-求解线性方程组-2/">[最优化]求解线性方程组(2)</a>
           </li>
         
       </ul>

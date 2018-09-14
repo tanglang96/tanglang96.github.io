@@ -70,6 +70,65 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-机器学习-神经网络反向传播的推导" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/06/01/机器学习-神经网络反向传播的推导/" class="article-date">
+  <time datetime="2018-06-01T05:20:32.000Z" itemprop="datePublished">2018-06-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/01/机器学习-神经网络反向传播的推导/">[机器学习]神经网络反向传播的推导</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="神经网络反向传播的推导"><a href="#神经网络反向传播的推导" class="headerlink" title="神经网络反向传播的推导"></a>神经网络反向传播的推导</h1><p>对于神经网络的训练过程而言，其反向传播算法是训练过程的核心，神经网络根据预测值$\hat{y}$与实际值$y$的偏差从后向前来计算损失函数对于各个参数的梯度，从而利用梯度下降的方法来优化训练神经网络的各个参数。</p>
+<p>神经网络的计算流程图如下：<br><img src="https://img-blog.csdn.net/2018060112352186?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>从该流程图可以看到，如果我们要计算神经网络的参数$W^{[1]},b^{[1]},W^{[2]},b^{[2]}$，首先需要计算$\frac{\partial L}{\partial a^{[2]}}$和$\frac{\partial a^{[2]}}{\partial z^{[2]}}$，然后根据链式法则得到$\frac{\partial L}{\partial z^{[2]}}=\frac{\partial L}{\partial a^{[2]}}\frac{\partial a^{[2]}}{\partial z^{[2]}}$。</p>
+<p>之后再计算$\frac{\partial z^{[2]}}{\partial W^{[2]}}$和$\frac{\partial z^{[2]}}{\partial b^{[2]}}$，同样根据链式法则可以得到$\frac{\partial L}{\partial W^{[2]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial W^{[2]}}$以及得到$\frac{\partial L}{\partial b^{[2]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial b^{[2]}}$。这样便得到了$dW^{[2]}$和$db^{[2]}$。</p>
+<p>另外对于$dW^{[1]}$和$db^{[1]}$的计算，需要先计算$\frac{\partial z^{[1]}}{\partial W^{[1]}}$，$\frac{\partial a^{[1]}}{\partial z^{[1]}}$和$\frac{\partial z^{[2]}}{\partial a^{[1]}}$，同样根据链式法则可以得到$\frac{\partial L}{\partial W^{[1]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial a^{[1]}}\frac{\partial a^{[1]}}{\partial z^{[1]}}\frac{\partial z^{[1]}}{\partial W^{[1]}}$，以及$\frac{\partial L}{\partial b^{[1]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial a^{[1]}}\frac{\partial a^{[1]}}{\partial z^{[1]}}\frac{\partial z^{[1]}}{\partial b^{[1]}}$。这样也得到了$dW^{[1]}$和$db^{[1]}$。</p>
+<p>在使用随机梯度下降(SGD)优化算法以及交叉熵(Cross Entropy)损失函数的时候，我们令$a^{[2]}=\hat{y}$，即损失函数：</p>
+<script type="math/tex; mode=display">L(\hat{y},y)=-(ylog\hat{y}+(1-y)log(1-\hat{y}))</script><p>使用sigmoid激活函数，即</p>
+<script type="math/tex; mode=display">a^{[1]}=\sigma(z^{[1]})=\frac{1}{1+e^{-z^{[1]}}}\\a^{[2]}=\sigma(z^{[2]})=\frac{1}{1+e^{-z^{[2]}}}</script><p>将该激活函数和损失函数代入上面的计算过程，可以得到：</p>
+<script type="math/tex; mode=display">
+dz^{[2]}=a^{[2]}-y\\
+dW^{[2]}=dz^{[2]}a^{[1]T}\\
+db^{[2]}=dz^{[2]}\\
+dz^{[1]}=W^{[2]T}dz^{[2]}*\sigma^{'}(z^{[1]})\\
+dW^{[1]}=dz^{[1]}x^{T}\\
+db^{[1]}=dz^{[1]}</script><p>在进行随机梯度下降的过程中，随机选取样本中的一个错误分类点，根据该点计算当前的$dW^{[1]},db^{[1]},dW^{[2]},db^{[2]}$，然后利用以下公式来更新$W^{[1]},b^{[1]},W^{[2]},b^{[2]}$：</p>
+<script type="math/tex; mode=display">
+W^{[2]}:=W^{[2]}-\alpha *dW^{[2]}\\
+b^{[2]}:=b^{[2]}-\alpha *db^{[2]}\\
+W^{[1]}:=W^{[1]}-\alpha *dW^{[1]}\\
+b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
+<p>对于神经网络的训练，还有批量梯度下降(Batch Gradient Descent)和小批量梯度下降(Mini-Batch Gradient Descent)，带动量的随机梯度下降(Momentum)，RMSProp，Adam等方法，后面再做详解。</p>
+<p>To be continue…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/06/01/机器学习-神经网络反向传播的推导/" data-id="cjm1jpgb6001iqgezvm59virr" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Cpp-Cpp中的顺序容器" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/05/25/Cpp-Cpp中的顺序容器/" class="article-date">
@@ -125,7 +184,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/25/Cpp-Cpp中的顺序容器/" data-id="cjlote7k90004x4ez6df62ww8" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/25/Cpp-Cpp中的顺序容器/" data-id="cjm1jpg9i0006qgez4na7cnvi" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
@@ -187,7 +246,7 @@ g(D|A)=H(D)-H(D|A)</script><h2 id="1-3-构建决策树的ID3算法"><a href="#1-
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/24/机器学习-决策树和随机森林算法简介/" data-id="cjlote7mm001fx4ez4o29uj17" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/24/机器学习-决策树和随机森林算法简介/" data-id="cjm1jpgb6001gqgezrt92f4mo" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -257,7 +316,7 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/18/最优化-等式约束的优化问题求解/" data-id="cjlote7lj000mx4ezmly7rz6e" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/18/最优化-等式约束的优化问题求解/" data-id="cjm1jpgam000uqgez6h8sqoes" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -319,68 +378,7 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/18/Cpp-Cpp中的IO类/" data-id="cjlote7l1000dx4ezp3l919zo" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Cpp-Cpp中的构造函数" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/05/11/Cpp-Cpp中的构造函数/" class="article-date">
-  <time datetime="2018-05-11T10:48:20.000Z" itemprop="datePublished">2018-05-11</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/11/Cpp-Cpp中的构造函数/">[Cpp]Cpp中的构造函数</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="C-中的构造函数"><a href="#C-中的构造函数" class="headerlink" title="C++中的构造函数"></a>C++中的构造函数</h1><p>每个类都分别定义了它的对象被初始化的方式，类通过一个或多个特殊的成员函数来控制其对象的初始化过程，这些函数就叫做<strong>构造函数(constructor)</strong>。构造函数的任务是初始化类对象的数据成员，无论何时只要类的对象被创建，就会执行构造函数。</p>
-<p>构造函数的名字和类名相同，但其没有返回类型。类可以包括多个构造函数，和其他重载函数差不多，不同的构造函数之间必须在参数数量或参数类型上有所区别。</p>
-<p>构造函数不能被声明为const的，在常量对象的创建过程中，可以为其中的参数写值，知道对象创建完成才会取得const属性。</p>
-<h2 id="默认构造函数"><a href="#默认构造函数" class="headerlink" title="默认构造函数"></a>默认构造函数</h2><p>当我们没有为类提供构造函数的时候，编译器会为我们隐式地定义一个构造函数，编译器创建的构造函数又被称为<strong>合成的默认构造函数</strong>，它将按照以下规则初始化类地数据成员</p>
-<ul>
-<li>如果存在类内的初始值，用它来初始化成员</li>
-<li>如果不存在则默认初始化该成员</li>
-</ul>
-<p>合成的默认构造函数只适合非常简单的类，对于普通的类来说，必须定义它自己的构造函数，原因如下：</p>
-<ol>
-<li>编译器只有在发现类不包含任何构造函数的情况下才会创建默认的构造函数</li>
-<li>对于某些类，合成的默认构造函数可能会执行错误的操作，比如对数组或指针进行默认初始化，其值将是未定义的</li>
-<li>编译器有时候不能为某些类创建默认构造函数，如果该类里面含有其他类的成员而该类成员没有默认构造函数，则编译器不能执行默认初始化</li>
-</ol>
-<p>当且仅当我们既需要普通的构造函数也需要默认构造函数的时候，可以使用=default来定义<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sales_data</span>&#123;</span></span><br><span class="line">	Sales_data()=<span class="keyword">default</span>;  <span class="comment">//默认构造函数</span></span><br><span class="line">	Sales_data(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;s):bookNo(s)&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="构造函数初始值列表"><a href="#构造函数初始值列表" class="headerlink" title="构造函数初始值列表"></a>构造函数初始值列表</h2><p>对于Sales_data类的其他构造函数<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Sales_data(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;s):bookNo(s)&#123;&#125;  <span class="comment">//s作为bookNo的初值</span></span><br><span class="line">Sales_data(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;s,<span class="keyword">unsigned</span> n,<span class="keyword">double</span> p):bookNo(s),units_sold(n),revenue(p*n)&#123;&#125;</span><br><span class="line"><span class="comment">//s作为bookNo的初值，n作为units_sold的初值，p*n作为revenue的初值</span></span><br></pre></td></tr></table></figure></p>
-<p> 在参数列表与大括号之间新出现的部分称为构造函数初始值列表，它负责为新创建对象的一个或几个数据成员赋初值，另外需要注意构造函数不应该轻易覆盖掉类内的初始值，除非新赋的值与原值不同。</p>
-<p>需要注意，成员的初始化顺序与它们在类定义中出现的顺序一致：第一个成员先被初始化，然后第二个等等。构造函数初始值列表中初始值的前后位置关系不会影响实际的初始化顺序，因此最好令构造函数初始值的顺序与成员声明的顺序一致。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">X</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">int</span> j;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	X(<span class="keyword">int</span> val):j(val),i(j)&#123;&#125;</span><br><span class="line">	<span class="comment">//会出现错误，因为i在j之前被初始化</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<h2 id="委托构造函数"><a href="#委托构造函数" class="headerlink" title="委托构造函数"></a>委托构造函数</h2><p>C++11新标准扩展了构造函数初始值的功能，使得我们能够定义委托构造函数，一个委托构造函数使用它所属类的其他构造函数执行它自己的初始化过程，或者说把它自己的一些或全部职责委托给了其他的构造函数。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sales_data</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	Sales_data(<span class="built_in">std</span>::<span class="built_in">string</span> s,<span class="keyword">unsigned</span> cnt,<span class="keyword">double</span> price):bookNo(s),units_sold(cnt),revenue(cnt*price)&#123;&#125;</span><br><span class="line">	<span class="comment">//下面的构造函数都委托给其他的构造函数</span></span><br><span class="line">	Sales_data():Sales_data(<span class="string">" "</span>,<span class="number">0</span>,<span class="number">0</span>)&#123;&#125;</span><br><span class="line">	Sales_data(<span class="built_in">std</span>::<span class="built_in">string</span> s):Sales_data(s,<span class="number">0</span>,<span class="number">0</span>)&#123;&#125;</span><br><span class="line">	Sales_data(<span class="built_in">std</span>::istream &amp;is):Sales_data()&#123;read(is,*<span class="keyword">this</span>);&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="隐式的类类型转换"><a href="#隐式的类类型转换" class="headerlink" title="隐式的类类型转换"></a>隐式的类类型转换</h2><p>在某个类中，接受string的构造函数和接受istream的构造函数分别定义了这两种类型向该类的转换规则<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> null_book=<span class="string">"9999"</span>;</span><br><span class="line">item.combine(null_book);</span><br><span class="line"><span class="comment">//编译器用给定的string自动创建了一个Sales_data的对象</span></span><br></pre></td></tr></table></figure></p>
-<p>注意，编译器只会执行一步类型转换，例如从字面量再到string对象再到Sales_data对象的转换是不被允许的。</p>
-<p>在我们不需要进行类型转换的时候可以使用<strong>explicit</strong>关键字进行抑制<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sales_data</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	Sales_data()=<span class="keyword">default</span>;</span><br><span class="line">	explicit Sales_data(const std::string &amp;s):bookNo(s)&#123;&#125; //不能从string对象转换为Sales_data对象</span><br><span class="line">	<span class="function"><span class="keyword">explicit</span> <span class="title">Sales_data</span><span class="params">(<span class="built_in">std</span>::istream&amp;)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在不使用隐式转换的时候，另外可以使用显式转换<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">item.combine(<span class="keyword">static_cast</span>&lt;Sales_data&gt;(<span class="built_in">cin</span>));</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/11/Cpp-Cpp中的构造函数/" data-id="cjlote7jl0000x4ezu1ybz4mo" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/18/Cpp-Cpp中的IO类/" data-id="cjm1jpg9y0007qgezsa0uow9j" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
@@ -396,7 +394,7 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -431,7 +429,7 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -450,7 +448,7 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -461,6 +459,10 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/09/14/leetcode-stock/">[LeetCode]动态规划中股票问题的通用解法</a>
+          </li>
         
           <li>
             <a href="/2018/08/31/最优化-凸集的定义与常见凸集/">[最优化]凸集的定义与常见凸集</a>
@@ -476,10 +478,6 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
         
           <li>
             <a href="/2018/08/10/机器学习-SVM的推导-1/">[机器学习]SVM的推导(1)</a>
-          </li>
-        
-          <li>
-            <a href="/2018/07/26/最优化-求解线性方程组-3/">[最优化]求解线性方程组(3)</a>
           </li>
         
       </ul>

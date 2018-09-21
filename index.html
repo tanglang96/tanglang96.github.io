@@ -70,6 +70,52 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Matrix-Derivative" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/21/Matrix-Derivative/" class="article-date">
+  <time datetime="2018-09-21T08:19:52.000Z" itemprop="datePublished">2018-09-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/21/Matrix-Derivative/">[Matrix]关于向量与矩阵的求导</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="向量与矩阵的求导"><a href="#向量与矩阵的求导" class="headerlink" title="向量与矩阵的求导"></a>向量与矩阵的求导</h1><p>机器学习的算法中会遇到大量的与矩阵相关的微分与求导，在这里介绍一些常见的矩阵和向量相关的求导公式。</p>
+<p>可以将常见的数据类型分为标量（scalar），向量（vector）和矩阵（matrix）这么几种，其中常见的求导运算分别为标量对标量/向量/矩阵的求导，向量对标量/向量的求导，矩阵对标量的求导这么几种，其他的求导计算的结果为张量，这里暂时不讨论。</p>
+<p>对于求导结果的表示，分为分子布局（Numerator-layout notation）和分母布局（Denominator-layout notation）两种，这两种表示方式都是正确的，目前并没有相关的标准，最近看的《凸优化》上面通常采用分子布局的方式。</p>
+<p>在分子布局的情况下，相关的求导维数如下表：<br><img src="\images\导数.PNG" alt="向量和矩阵求导的表格"></p>
+<p>如果是向量与标量之间的求导，或者矩阵与标量之间的求导，求导结果即为矩阵或向量对标量的逐点求导得到的矩阵或向量，向量与向量之间的求导则会得到一个矩阵，称之为Jacobian matrix。</p>
+<p>当向量对标量求导时为：<img src="\images\vector-scalar.svg" alt="向量对标量求导"><br>标量对向量求导时为：<img src="\images\scalar-vector.svg" alt="标量对向量求导"><br>矩阵与标量之间的求导的与上面的类似，当标量对矩阵求导时同样也需要转置。</p>
+<p>当两个向量之间求导时，会得到一个雅各比矩阵：<img src="\images\vector-vector.svg" alt="向量对向量求导"></p>
+<p>一些常见的矩阵求导公式如下：<br><img src="\images\vector-by-vector.PNG" alt="向量对向量的求导"><br><img src="\images\vector-by-scalar.PNG" alt="向量对标量的求导"><br><img src="\images\scalar-by-vector-1.PNG" alt="标量对向量的求导"><br><img src="\images\scalar-by-vector-2.PNG" alt="标量对向量的求导"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/09/21/Matrix-Derivative/" data-id="cjmbwyrqf0008m0ezhpafiz1b" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Matrix/">Matrix</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-leetcode-stock" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/09/14/leetcode-stock/" class="article-date">
@@ -112,7 +158,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/09/14/leetcode-stock/" data-id="cjm1jpg9i0004qgez3wwb7dor" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/09/14/leetcode-stock/" data-id="cjmbwyrr2000om0ez0lrdvvby" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
@@ -173,7 +219,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/31/最优化-凸集的定义与常见凸集/" data-id="cjm1jpgad000mqgez2jjfupyl" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/31/最优化-凸集的定义与常见凸集/" data-id="cjmbwyrqh000am0ez57dmn70w" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -238,7 +284,7 @@ s.t.\quad &\sum_{i=1}^{m}\alpha_{i}y_{i}=0\\
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/24/机器学习-SVM的推导-3/" data-id="cjm1jpgaw001aqgez8qeyi5dq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/24/机器学习-SVM的推导-3/" data-id="cjmbwyrrp001dm0ez6z5d23bb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -300,87 +346,7 @@ L,\quad \hat\alpha_{2}<L
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/18/机器学习-SVM的推导-2/" data-id="cjm1jpgau0013qgez10g2evm5" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-机器学习-SVM的推导-1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/10/机器学习-SVM的推导-1/" class="article-date">
-  <time datetime="2018-08-10T14:36:53.000Z" itemprop="datePublished">2018-08-10</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/10/机器学习-SVM的推导-1/">[机器学习]SVM的推导(1)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="硬间隔的SVM推导"><a href="#硬间隔的SVM推导" class="headerlink" title="硬间隔的SVM推导"></a>硬间隔的SVM推导</h1><p>SVM是机器学习中的一种经典方法，除了硬间隔SVM之外，还包括软间隔SVM，核技巧等SVM的变种，本文主要介绍<strong>硬间隔SVM</strong>的推导。</p>
-<p>假设两类样本点是可以被准确分开的，那么则可以使用硬间隔SVM来进行分类，假设分隔的超平面方程为<script type="math/tex">w\cdot x+b=0</script>，则每个样本点<script type="math/tex">x_{i}</script>到该超平面的距离为<script type="math/tex">|w\cdot x_{i}+b|</script>，如果设定与超平面之间的距离为正的点为正分类，即<script type="math/tex">y_{i}=+1</script>，相反负距离的点为负分类，即<script type="math/tex">y_{i}=-1</script>，那么可以将样本点到分离超平面的距离表示为<script type="math/tex">\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)</script>，这称为样本点到分离超平面之间的<strong>函数距离</strong>。</p>
-<p>令<script type="math/tex">\hat{\gamma}=min(\hat{\gamma}_{i})</script>，即为最小函数距离。需要注意到，函数距离<script type="math/tex">\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)</script>在<script type="math/tex">w</script>和<script type="math/tex">b</script>同时增大某个比例倍数时，函数间隔会增大但是超平面不会发生改变，此时便需要将超平面的<script type="math/tex">w</script>进行约束，比如令<script type="math/tex">||w||=1</script>，我们可以重新定义距离为<script type="math/tex">\gamma_{i}=y_{i}(\frac{w}{||w||}\cdot x_{i}+\frac{b}{||w||})</script>，称之为<strong>几何距离</strong>，令<script type="math/tex">\gamma=min(\gamma_{i})</script>，即可以得到<script type="math/tex">\gamma=\frac{\hat\gamma}{||w||}</script>。</p>
-<p>那么最大化分隔距离的优化问题即可表示如下：</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-&max_{w,b}\quad \gamma \\
-&s.t.\quad y_{i}(\frac{w}{||w||}\cdot x_{i}+\frac{b}{||w||})\ge\gamma，i=1,2...n
-\end{align*}</script><p>即</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-&max_{w,b}\quad \frac{\hat\gamma}{||w||} \\
-&s.t.\quad y_{i}(w\cdot x_{i}+b)\ge\hat \gamma，i=1,2...n
-\end{align*}</script><p>注意上式中，函数间隔<script type="math/tex">\hat\gamma</script>的取值并不会影响最优化问题的解，不妨假设<script type="math/tex">\hat\gamma=1</script>，并且注意到最大化<script type="math/tex">\frac{1}{||w||}</script>与最小化<script type="math/tex">\frac{1}{2}||w||^{2}</script>等价，那么上述问题即可以等价为：</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-&min_{w,b}\quad \frac{1}{2}||w||^{2}\\
-&s.t.\quad y_{i}(w\cdot x_{i}+b)-1\ge0
-\end{align*}</script><p>上述问题即为一个不等式约束的最优化问题，可以利用拉格朗日乘子法与KKT条件来求解，令<script type="math/tex">\alpha=[\alpha_{1},\alpha_{2},\alpha_{3},...,\alpha_{n}]^{T}</script>，首先构造拉格朗日函数为：<script type="math/tex">L(w,b,\alpha)=\frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}</script></p>
-<p>假设<script type="math/tex">W^{*},b^{*},\alpha^{*}</script>是优化问题的最优解，那么根据KKT条件，<script type="math/tex">W^{*},b^{*},\alpha^{*}</script>一定满足以下方程：</p>
-<script type="math/tex; mode=display">
-\begin{align}
-&\nabla_{w}L(w^{*},b^{*},\alpha^{*})=w^{*}-\sum_{i=1}^{N}\alpha^{*}_{i}y_{i}x_{i}=0\tag{1}\\
-&\nabla_{b}L(w^{*},b^{*},\alpha^{*})=-\sum_{i=1}^{N}\alpha_{i}^{*}y_{i}=0\tag{2}\\
-&\alpha_{i}^{*}(y_{i}(w^{*}\cdot x_{i}+b^{*})-1)=0\tag{3}\\
-&y_{i}(w^{*}\cdot x_{i}+b^{*})-1\ge 0\tag{4}\\
-&\alpha_{i}^{*}\ge0\tag{5}
-\end{align}</script><p>KKT条件主要包括几个方面的内容：<br>1.拉格朗日函数对于原始优化变量的梯度为0，如（1）和（2）<br>2.拉格朗日乘子和不等式约束的左式（化为标准形式）的乘积全为0，如（3）<br>3.原问题的约束条件，如（4）<br>4.拉格朗日乘子非负，如（5）</p>
-<p>由（1）和（2）可以得到：</p>
-<script type="math/tex; mode=display">
-w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}\\
-\sum_{i}^{N}\alpha_{i}^{*}y_{i}=0</script><p>根据拉格朗日对偶性，原问题可以化为：</p>
-<script type="math/tex; mode=display">
-min_{w,b}\ max_{\alpha}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i},\alpha_{i}\ge 0</script><p>即</p>
-<script type="math/tex; mode=display">
-max_{\alpha}\ min_{w,b}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i},\alpha_{i}\ge 0</script><p>其中<script type="math/tex">min_{w,b}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}</script>问题的最优解由KKT条件可以得到为<script type="math/tex">w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}</script>，并且有<script type="math/tex">\sum_{i}^{N}\alpha_{i}^{*}y_{i}=0</script>，代入上式即可将原问题化为：</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-max_{\alpha}\quad&-\frac{1}{2}\sum_{i}\sum_{j}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}\cdot x_{j})+\sum_{i}\alpha_{i}\\
-s.t.\quad&\alpha_{i}\ge 0
-\end{align*}</script><p>在求解了<script type="math/tex">\alpha^{*}</script>之后，即可根据<script type="math/tex">w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}</script>求得<script type="math/tex">w^{*}</script>，由于分离超平面的参数是<script type="math/tex">w^{*},b^{*}</script>决定的，而分离超平面由<script type="math/tex">\alpha_{i}\neq0</script>的<script type="math/tex">\alpha_{i},x_{i},y_{i}</script>决定的，因此再选取任意<script type="math/tex">j</script>使得<script type="math/tex">\alpha_{j}\neq0</script>，得到<script type="math/tex">b^{*}=y_{j}-w^{*}\cdot x_{j}</script>，这样便可以得到分离超平面<script type="math/tex">w^{*}\cdot x+b^{*}=0</script>。</p>
-<p>对于上面的求解<script type="math/tex">\alpha^{*}</script>的优化问题，我们在下文将会介绍SMO算法来求解<br>To be continuue…</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/10/机器学习-SVM的推导-1/" data-id="cjm1jpgam000yqgezshiu1ase" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/18/机器学习-SVM的推导-2/" data-id="cjmbwyrrh0016m0ezces594fx" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -431,7 +397,7 @@ s.t.\quad&\alpha_{i}\ge 0
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -441,7 +407,7 @@ s.t.\quad&\alpha_{i}\ge 0
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Cpp/" style="font-size: 15px;">Cpp</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 20px;">optimization</a>
+      <a href="/tags/Cpp/" style="font-size: 16.67px;">Cpp</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/algorithm/" style="font-size: 13.33px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 20px;">optimization</a>
     </div>
   </div>
 
@@ -450,7 +416,7 @@ s.t.\quad&\alpha_{i}\ge 0
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -461,6 +427,10 @@ s.t.\quad&\alpha_{i}\ge 0
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/09/21/Matrix-Derivative/">[Matrix]关于向量与矩阵的求导</a>
+          </li>
         
           <li>
             <a href="/2018/09/14/leetcode-stock/">[LeetCode]动态规划中股票问题的通用解法</a>
@@ -476,10 +446,6 @@ s.t.\quad&\alpha_{i}\ge 0
         
           <li>
             <a href="/2018/08/18/机器学习-SVM的推导-2/">[机器学习]SVM的推导(2)</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/10/机器学习-SVM的推导-1/">[机器学习]SVM的推导(1)</a>
           </li>
         
       </ul>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>[Matrix]关于向量与矩阵的求导 | Math &amp; Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="向量与矩阵的求导机器学习的算法中会遇到大量的与矩阵相关的微分与求导，在这里介绍一些常见的矩阵和向量相关的求导公式。 可以将常见的数据类型分为标量（scalar），向量（vector）和矩阵（matrix）这么几种，其中常见的求导运算分别为标量对标量/向量/矩阵的求导，向量对标量/向量的求导，矩阵对标量的求导这么几种，其他的求导计算的结果为张量，这里暂时不讨论。 对于求导结果的表示，分为分子布局（N">
+<meta name="keywords" content="Matrix">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[Matrix]关于向量与矩阵的求导">
+<meta property="og:url" content="http://yoursite.com/2018/09/21/Matrix-Derivative/index.html">
+<meta property="og:site_name" content="Math &amp; Code">
+<meta property="og:description" content="向量与矩阵的求导机器学习的算法中会遇到大量的与矩阵相关的微分与求导，在这里介绍一些常见的矩阵和向量相关的求导公式。 可以将常见的数据类型分为标量（scalar），向量（vector）和矩阵（matrix）这么几种，其中常见的求导运算分别为标量对标量/向量/矩阵的求导，向量对标量/向量的求导，矩阵对标量的求导这么几种，其他的求导计算的结果为张量，这里暂时不讨论。 对于求导结果的表示，分为分子布局（N">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/导数.PNG">
+<meta property="og:image" content="http://yoursite.com/images/vector-scalar.svg">
+<meta property="og:image" content="http://yoursite.com/images/scalar-vector.svg">
+<meta property="og:image" content="http://yoursite.com/images/vector-vector.svg">
+<meta property="og:image" content="http://yoursite.com/images/vector-by-vector.PNG">
+<meta property="og:image" content="http://yoursite.com/images/vector-by-scalar.PNG">
+<meta property="og:image" content="http://yoursite.com/images/scalar-by-vector-1.PNG">
+<meta property="og:image" content="http://yoursite.com/images/scalar-by-vector-2.PNG">
+<meta property="og:updated_time" content="2018-09-21T11:39:18.184Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[Matrix]关于向量与矩阵的求导">
+<meta name="twitter:description" content="向量与矩阵的求导机器学习的算法中会遇到大量的与矩阵相关的微分与求导，在这里介绍一些常见的矩阵和向量相关的求导公式。 可以将常见的数据类型分为标量（scalar），向量（vector）和矩阵（matrix）这么几种，其中常见的求导运算分别为标量对标量/向量/矩阵的求导，向量对标量/向量的求导，矩阵对标量的求导这么几种，其他的求导计算的结果为张量，这里暂时不讨论。 对于求导结果的表示，分为分子布局（N">
+<meta name="twitter:image" content="http://yoursite.com/images/导数.PNG">
+  
+    <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Math &amp; Code</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">---By Frank,the best or nothing</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Matrix-Derivative" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/21/Matrix-Derivative/" class="article-date">
+  <time datetime="2018-09-21T08:19:52.000Z" itemprop="datePublished">2018-09-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      [Matrix]关于向量与矩阵的求导
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="向量与矩阵的求导"><a href="#向量与矩阵的求导" class="headerlink" title="向量与矩阵的求导"></a>向量与矩阵的求导</h1><p>机器学习的算法中会遇到大量的与矩阵相关的微分与求导，在这里介绍一些常见的矩阵和向量相关的求导公式。</p>
+<p>可以将常见的数据类型分为标量（scalar），向量（vector）和矩阵（matrix）这么几种，其中常见的求导运算分别为标量对标量/向量/矩阵的求导，向量对标量/向量的求导，矩阵对标量的求导这么几种，其他的求导计算的结果为张量，这里暂时不讨论。</p>
+<p>对于求导结果的表示，分为分子布局（Numerator-layout notation）和分母布局（Denominator-layout notation）两种，这两种表示方式都是正确的，目前并没有相关的标准，最近看的《凸优化》上面通常采用分子布局的方式。</p>
+<p>在分子布局的情况下，相关的求导维数如下表：<br><img src="\images\导数.PNG" alt="向量和矩阵求导的表格"></p>
+<p>如果是向量与标量之间的求导，或者矩阵与标量之间的求导，求导结果即为矩阵或向量对标量的逐点求导得到的矩阵或向量，向量与向量之间的求导则会得到一个矩阵，称之为Jacobian matrix。</p>
+<p>当向量对标量求导时为：<img src="\images\vector-scalar.svg" alt="向量对标量求导"><br>标量对向量求导时为：<img src="\images\scalar-vector.svg" alt="标量对向量求导"><br>矩阵与标量之间的求导的与上面的类似，当标量对矩阵求导时同样也需要转置。</p>
+<p>当两个向量之间求导时，会得到一个雅各比矩阵：<img src="\images\vector-vector.svg" alt="向量对向量求导"></p>
+<p>一些常见的矩阵求导公式如下：<br><img src="\images\vector-by-vector.PNG" alt="向量对向量的求导"><br><img src="\images\vector-by-scalar.PNG" alt="向量对标量的求导"><br><img src="\images\scalar-by-vector-1.PNG" alt="标量对向量的求导"><br><img src="\images\scalar-by-vector-2.PNG" alt="标量对向量的求导"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/09/21/Matrix-Derivative/" data-id="cjmbwyrqf0008m0ezhpafiz1b" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Matrix/">Matrix</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/09/14/leetcode-stock/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">[LeetCode]动态规划中股票问题的通用解法</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<div id="gitalk-container"></div>     <script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '2193b885b967a685e247',
+        clientSecret: '49a60c8f19873532dc3e7a6658bbff6c95ce73c9',
+        repo: 'Lannyy.github.io',
+        owner: 'Lannyy',
+        admin: ['Lannyy'],
+        id: '2018/09/21/Matrix-Derivative/',
+        distractionFreeMode: true,
+    });
+    gitalk.render('gitalk-container');
+</script></section>
+        
+          <aside id="sidebar">
+  
+    
+<div class="widget-wrap">
+  <h3 class="widget-title">ABOUT ME</h3>
+  <ul class="widget about-me">
+    
+    <li><img class="author" title="About me" src="/images/cute.jpg" /></li>
+    
+    
+    <li>Name：Tang Lang</li>
+    
+    <li>School：Xiamen University</li>
+    
+    <li>Email：langtang1996@gmail.com</li>
+    
+    <li>QQ：1660039482</li>
+    
+  </ul>
+</div>
+
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Cpp/" style="font-size: 16.67px;">Cpp</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/algorithm/" style="font-size: 13.33px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 20px;">optimization</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/09/21/Matrix-Derivative/">[Matrix]关于向量与矩阵的求导</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/14/leetcode-stock/">[LeetCode]动态规划中股票问题的通用解法</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/31/最优化-凸集的定义与常见凸集/">[最优化]凸集的定义与常见凸集</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/24/机器学习-SVM的推导-3/">[机器学习]SVM的推导(3)</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/18/机器学习-SVM的推导-2/">[机器学习]SVM的推导(2)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Tang Lang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

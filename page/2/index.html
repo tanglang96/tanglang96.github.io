@@ -70,6 +70,86 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-机器学习-SVM的推导-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/08/10/机器学习-SVM的推导-1/" class="article-date">
+  <time datetime="2018-08-10T14:36:53.000Z" itemprop="datePublished">2018-08-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/08/10/机器学习-SVM的推导-1/">[机器学习]SVM的推导(1)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="硬间隔的SVM推导"><a href="#硬间隔的SVM推导" class="headerlink" title="硬间隔的SVM推导"></a>硬间隔的SVM推导</h1><p>SVM是机器学习中的一种经典方法，除了硬间隔SVM之外，还包括软间隔SVM，核技巧等SVM的变种，本文主要介绍<strong>硬间隔SVM</strong>的推导。</p>
+<p>假设两类样本点是可以被准确分开的，那么则可以使用硬间隔SVM来进行分类，假设分隔的超平面方程为<script type="math/tex">w\cdot x+b=0</script>，则每个样本点<script type="math/tex">x_{i}</script>到该超平面的距离为<script type="math/tex">|w\cdot x_{i}+b|</script>，如果设定与超平面之间的距离为正的点为正分类，即<script type="math/tex">y_{i}=+1</script>，相反负距离的点为负分类，即<script type="math/tex">y_{i}=-1</script>，那么可以将样本点到分离超平面的距离表示为<script type="math/tex">\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)</script>，这称为样本点到分离超平面之间的<strong>函数距离</strong>。</p>
+<p>令<script type="math/tex">\hat{\gamma}=min(\hat{\gamma}_{i})</script>，即为最小函数距离。需要注意到，函数距离<script type="math/tex">\hat{\gamma}_{i}=y_{i}(w\cdot x_{i}+b)</script>在<script type="math/tex">w</script>和<script type="math/tex">b</script>同时增大某个比例倍数时，函数间隔会增大但是超平面不会发生改变，此时便需要将超平面的<script type="math/tex">w</script>进行约束，比如令<script type="math/tex">||w||=1</script>，我们可以重新定义距离为<script type="math/tex">\gamma_{i}=y_{i}(\frac{w}{||w||}\cdot x_{i}+\frac{b}{||w||})</script>，称之为<strong>几何距离</strong>，令<script type="math/tex">\gamma=min(\gamma_{i})</script>，即可以得到<script type="math/tex">\gamma=\frac{\hat\gamma}{||w||}</script>。</p>
+<p>那么最大化分隔距离的优化问题即可表示如下：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&max_{w,b}\quad \gamma \\
+&s.t.\quad y_{i}(\frac{w}{||w||}\cdot x_{i}+\frac{b}{||w||})\ge\gamma，i=1,2...n
+\end{align*}</script><p>即</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&max_{w,b}\quad \frac{\hat\gamma}{||w||} \\
+&s.t.\quad y_{i}(w\cdot x_{i}+b)\ge\hat \gamma，i=1,2...n
+\end{align*}</script><p>注意上式中，函数间隔<script type="math/tex">\hat\gamma</script>的取值并不会影响最优化问题的解，不妨假设<script type="math/tex">\hat\gamma=1</script>，并且注意到最大化<script type="math/tex">\frac{1}{||w||}</script>与最小化<script type="math/tex">\frac{1}{2}||w||^{2}</script>等价，那么上述问题即可以等价为：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&min_{w,b}\quad \frac{1}{2}||w||^{2}\\
+&s.t.\quad y_{i}(w\cdot x_{i}+b)-1\ge0
+\end{align*}</script><p>上述问题即为一个不等式约束的最优化问题，可以利用拉格朗日乘子法与KKT条件来求解，令<script type="math/tex">\alpha=[\alpha_{1},\alpha_{2},\alpha_{3},...,\alpha_{n}]^{T}</script>，首先构造拉格朗日函数为：<script type="math/tex">L(w,b,\alpha)=\frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}</script></p>
+<p>假设<script type="math/tex">W^{*},b^{*},\alpha^{*}</script>是优化问题的最优解，那么根据KKT条件，<script type="math/tex">W^{*},b^{*},\alpha^{*}</script>一定满足以下方程：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+&\nabla_{w}L(w^{*},b^{*},\alpha^{*})=w^{*}-\sum_{i=1}^{N}\alpha^{*}_{i}y_{i}x_{i}=0\tag{1}\\
+&\nabla_{b}L(w^{*},b^{*},\alpha^{*})=-\sum_{i=1}^{N}\alpha_{i}^{*}y_{i}=0\tag{2}\\
+&\alpha_{i}^{*}(y_{i}(w^{*}\cdot x_{i}+b^{*})-1)=0\tag{3}\\
+&y_{i}(w^{*}\cdot x_{i}+b^{*})-1\ge 0\tag{4}\\
+&\alpha_{i}^{*}\ge0\tag{5}
+\end{align}</script><p>KKT条件主要包括几个方面的内容：<br>1.拉格朗日函数对于原始优化变量的梯度为0，如（1）和（2）<br>2.拉格朗日乘子和不等式约束的左式（化为标准形式）的乘积全为0，如（3）<br>3.原问题的约束条件，如（4）<br>4.拉格朗日乘子非负，如（5）</p>
+<p>由（1）和（2）可以得到：</p>
+<script type="math/tex; mode=display">
+w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}\\
+\sum_{i}^{N}\alpha_{i}^{*}y_{i}=0</script><p>根据拉格朗日对偶性，原问题可以化为：</p>
+<script type="math/tex; mode=display">
+min_{w,b}\ max_{\alpha}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i},\alpha_{i}\ge 0</script><p>即</p>
+<script type="math/tex; mode=display">
+max_{\alpha}\ min_{w,b}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i},\alpha_{i}\ge 0</script><p>其中<script type="math/tex">min_{w,b}\ \frac{1}{2}||w||^{2}-\sum_{i}\alpha_{i}y_{i}(w\cdot x_{i}+b)+\sum_{i}\alpha_{i}</script>问题的最优解由KKT条件可以得到为<script type="math/tex">w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}</script>，并且有<script type="math/tex">\sum_{i}^{N}\alpha_{i}^{*}y_{i}=0</script>，代入上式即可将原问题化为：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+max_{\alpha}\quad&-\frac{1}{2}\sum_{i}\sum_{j}\alpha_{i}\alpha_{j}y_{i}y_{j}(x_{i}\cdot x_{j})+\sum_{i}\alpha_{i}\\
+s.t.\quad&\alpha_{i}\ge 0
+\end{align*}</script><p>在求解了<script type="math/tex">\alpha^{*}</script>之后，即可根据<script type="math/tex">w^{*}=\sum_{i}^{N}\alpha_{i}^{*}y_{i}x_{i}</script>求得<script type="math/tex">w^{*}</script>，由于分离超平面的参数是<script type="math/tex">w^{*},b^{*}</script>决定的，而分离超平面由<script type="math/tex">\alpha_{i}\neq0</script>的<script type="math/tex">\alpha_{i},x_{i},y_{i}</script>决定的，因此再选取任意<script type="math/tex">j</script>使得<script type="math/tex">\alpha_{j}\neq0</script>，得到<script type="math/tex">b^{*}=y_{j}-w^{*}\cdot x_{j}</script>，这样便可以得到分离超平面<script type="math/tex">w^{*}\cdot x+b^{*}=0</script>。</p>
+<p>对于上面的求解<script type="math/tex">\alpha^{*}</script>的优化问题，我们在下文将会介绍SMO算法来求解<br>To be continuue…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/08/10/机器学习-SVM的推导-1/" data-id="cjmbwyrr7000wm0ezqpq5zvuf" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-最优化-求解线性方程组-3" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/07/26/最优化-求解线性方程组-3/" class="article-date">
@@ -110,7 +190,7 @@ A^{\dagger}=A^{T}(AA^{T})^{-1}</script><p>以上两种情况是当矩阵为<stro
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/26/最优化-求解线性方程组-3/" data-id="cjm1jpg9y000jqgezp0w020p0" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/26/最优化-求解线性方程组-3/" data-id="cjmbwyrqz000mm0ezxkgwmloe" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -163,7 +243,7 @@ x^{(m+1)}=x^{(m)}+\mu(b_{1}-a_{1}^{T}x^{(m)})\frac{a_{1}}{a_{1}^{T}a_{1}}</scrip
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/21/最优化-求解线性方程组-2/" data-id="cjm1jpgad000oqgez7u9o5e6e" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/21/最优化-求解线性方程组-2/" data-id="cjmbwyrqw000jm0ezpoy45p36" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -228,7 +308,7 @@ x^{(k+1)}=x^{(k)}+G_{k+1}^{-1}A_{k+1}^{T}(b^{(k+1)}-A_{k+1}x^{(k)})</script><p>�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/20/最优化-求解线性方程组-1/" data-id="cjm1jpg9y000eqgezntio2sxo" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/20/最优化-求解线性方程组-1/" data-id="cjmbwyrqt000hm0ezrtms9auz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -274,62 +354,10 @@ x^{(k+1)}=x^{(k)}+G_{k+1}^{-1}A_{k+1}^{T}(b^{(k+1)}-A_{k+1}x^{(k)})</script><p>�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/20/LeetCode-207-Course-Schedule/" data-id="cjm1jpg9i0003qgezh5fhe4vs" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/20/LeetCode-207-Course-Schedule/" data-id="cjmbwyrq10001m0ezbpacruaj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-机器学习-机器学习中的数值计算-1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/07/14/机器学习-机器学习中的数值计算-1/" class="article-date">
-  <time datetime="2018-07-14T10:05:22.000Z" itemprop="datePublished">2018-07-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/14/机器学习-机器学习中的数值计算-1/">[机器学习]机器学习中的数值计算(1)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="机器学习中的数值计算"><a href="#机器学习中的数值计算" class="headerlink" title="机器学习中的数值计算"></a>机器学习中的数值计算</h1><p>机器学习算法通常需要大量的数值计算，即通过迭代求解近似值而非求得解析解。这些算法通常包括最优化和线性方程组的求解，在计算机中要通过有限位来表示各种浮点数是具有一定误差的，需要通过一些方法来保证我们的计算精度。</p>
-<h2 id="上溢与下溢"><a href="#上溢与下溢" class="headerlink" title="上溢与下溢"></a>上溢与下溢</h2><p><strong>上溢</strong>(overflow)是具有破坏力的，当大量级的数被近似为$-\infty$或者$\infty$时会发生上溢，这会导致在下一步的计算中，数字变成非数字。<br><strong>下溢</strong>(underflow)同样也是毁灭性的，即当浮点数很小时被四舍五入为0，有时候0和非0具有完全不同的性质，这样可能会导致分母为0等错误现象的发生。</p>
-<p>可以通过softmax函数来避免上溢与下溢的发生：</p>
-<script type="math/tex; mode=display">
-softmax(\vec x)_{i}=\dfrac{exp(x_{i})}{\sum^{n}_{j=1}exp(x_{j})}</script><p>为了方便讨论，假设$\vec x$中的每个元素$x_{i}=c$，当$c$很大时，分子可能会上溢，同样的当$c$很小时分母会下溢。这两个问题可以通过计算$softmax(\vec z)$解决，其中$\vec  z=\vec x-max(x_{i})$，这样的话$\vec z$中的每个元素最大为0，分子不可能会发生上溢，至于分母，其中最少有一个值为1的分量，而其它元素都是非负的，所以分母也不可能发生下溢。这样便能解决溢出的问题。</p>
-<h2 id="病态条件"><a href="#病态条件" class="headerlink" title="病态条件"></a>病态条件</h2><p>条件数指的是函数相对于输入的微小变化而变化的快慢程度。输入的轻微扰动而导致函数的迅速变化对于数值计算是有问题的。对于函数$f(x)=A^{-1}x$，当$A\in R^{n*n}$具有特征值分解的时候，其条件数为：</p>
-<script type="math/tex; mode=display">
-max_{i,j}|\frac{\lambda_{i}}{\lambda_{j}}|</script><p>即为最大特征值和最小特征值的比，当这个数很大时，其$f(x)$对于输入$x$的误差很敏感。</p>
-<h2 id="基于梯度的优化"><a href="#基于梯度的优化" class="headerlink" title="基于梯度的优化"></a>基于梯度的优化</h2><p>深度学习算法通常使用基于梯度的优化算法，传统的梯度下降由于资料众多故不再赘述，在这里重点介绍关于梯度方法的其他知识，主要包括Jacobian矩阵和Hessian矩阵。</p>
-<p>有时候我们需要计算输入输出都为向量的函数的所有偏导数，包含所有这样的偏导数的矩阵称为Jacobian矩阵。即如果有一个函数$f:R^{m}\to R^{n}$，$f$的Jacobian矩阵为$J_{i,j}=\frac{\partial}{\partial x_{j}}f(\vec x)_{i}$。</p>
-<p>对于传统的梯度下降算法我们只用到了一阶导数，有时候在用到其他优化算法（比如牛顿法）需要用到二阶导数，将所有的二阶导数构成的矩阵称之为Hessian矩阵，即：</p>
-<script type="math/tex; mode=display">
-H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</script><p>在深度学习的背景下，Hessian矩阵几乎处处是对称的。在特定方向$\vec d$上的二阶导数可以写成$\vec d^{T}H\vec d$。当$\vec d$是$H$的一个向量时，这个方向的二阶导数就是对应的特征值。</p>
-<p>Hessian矩阵的一个重要作用就是进行二阶导数测试，即判断当前的点是极大/极小值点或者是鞍点。一维情况很简单，对于多维情况，我们通过检测Hessian矩阵的特征值来判断该临界点，当Hessian矩阵是正定时，该临界点是局部极小点，同样负定时则为局部极大点。如果Hessian的特征值中至少一个是正的一个是负的，那么$x$在某个平面上是局部极大点，在某个平面是局部极小点，则为鞍点。<br><img src="https://img-blog.csdn.net/20180714180718129?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>这是关于机器学习中数值计算文章系列的第一篇，To be continue…</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/14/机器学习-机器学习中的数值计算-1/" data-id="cjm1jpgb4001eqgez7v7sjuqa" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
 
     </footer>
   </div>
@@ -377,7 +405,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -387,7 +415,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Cpp/" style="font-size: 15px;">Cpp</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 20px;">optimization</a>
+      <a href="/tags/Cpp/" style="font-size: 16.67px;">Cpp</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/algorithm/" style="font-size: 13.33px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 20px;">optimization</a>
     </div>
   </div>
 
@@ -396,7 +424,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -407,6 +435,10 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/09/21/Matrix-Derivative/">[Matrix]关于向量与矩阵的求导</a>
+          </li>
         
           <li>
             <a href="/2018/09/14/leetcode-stock/">[LeetCode]动态规划中股票问题的通用解法</a>
@@ -422,10 +454,6 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
         
           <li>
             <a href="/2018/08/18/机器学习-SVM的推导-2/">[机器学习]SVM的推导(2)</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/10/机器学习-SVM的推导-1/">[机器学习]SVM的推导(1)</a>
           </li>
         
       </ul>

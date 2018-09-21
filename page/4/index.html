@@ -70,6 +70,67 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Cpp-Cpp中的关联容器" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/06/01/Cpp-Cpp中的关联容器/" class="article-date">
+  <time datetime="2018-06-01T07:54:28.000Z" itemprop="datePublished">2018-06-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/01/Cpp-Cpp中的关联容器/">[Cpp]Cpp中的关联容器</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="关联容器"><a href="#关联容器" class="headerlink" title="关联容器"></a>关联容器</h1><p>关联容器支持高效的关键字查找和访问，两个主要的关联容器是set和map。map中的元素是一些键值对(key-value)，关键字起着索引的作用，值则表示与索引相关联的数据，set中的元素只包含一个关键字。set支持高效的关键字查找操作，底层应该是用的哈希表来实现的。</p>
+<p>C++标准库提供了8个关联容器，这8个容器的不同体现在三个维度上：</p>
+<ol>
+<li>set或者map</li>
+<li>有序或者无序—-有无unordered前缀</li>
+<li>允许或禁止重复关键字—-有无multi前缀</li>
+</ol>
+<p>本文重点介绍set和map，关于其他容器的相关内容可以查看C++的API</p>
+<h2 id="set与map的使用"><a href="#set与map的使用" class="headerlink" title="set与map的使用"></a>set与map的使用</h2><p>使用map：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//统计每个单词在输入中出现的次数</span></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="keyword">size_t</span>&gt; word_count;	<span class="comment">//新建map</span></span><br><span class="line"><span class="built_in">string</span> word;</span><br><span class="line"><span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;word)</span><br><span class="line">	++word_count[word];    <span class="comment">//将该单词所对应的次数加1</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;w:word_count)</span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt;w.first&lt;&lt;<span class="string">" occurs "</span>&lt;&lt;w.second&lt;&lt;((w.second&gt;<span class="number">1</span>)?<span class="string">" times"</span>:<span class="string">" time"</span>)&lt;&lt;<span class="built_in">endl</span>;</span><br></pre></td></tr></table></figure></p>
+<p>需要注意，对于map的下标操作如果使用word_count[word]，在未找到word关键字的时候会添加一个关键字为word的元素，对其值进行初始化。如果使用word_count.at(word)，在未找到word关键字的时候会抛出一个out_of_range异常。</p>
+<p>使用set：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//统计输入中每个单词出现的次数</span></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="keyword">size_t</span>&gt; word_count;</span><br><span class="line"><span class="built_in">set</span>&lt;<span class="built_in">string</span>&gt; exclude=&#123;<span class="string">"The"</span>,<span class="string">"But"</span>,<span class="string">"And"</span>,<span class="string">"Or"</span>,<span class="string">"An"</span>&#125;;</span><br><span class="line"><span class="built_in">string</span> word;</span><br><span class="line"><span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;word)</span><br><span class="line">	<span class="keyword">if</span>(exclude.find(word)==exclude.end())   <span class="comment">//当在set中未find时，返回尾迭代器</span></span><br><span class="line">	++word_count[word];</span><br></pre></td></tr></table></figure></p>
+<h2 id="pair类和关联容器中额外的类型别名"><a href="#pair类和关联容器中额外的类型别名" class="headerlink" title="pair类和关联容器中额外的类型别名"></a>pair类和关联容器中额外的类型别名</h2><p>pair类定义在头文件utility中，一个pair保存两个数据成员。类似于容器，pair是一个用来生成特定类型的模板。当创建一个pair的时候，我们必须提供两个类型名。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pair&lt;<span class="built_in">string</span>,<span class="keyword">size_t</span>&gt; word_count;	<span class="comment">//保存string和size_t</span></span><br></pre></td></tr></table></figure>
+<p>与其他的标准库类型不同，pair的数据成员是public的，两个成员分别命名为first和second，map中保存的元素就是pair类型的。</p>
+<p>关联容器还定义了其他的类型，这些类型表示容器关键字和值的类型：</p>
+<ul>
+<li>key_type   容器的关键字类型</li>
+<li>mapped_type   每个关键字关联的类型，只适用于map</li>
+<li>value_type   对于set，与key_type相同，对于map，为pair<const key_type,mapped_type=""><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span>&lt;<span class="built_in">string</span>&gt;::value_type v1;	<span class="comment">//string</span></span><br><span class="line"><span class="built_in">set</span>&lt;<span class="built_in">string</span>&gt;::key_type v2;  <span class="comment">//string</span></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="keyword">int</span>&gt;::value_type v3;	<span class="comment">//pair&lt;const string,int&gt;</span></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="keyword">int</span>&gt;::key_type v4;	<span class="comment">//string</span></span><br><span class="line"><span class="built_in">map</span>&lt;<span class="built_in">string</span>,<span class="keyword">int</span>&gt;::mapped_type v5;<span class="comment">//int</span></span><br></pre></td></tr></table></figure>
+</const></li>
+</ul>
+<h2 id="关联容器的迭代器"><a href="#关联容器的迭代器" class="headerlink" title="关联容器的迭代器"></a>关联容器的迭代器</h2><p>当解引用一个关联容器的迭代器时，会得到一个类型为容器的value_type的值的引用。对map而言，value_type是一个pair类型，其first成员保存const的关键字，second成员保存值：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获得指向word_count中一个元素的迭代器</span></span><br><span class="line"><span class="keyword">auto</span> map_it=word_count.begin();</span><br><span class="line"><span class="comment">//*map_it是指向一个pair&lt;const string,size_t&gt;对象的引用</span></span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;map_it-&gt;first;</span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">" "</span>&lt;&lt;map_it-&gt;second;</span><br><span class="line">map_it-&gt;first=<span class="string">"new key"</span>;  <span class="comment">//错误，关键字是const的</span></span><br><span class="line">++map_it-&gt;second;   <span class="comment">//值的元素是可以改变的</span></span><br></pre></td></tr></table></figure></p>
+<p>一个set中的关键字也是const的。可以用一个set来读取元素的值，但是不能修改：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt; iset=&#123;<span class="number">0</span>,<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>,<span class="number">7</span>,<span class="number">8</span>,<span class="number">9</span>&#125;;</span><br><span class="line"><span class="built_in">set</span>&lt;<span class="keyword">int</span>&gt;::iterator set_it=iset.begin();</span><br><span class="line"><span class="keyword">if</span>(set_it!=iset.end())&#123;</span><br><span class="line">	*set_it=<span class="number">42</span>;   <span class="comment">//错误，const的关键字不能修改</span></span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt;*set_it&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/06/01/Cpp-Cpp中的关联容器/" data-id="cjmbwyrru001im0ezhtzr1xwd" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-机器学习-神经网络反向传播的推导" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/06/01/机器学习-神经网络反向传播的推导/" class="article-date">
@@ -117,7 +178,7 @@ b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/01/机器学习-神经网络反向传播的推导/" data-id="cjm1jpgb6001iqgezvm59virr" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/06/01/机器学习-神经网络反向传播的推导/" data-id="cjmbwyrry001nm0ezhu0xh1cb" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -184,7 +245,7 @@ b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/25/Cpp-Cpp中的顺序容器/" data-id="cjm1jpg9i0006qgez4na7cnvi" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/25/Cpp-Cpp中的顺序容器/" data-id="cjmbwyrq70003m0ezgvc3cv3f" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
@@ -246,80 +307,10 @@ g(D|A)=H(D)-H(D|A)</script><h2 id="1-3-构建决策树的ID3算法"><a href="#1-
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/24/机器学习-决策树和随机森林算法简介/" data-id="cjm1jpgb6001gqgezrt92f4mo" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/24/机器学习-决策树和随机森林算法简介/" data-id="cjmbwyrr9000ym0ez952bjs4y" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-最优化-等式约束的优化问题求解" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/05/18/最优化-等式约束的优化问题求解/" class="article-date">
-  <time datetime="2018-05-18T13:11:35.000Z" itemprop="datePublished">2018-05-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/18/最优化-等式约束的优化问题求解/">[最优化]等式约束的优化问题求解</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="等式约束的优化问题求解"><a href="#等式约束的优化问题求解" class="headerlink" title="等式约束的优化问题求解"></a>等式约束的优化问题求解</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>本文将讨论下类形状的优化问题</p>
-<script type="math/tex; mode=display">
-minimize\quad f(x)\\
-subject\  to\quad h(x)=0</script><p>其中$x\in R^{n},f:R^{n}\to R,h:R^{n}\to R^{m},h=[h_{1},…,h_{m}]^{T},m\le n$，假定函数$h$连续可微，即$h\in C^{1}$。<br>下面介绍几个基本概念：</p>
-<p><strong>正则点</strong>：对于满足约束 <script type="math/tex">h_{1}(x^{*})=0,...,h_{m}(x^{*})=0</script> 的点<script type="math/tex">x^{**}</script>，如果梯度向量 <script type="math/tex">\nabla h_{1}(x^{*}),...,\nabla h_{m}(x^{*})</script> 是线性无关的，则称<script type="math/tex">x^{*}</script>是该约束的一个正则点。</p>
-<p><strong>切线空间</strong>：曲面<script type="math/tex">S={x\in R^{n}:h(x)=0}</script>中点<script type="math/tex">x^{*}</script>处的切线空间为集合<script type="math/tex">T(x^{*})=\{ y:Dh(x^{*})y=0\}</script>。可以看出切线空间<script type="math/tex">T(x^{*})</script>是矩阵<script type="math/tex">Dh(x^{*})</script>的零空间，即<script type="math/tex">T(x^{*})=N(Dh(x^{*}))</script>。</p>
-<p><strong>法线空间</strong>：曲面<script type="math/tex">S={x\in R^{n}:h(x)=0}</script>中点<script type="math/tex">x^{*}</script>处的法线空间为集合<script type="math/tex">N(x^{*})=\{ x\in R^{n}:x=Dh(x^{*})^{T}z,z\in R^{m}\}</script>。可以看出法线空间<script type="math/tex">N(x^{*})</script>是矩阵<script type="math/tex">Dh(x^{*})</script>的零空间，即<script type="math/tex">N(x^{*})=R(Dh(x^{*})^{T})</script>。</p>
-<h2 id="拉格朗日条件"><a href="#拉格朗日条件" class="headerlink" title="拉格朗日条件"></a>拉格朗日条件</h2><p>首先考虑只包含两个决策变量和一个等式约束的优化问题。令<script type="math/tex">h:R^{2}\to R</script>为约束函数，可知函数定义域中<script type="math/tex">x</script>处的梯度<script type="math/tex">\nabla h(x)</script>与通过该点的<script type="math/tex">h(x)</script>水平集正交，选择点<script type="math/tex">x^{*}=[x^{*}_{1},x^{*}_{1}]^{T}</script>使得<script type="math/tex">h(x^{*})=0</script>，且<script type="math/tex">\nabla h(x^{*})\neq 0</script>，经过点<script type="math/tex">x^{*}</script>的水平集为集合<script type="math/tex">\{ x:h(x)=0\}</script>。可利用曲线<script type="math/tex">x(t)</script>在<script type="math/tex">x^{*}</script>领域内进行参数化，<script type="math/tex">x(t)</script>是一个连续可微的向量函数<script type="math/tex">h:R\to R^{2}</script>：</p>
-<script type="math/tex; mode=display">
-x(t)=[x_{1}(t),x_{1}(t)]^{T},t\in (a,b),x^{*}=x(t^{*}),\dot{x}(t^{*})\neq 0,t^{*}\in (a,b)</script><p>接下来可以证明，<script type="math/tex">\nabla h(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交。由于<script type="math/tex">h</script>在曲线<script type="math/tex">\{x(t):t\in (a,b)\}</script>上是常数0，即对于所有的<script type="math/tex">t\in (a,b)</script>都有</p>
-<script type="math/tex; mode=display">
-h(x(t))=0</script><p>因此对于任意的<script type="math/tex">t\in(a,b)</script>都有</p>
-<script type="math/tex; mode=display">
-\frac{d}{dt}h(x(t))=0</script><p>利用链式法则可以得到</p>
-<script type="math/tex; mode=display">
-\frac{d}{dt}h(x(t))=\nabla h(x(t))^{T}\dot{x}(t)=0</script><p>因此<script type="math/tex">\nabla h(x^{*})</script>和<script type="math/tex">\dot{x}(t^{*})</script>正交<br>当<script type="math/tex">x^{*}</script>是<script type="math/tex">f:R\to R^{2}</script>在满足<script type="math/tex">h(x)=0</script>上的极小点的时候，可以证明，<script type="math/tex">\nabla f(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交，构造关于<script type="math/tex">t</script>的复合函数：</p>
-<script type="math/tex; mode=display">
-\phi(t)=f(x(t))</script><p>当<script type="math/tex">t=t^{*}</script>的时候取得极小值，根据无约束极值问题的一阶必要条件可知</p>
-<script type="math/tex; mode=display">
-\frac{d\phi}{dt}(t^{*})=0</script><p>利用链式法则可以得到</p>
-<script type="math/tex; mode=display">
-\frac{d}{dt}\phi(t^{*})=\nabla f(x(t^{*}))^{T}\dot{x}(t^{*})=\nabla f(x^{*})^{T}\dot{x}(t^{*})=0</script><p>因此，<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\dot{x}(t^{*})</script>正交，上面已经证明<script type="math/tex">\nabla f(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交，那么向量<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\nabla h(x^{*})</script>平行，那么可以得到这种情况下的拉格朗日定理：</p>
-<p><strong>n=2,m=3时的拉格朗日定理：</strong>设点<script type="math/tex">x^{*}</script>是函数<script type="math/tex">f:R^{2}\to R</script>的一个极小点，约束条件是<script type="math/tex">h(x)=0,h:R^{2}\to R</script>,那么<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\nabla h(x^{*})</script>平行，即如果<script type="math/tex">\nabla h(x^{*})\neq 0</script>，则存在标量<script type="math/tex">\lambda^{*}</script>，使得</p>
-<script type="math/tex; mode=display">
-\nabla f(x^{*})+\lambda^{*}\nabla h(x^{*})=0</script><p>其中<script type="math/tex">\lambda^{*}</script>为拉格朗日乘子。<br>将这个定理推广到一般情况下，即<script type="math/tex">f:R^{n}\to R,h:R^{n}\to R^{m},m\le n</script>的时候，可以得到：<br><strong>拉格朗日定理：</strong><script type="math/tex">x^{*}</script>是<script type="math/tex">f:R^{n}\to R</script>的局部极小点（或极大点），约束条件为<script type="math/tex">h(x)=0,h:R^{n}\to R^{m},m\le n</script>。如果<script type="math/tex">x^{*}</script>是正则点，那么存在<script type="math/tex">\lambda^{*}\in R^{m}</script>使得</p>
-<script type="math/tex; mode=display">
-D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二阶条件" class="headerlink" title="二阶条件"></a>二阶条件</h2><p><strong>二阶必要条件：</strong>设<script type="math/tex">x^{*}</script>是<script type="math/tex">f:R^{n}\to R</script>在约束条件<script type="math/tex">h(x)=0,h:R^{n}\to R^{m},m\le n,f,h\in C^{2}</script>下的局部极小点。如果<script type="math/tex">x^{*}</script>是正则点，那么存在<script type="math/tex">\lambda^{*}\in R^{m}</script>使得</p>
-<p> 1.<script type="math/tex">D f(x^{*})+\lambda^{*T}D h(x^{*})=0^{T}</script><br> 2.对于所有的<script type="math/tex">y\in T(x^{*})</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*})y\ge 0</script></p>
-<p><strong>二阶充分条件：</strong>函数<script type="math/tex">f,h\in C^{2}</script>，如果存在点<script type="math/tex">x^{*}\in R^{n}</script>和<script type="math/tex">\lambda^{*}\in R^{m}</script>，使得</p>
-<p> 1.<script type="math/tex">D f(x^{*})+\lambda^{*T}D h(x^{*})=0^{T}</script><br> 2.对于所有的<script type="math/tex">y\in T(x^{*})</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*})y> 0</script></p>
-<p>那么<script type="math/tex">x^{*}</script>是<script type="math/tex">f</script>在约束条件<script type="math/tex">h(x)=0</script>下的严格局部极小点</p>
-<p>本文介绍了等式约束下的拉格朗日乘子法，后面还将会介绍不等式约束下的拉格朗日乘子法以及KKT条件等，To be continue…</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/18/最优化-等式约束的优化问题求解/" data-id="cjm1jpgam000uqgez6h8sqoes" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
 
     </footer>
   </div>
@@ -378,7 +369,7 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/18/Cpp-Cpp中的IO类/" data-id="cjm1jpg9y0007qgezsa0uow9j" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/18/Cpp-Cpp中的IO类/" data-id="cjmbwyrpp0000m0ezm0konsfz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
@@ -429,7 +420,7 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -439,7 +430,7 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Cpp/" style="font-size: 15px;">Cpp</a> <a href="/tags/algorithm/" style="font-size: 10px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 20px;">optimization</a>
+      <a href="/tags/Cpp/" style="font-size: 16.67px;">Cpp</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/algorithm/" style="font-size: 13.33px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 20px;">optimization</a>
     </div>
   </div>
 
@@ -448,7 +439,7 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -459,6 +450,10 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/09/21/Matrix-Derivative/">[Matrix]关于向量与矩阵的求导</a>
+          </li>
         
           <li>
             <a href="/2018/09/14/leetcode-stock/">[LeetCode]动态规划中股票问题的通用解法</a>
@@ -474,10 +469,6 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
         
           <li>
             <a href="/2018/08/18/机器学习-SVM的推导-2/">[机器学习]SVM的推导(2)</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/10/机器学习-SVM的推导-1/">[机器学习]SVM的推导(1)</a>
           </li>
         
       </ul>

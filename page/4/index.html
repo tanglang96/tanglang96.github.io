@@ -119,7 +119,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/01/Cpp-Cpp中的关联容器/" data-id="cjmbwyrru001im0ezhtzr1xwd" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/06/01/Cpp-Cpp中的关联容器/" data-id="cjmfkjygj00063cezw7helpt6" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
@@ -178,7 +178,7 @@ b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/01/机器学习-神经网络反向传播的推导/" data-id="cjmbwyrry001nm0ezhu0xh1cb" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/06/01/机器学习-神经网络反向传播的推导/" data-id="cjmfkjyid001m3cezzgh79o16" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -245,7 +245,7 @@ b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/25/Cpp-Cpp中的顺序容器/" data-id="cjmbwyrq70003m0ezgvc3cv3f" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/25/Cpp-Cpp中的顺序容器/" data-id="cjmfkjyhd000p3cezzmno1b8u" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
@@ -307,7 +307,7 @@ g(D|A)=H(D)-H(D|A)</script><h2 id="1-3-构建决策树的ID3算法"><a href="#1-
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/24/机器学习-决策树和随机森林算法简介/" data-id="cjmbwyrr9000ym0ez952bjs4y" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/24/机器学习-决策树和随机森林算法简介/" data-id="cjmfkjyhz001c3cezk46nutbc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -319,9 +319,9 @@ g(D|A)=H(D)-H(D|A)</script><h2 id="1-3-构建决策树的ID3算法"><a href="#1-
 
 
   
-    <article id="post-Cpp-Cpp中的IO类" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-最优化-等式约束的优化问题求解" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/05/18/Cpp-Cpp中的IO类/" class="article-date">
+    <a href="/2018/05/18/最优化-等式约束的优化问题求解/" class="article-date">
   <time datetime="2018-05-18T13:11:35.000Z" itemprop="datePublished">2018-05-18</time>
 </a>
     
@@ -333,7 +333,7 @@ g(D|A)=H(D)-H(D|A)</script><h2 id="1-3-构建决策树的ID3算法"><a href="#1-
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/18/Cpp-Cpp中的IO类/">[Cpp]Cpp中的IO类</a>
+      <a class="article-title" href="/2018/05/18/最优化-等式约束的优化问题求解/">[最优化]等式约束的优化问题求解</a>
     </h1>
   
 
@@ -341,38 +341,46 @@ g(D|A)=H(D)-H(D|A)</script><h2 id="1-3-构建决策树的ID3算法"><a href="#1-
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="C-中的IO类"><a href="#C-中的IO类" class="headerlink" title="C++中的IO类"></a>C++中的IO类</h1><p>C++语言不直接处理输入输出，而是通过一组定义在标准库中的类型来处理IO。这些类型支持从设备读取数据，向设备写入数据的IO操作，设备可以是文件，控制台窗口等。还有一些类型允许内存IO，即从string读取数据，向string写入数据等。</p>
-<p>应用程序不只从控制台窗口进行IO操作，常常需要读写命名文件，并且使用IO操作处理string的字符会很方便，所以在istream和ostream之外，标准库还定义了其他的一些IO类型，分别定义在三个独立的头文件中：<strong>iostream</strong>定义了用于读写流的基本类型，<strong>fstream</strong>定义了读写命名文件的类型，<strong>sstream</strong>定义了读写内存string对象的类型。</p>
-<p>类型ifstream和istringstream都<strong>继承</strong>自istream。因此我们可以像使用istream对象一样来使用ifstream和istringstream对象。需要注意的是，不<strong>能对IO对象进行拷贝或赋值，另外读写一个IO对象会改变其状态，因此传递和返回的引用不能是const的</strong>。</p>
-<h2 id="条件状态"><a href="#条件状态" class="headerlink" title="条件状态"></a>条件状态</h2><p>IO类定义了一些函数和标志，可以帮助我们访问和操纵流的<strong>条件状态</strong>。一个流一旦发生错误，其后的IO操作都会失败，确定一个流对象的最简单的方法就是将他作为一个条件去使用：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;word)</span><br></pre></td></tr></table></figure></p>
-<p>IO库定义了一个与机器无关的iostate类型，它提供了表达流状态的完整功能：<br><strong>badbit</strong>表示系统级错误，如不可恢复的读写错误；<strong>failbit</strong>表示可恢复错误，如期望读取数值缺读取了一个字符；达到文件结束的位置时，<strong>eofbit</strong>和<strong>failbit</strong>都会被置位。<strong>goodbit</strong>的值为0表示未出现错误。如果<strong>badbit</strong>，<strong>failbit</strong>，<strong>eofbit</strong>任意一个被置位，检测流的条件都会失败。</p>
-<h2 id="输出缓冲管理"><a href="#输出缓冲管理" class="headerlink" title="输出缓冲管理"></a>输出缓冲管理</h2><p>每个输出流都有一个<strong>缓冲区</strong>，用于保存程序读写的数据，如下面的代码<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">os&lt;&lt;<span class="string">"Hello,world"</span>;</span><br></pre></td></tr></table></figure></p>
-<p>有可能直接打印也有可能被操作系统保存到缓冲区中，随后再打印。<br>显式刷新缓冲区的几个方法：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;<span class="built_in">endl</span>;	<span class="comment">//输出字符串之后输出换行然后刷新缓冲区</span></span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;flush;	<span class="comment">//输出字符串之后直接刷新缓冲区</span></span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;ends;	<span class="comment">//输出字符串之后输出空白字符然后刷新缓冲区</span></span><br></pre></td></tr></table></figure></p>
-<p>当输入流关联到输出流的时候，任何试图从输入流读取数据的操作都会先刷新关联的输出流，标准库将cout和cin关联到一起，可以使用tie()函数手动将istream和ostream关联到一起。</p>
-<h1 id="文件输入输出"><a href="#文件输入输出" class="headerlink" title="文件输入输出"></a>文件输入输出</h1><h2 id="open和close函数"><a href="#open和close函数" class="headerlink" title="open和close函数"></a>open和close函数</h2><p>在定义了一个空文件流对象之后，可以调用open将其与文件关联起来<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ifstream <span class="title">in</span><span class="params">(ifile)</span></span>;	<span class="comment">//构造一个ifstream并打开给定文件</span></span><br><span class="line">ofstream out;	<span class="comment">//输出文件流未与任何文件相关联</span></span><br><span class="line">out.open(ifile+<span class="string">".copy"</span>)	<span class="comment">//打开指定文件</span></span><br></pre></td></tr></table></figure></p>
-<p>文件流打开之后就会保持和对应文件的关联，如果试图将这个文件流关联到另一个文件上，必须先关闭相应的文件流。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">in.close();	<span class="comment">//关闭文件</span></span><br><span class="line">in.open(ifile+<span class="string">"2"</span>);	<span class="comment">//关联到新的文件</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="文件模式"><a href="#文件模式" class="headerlink" title="文件模式"></a>文件模式</h2><p>每个流都有一个关联的文件模式，用来指出如何使用文件，每个文件流类型都定义了一个默认的文件模式，当我们未指定文件模式时，就使用默认模式。与ifstream关联的文件默认以in模式（读方式）打开；与ofstream相关联的文件默认以out模式（写方式）打开。文件模式如下表：</p>
-<ul>
-<li>in           以只读方式打开</li>
-<li>out         以写方式打开</li>
-<li>app        每次写操作前均定位到文件末尾</li>
-<li>ate         打开文件后立即定义到文件末尾</li>
-<li>trunc      截断文件</li>
-<li>binary    以二进制进行IO</li>
-</ul>
-<p>默认情况下，当打开一个ofstream时，文件的内容会被丢弃。阻止一个ofstream清空给定文件内容的方法是同时指定app模式。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ofstream <span class="title">out</span><span class="params">(<span class="string">"file1"</span>)</span>	<span class="comment">//文件会被清空</span></span></span><br><span class="line"><span class="function">ofstream <span class="title">out</span><span class="params">(<span class="string">"file"</span>,ofstream::app|ofstream::out)</span>	<span class="comment">//以app方式打开会被保存</span></span></span><br></pre></td></tr></table></figure></p>
-<p>保留ofstream打开的文件中数据的唯一办法就是指定app形式打开或者in模式打开。</p>
-<h1 id="string流"><a href="#string流" class="headerlink" title="string流"></a>string流</h1><p>sstream头文件定义了三个类型来支持内存IO，这些类型可以向string写入数据，从string读取数据，就像string是个IO流一样。</p>
-<p>当我们的工作是对整行文本进行处理，而其他的一些工作是处理行内的单个单词时，通常可以使用<strong>istringstream</strong>。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> line,word;</span><br><span class="line"><span class="built_in">vector</span>&lt;PersonInfo&gt; people;</span><br><span class="line"><span class="keyword">while</span>(getline(<span class="built_in">cin</span>,line))&#123;	<span class="comment">//不断从cin读取一行</span></span><br><span class="line">	PersonInfo info;</span><br><span class="line">	<span class="function"><span class="built_in">istringstream</span> <span class="title">record</span><span class="params">(line)</span></span>;   <span class="comment">//利用读取的这一行初始化record对象</span></span><br><span class="line">	record&gt;&gt;info.name;      <span class="comment">//从这一行中单独处理每个单词</span></span><br><span class="line">	<span class="keyword">while</span>(record&gt;&gt;word)</span><br><span class="line">		info.phones.push_back(word);</span><br><span class="line">	people.push_back(info);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在我们逐步构造输出，希望最后一行打印时，ostringstream非常有用。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;entry:people)&#123;</span><br><span class="line">	<span class="built_in">ostringstream</span> formatted,badNums;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;nums:entry.phones)&#123;</span><br><span class="line">		<span class="keyword">if</span>(!valid(nums))&#123;   <span class="comment">//如果遇到无效电话号码，则放到badNums之后一起输出</span></span><br><span class="line">			badNums&lt;&lt;<span class="string">" "</span>&lt;&lt;nums;</span><br><span class="line">		&#125;<span class="keyword">else</span></span><br><span class="line">		formatted&lt;&lt;<span class="string">" "</span>&lt;&lt;format(nums);   <span class="comment">//将正常的电话号码都放到formatted中</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(badNums.str().empty())</span><br><span class="line">		os&lt;&lt;entry.name&lt;&lt;<span class="string">" "</span>&lt;&lt;formatted.str()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="built_in">cerr</span>&lt;&lt;<span class="string">"Input error: "</span>&lt;&lt;entry.name&lt;&lt;<span class="string">" invalid number(s) "</span>&lt;&lt;badNums.str()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+        <h1 id="等式约束的优化问题求解"><a href="#等式约束的优化问题求解" class="headerlink" title="等式约束的优化问题求解"></a>等式约束的优化问题求解</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>本文将讨论下类形状的优化问题</p>
+<script type="math/tex; mode=display">
+minimize\quad f(x)\\
+subject\  to\quad h(x)=0</script><p>其中$x\in R^{n},f:R^{n}\to R,h:R^{n}\to R^{m},h=[h_{1},…,h_{m}]^{T},m\le n$，假定函数$h$连续可微，即$h\in C^{1}$。<br>下面介绍几个基本概念：</p>
+<p><strong>正则点</strong>：对于满足约束 <script type="math/tex">h_{1}(x^{*})=0,...,h_{m}(x^{*})=0</script> 的点<script type="math/tex">x^{**}</script>，如果梯度向量 <script type="math/tex">\nabla h_{1}(x^{*}),...,\nabla h_{m}(x^{*})</script> 是线性无关的，则称<script type="math/tex">x^{*}</script>是该约束的一个正则点。</p>
+<p><strong>切线空间</strong>：曲面<script type="math/tex">S={x\in R^{n}:h(x)=0}</script>中点<script type="math/tex">x^{*}</script>处的切线空间为集合<script type="math/tex">T(x^{*})=\{ y:Dh(x^{*})y=0\}</script>。可以看出切线空间<script type="math/tex">T(x^{*})</script>是矩阵<script type="math/tex">Dh(x^{*})</script>的零空间，即<script type="math/tex">T(x^{*})=N(Dh(x^{*}))</script>。</p>
+<p><strong>法线空间</strong>：曲面<script type="math/tex">S={x\in R^{n}:h(x)=0}</script>中点<script type="math/tex">x^{*}</script>处的法线空间为集合<script type="math/tex">N(x^{*})=\{ x\in R^{n}:x=Dh(x^{*})^{T}z,z\in R^{m}\}</script>。可以看出法线空间<script type="math/tex">N(x^{*})</script>是矩阵<script type="math/tex">Dh(x^{*})</script>的零空间，即<script type="math/tex">N(x^{*})=R(Dh(x^{*})^{T})</script>。</p>
+<h2 id="拉格朗日条件"><a href="#拉格朗日条件" class="headerlink" title="拉格朗日条件"></a>拉格朗日条件</h2><p>首先考虑只包含两个决策变量和一个等式约束的优化问题。令<script type="math/tex">h:R^{2}\to R</script>为约束函数，可知函数定义域中<script type="math/tex">x</script>处的梯度<script type="math/tex">\nabla h(x)</script>与通过该点的<script type="math/tex">h(x)</script>水平集正交，选择点<script type="math/tex">x^{*}=[x^{*}_{1},x^{*}_{1}]^{T}</script>使得<script type="math/tex">h(x^{*})=0</script>，且<script type="math/tex">\nabla h(x^{*})\neq 0</script>，经过点<script type="math/tex">x^{*}</script>的水平集为集合<script type="math/tex">\{ x:h(x)=0\}</script>。可利用曲线<script type="math/tex">x(t)</script>在<script type="math/tex">x^{*}</script>领域内进行参数化，<script type="math/tex">x(t)</script>是一个连续可微的向量函数<script type="math/tex">h:R\to R^{2}</script>：</p>
+<script type="math/tex; mode=display">
+x(t)=[x_{1}(t),x_{1}(t)]^{T},t\in (a,b),x^{*}=x(t^{*}),\dot{x}(t^{*})\neq 0,t^{*}\in (a,b)</script><p>接下来可以证明，<script type="math/tex">\nabla h(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交。由于<script type="math/tex">h</script>在曲线<script type="math/tex">\{x(t):t\in (a,b)\}</script>上是常数0，即对于所有的<script type="math/tex">t\in (a,b)</script>都有</p>
+<script type="math/tex; mode=display">
+h(x(t))=0</script><p>因此对于任意的<script type="math/tex">t\in(a,b)</script>都有</p>
+<script type="math/tex; mode=display">
+\frac{d}{dt}h(x(t))=0</script><p>利用链式法则可以得到</p>
+<script type="math/tex; mode=display">
+\frac{d}{dt}h(x(t))=\nabla h(x(t))^{T}\dot{x}(t)=0</script><p>因此<script type="math/tex">\nabla h(x^{*})</script>和<script type="math/tex">\dot{x}(t^{*})</script>正交<br>当<script type="math/tex">x^{*}</script>是<script type="math/tex">f:R\to R^{2}</script>在满足<script type="math/tex">h(x)=0</script>上的极小点的时候，可以证明，<script type="math/tex">\nabla f(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交，构造关于<script type="math/tex">t</script>的复合函数：</p>
+<script type="math/tex; mode=display">
+\phi(t)=f(x(t))</script><p>当<script type="math/tex">t=t^{*}</script>的时候取得极小值，根据无约束极值问题的一阶必要条件可知</p>
+<script type="math/tex; mode=display">
+\frac{d\phi}{dt}(t^{*})=0</script><p>利用链式法则可以得到</p>
+<script type="math/tex; mode=display">
+\frac{d}{dt}\phi(t^{*})=\nabla f(x(t^{*}))^{T}\dot{x}(t^{*})=\nabla f(x^{*})^{T}\dot{x}(t^{*})=0</script><p>因此，<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\dot{x}(t^{*})</script>正交，上面已经证明<script type="math/tex">\nabla f(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交，那么向量<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\nabla h(x^{*})</script>平行，那么可以得到这种情况下的拉格朗日定理：</p>
+<p><strong>n=2,m=3时的拉格朗日定理：</strong>设点<script type="math/tex">x^{*}</script>是函数<script type="math/tex">f:R^{2}\to R</script>的一个极小点，约束条件是<script type="math/tex">h(x)=0,h:R^{2}\to R</script>,那么<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\nabla h(x^{*})</script>平行，即如果<script type="math/tex">\nabla h(x^{*})\neq 0</script>，则存在标量<script type="math/tex">\lambda^{*}</script>，使得</p>
+<script type="math/tex; mode=display">
+\nabla f(x^{*})+\lambda^{*}\nabla h(x^{*})=0</script><p>其中<script type="math/tex">\lambda^{*}</script>为拉格朗日乘子。<br>将这个定理推广到一般情况下，即<script type="math/tex">f:R^{n}\to R,h:R^{n}\to R^{m},m\le n</script>的时候，可以得到：<br><strong>拉格朗日定理：</strong><script type="math/tex">x^{*}</script>是<script type="math/tex">f:R^{n}\to R</script>的局部极小点（或极大点），约束条件为<script type="math/tex">h(x)=0,h:R^{n}\to R^{m},m\le n</script>。如果<script type="math/tex">x^{*}</script>是正则点，那么存在<script type="math/tex">\lambda^{*}\in R^{m}</script>使得</p>
+<script type="math/tex; mode=display">
+D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二阶条件" class="headerlink" title="二阶条件"></a>二阶条件</h2><p><strong>二阶必要条件：</strong>设<script type="math/tex">x^{*}</script>是<script type="math/tex">f:R^{n}\to R</script>在约束条件<script type="math/tex">h(x)=0,h:R^{n}\to R^{m},m\le n,f,h\in C^{2}</script>下的局部极小点。如果<script type="math/tex">x^{*}</script>是正则点，那么存在<script type="math/tex">\lambda^{*}\in R^{m}</script>使得</p>
+<p> 1.<script type="math/tex">D f(x^{*})+\lambda^{*T}D h(x^{*})=0^{T}</script><br> 2.对于所有的<script type="math/tex">y\in T(x^{*})</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*})y\ge 0</script></p>
+<p><strong>二阶充分条件：</strong>函数<script type="math/tex">f,h\in C^{2}</script>，如果存在点<script type="math/tex">x^{*}\in R^{n}</script>和<script type="math/tex">\lambda^{*}\in R^{m}</script>，使得</p>
+<p> 1.<script type="math/tex">D f(x^{*})+\lambda^{*T}D h(x^{*})=0^{T}</script><br> 2.对于所有的<script type="math/tex">y\in T(x^{*})</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*})y> 0</script></p>
+<p>那么<script type="math/tex">x^{*}</script>是<script type="math/tex">f</script>在约束条件<script type="math/tex">h(x)=0</script>下的严格局部极小点</p>
+<p>本文介绍了等式约束下的拉格朗日乘子法，后面还将会介绍不等式约束下的拉格朗日乘子法以及KKT条件等，To be continue…</p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/18/Cpp-Cpp中的IO类/" data-id="cjmbwyrpp0000m0ezm0konsfz" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/18/最优化-等式约束的优化问题求解/" data-id="cjmfkjyh4000j3cezrzjfa46k" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
 
     </footer>
   </div>

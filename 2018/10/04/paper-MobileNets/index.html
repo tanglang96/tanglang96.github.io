@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>paper-MobileNets | Math &amp; Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="[paper]MobileNets总结Abstract针对移动和嵌入式视觉应用，本文提出了一种高效的模型称之为MobileNets，基于depthwise separable convolutions构造的一种轻量级神经网络。该模型使用两个超参数来平衡准确率和延迟，并针对二者的平衡在ImageNet上做了广泛的实验，与其他模型相比展现出了强大的性能。并通过实验展现了ImageNet在各种应用上的强">
+<meta name="keywords" content="machine learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="paper-MobileNets">
+<meta property="og:url" content="http://yoursite.com/2018/10/04/paper-MobileNets/index.html">
+<meta property="og:site_name" content="Math &amp; Code">
+<meta property="og:description" content="[paper]MobileNets总结Abstract针对移动和嵌入式视觉应用，本文提出了一种高效的模型称之为MobileNets，基于depthwise separable convolutions构造的一种轻量级神经网络。该模型使用两个超参数来平衡准确率和延迟，并针对二者的平衡在ImageNet上做了广泛的实验，与其他模型相比展现出了强大的性能。并通过实验展现了ImageNet在各种应用上的强">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/paper-MobileNets/depthwise-separable-convolution.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-MobileNets/MobileNet-Body-Architecture.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-MobileNets/Model-Choices-Experiment.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-MobileNets/Model-Shrinking-Hyperparameters-experiment1.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-MobileNets/Model-Shrinking-Hyperparameters-experiment2.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-MobileNets/Model-Shrinking-Hyperparameters-experiment3.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-MobileNets/Fine-Grained-Recognition-experiment.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-MobileNets/Large-Scale-Geolocalizaton-experiment.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-MobileNets/Face-Attributes-experiment.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-MobileNets/Object-Detection-experiment.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-MobileNets/Face-Embeddings-experiment.PNG">
+<meta property="og:updated_time" content="2018-10-05T07:42:55.083Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="paper-MobileNets">
+<meta name="twitter:description" content="[paper]MobileNets总结Abstract针对移动和嵌入式视觉应用，本文提出了一种高效的模型称之为MobileNets，基于depthwise separable convolutions构造的一种轻量级神经网络。该模型使用两个超参数来平衡准确率和延迟，并针对二者的平衡在ImageNet上做了广泛的实验，与其他模型相比展现出了强大的性能。并通过实验展现了ImageNet在各种应用上的强">
+<meta name="twitter:image" content="http://yoursite.com/images/paper-MobileNets/depthwise-separable-convolution.PNG">
+  
+    <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Math &amp; Code</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">---By Frank,the best or nothing</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-paper-MobileNets" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/10/04/paper-MobileNets/" class="article-date">
+  <time datetime="2018-10-04T12:34:54.000Z" itemprop="datePublished">2018-10-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      paper-MobileNets
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="paper-MobileNets总结"><a href="#paper-MobileNets总结" class="headerlink" title="[paper]MobileNets总结"></a>[paper]MobileNets总结</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>针对移动和嵌入式视觉应用，本文提出了一种高效的模型称之为MobileNets，基于depthwise separable convolutions构造的一种轻量级神经网络。该模型使用两个超参数来平衡准确率和延迟，并针对二者的平衡在ImageNet上做了广泛的实验，与其他模型相比展现出了强大的性能。并通过实验展现了ImageNet在各种应用上的强大之处，包括目标检测，精细化分类，人脸属性和大范围地理定位等。</p>
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1-Introduction"></a>1-Introduction</h2><p>自从AlexNet使深度CNN变得流行起来，CNN在计算机视觉方面变得无所不在，总体趋势在于发明更深更复杂的网络来实现更高的精度。然而这些改进在网络速度和尺寸上并没有起到促进作用，显示应用中的机器人，无人驾驶汽车，AR等都需要在有限的计算平台下具有实时性。</p>
+<p>本文提出了一种高效的网络结构和两个超参数构成的集合来构建用于以上应用的模型，章节2审视了前人在构建小型模型方面的经验，章节3描述了MobileNet的结构和宽度乘子，分辨率乘子这两个超参数，章节4描述了其在ImageNet和各种应用下的实验，最后章节5进行了总结。</p>
+<h2 id="2-Prior-Work"><a href="#2-Prior-Work" class="headerlink" title="2-Prior Work"></a>2-Prior Work</h2><p>构建高效的小尺寸网络在最近很流行，很多方法能被分类成两种：压缩欲训练网络或者直接训练小尺寸网络，本文提出的网络结构可以让搭建者来选择满足资源约束的小尺寸网络，MobileNet主要专注于优化延迟并产出小尺寸网络，许多网络都只考虑了尺寸而没有速度。 </p>
+<p>MobileNets利用depthwise separable convolutions，Inception model也利用这个来减少前几层的计算量。Flattened networks利用全分解卷积来构建网络，并且展现了分解网络的潜力。Factorized networks利用了相似的卷积分解，也利用了topological connections。另外的还有Xception network：通过缩放depthwise separable filters。Squeezenet：利用bottleneck。其他一些减少计算量的网络：structured transform network，deep fried convnets。</p>
+<p>获得小尺寸网络的其他方法：对于欲训练网络的shrinking，factorizing，compressing，其中compressing包含：product quantization，hashing，pruning，vector quantization，Huffman coding。其中factorization的方法：[14,20]文献。另外的方法还有distillation(用大网络的输出来训练小网络)，low bit networks。</p>
+<h2 id="3-MobileNet-Architecture"><a href="#3-MobileNet-Architecture" class="headerlink" title="3-MobileNet Architecture"></a>3-MobileNet Architecture</h2><p>这一章首先介绍核心的depthwise separable filters，然后介绍MobileNet的网络结构，最后以shrinking的两个超参数（宽度乘子，分辨率乘子）的介绍结尾。</p>
+<h3 id="3-1-Depthwise-Separable-Convolutions"><a href="#3-1-Depthwise-Separable-Convolutions" class="headerlink" title="3.1-Depthwise Separable Convolutions"></a>3.1-Depthwise Separable Convolutions</h3><p>depthwise separable convolution是将一个标准卷积分成了两部分：depthwise convolution和1x1的卷积。同时也将一个卷积层分成了两层：filtering和combining。这样的分解可以极大地减少计算量和模型尺寸。标准卷积和depthwise separable convolution的对比如下图：<img src="\images\paper-MobileNets\depthwise-separable-convolution.PNG" alt="两种卷积方式的区别"></p>
+<p>对于一个标准卷积，假设其输入维度为<script type="math/tex">D_{F}*D_{F}*M</script>，输出维度为<script type="math/tex">D_{G}*D_{G}*N</script>，卷积核的维度为<script type="math/tex">D_{K}*D_{K}*M*N</script>，那么在stride=1，padding的情况下，标准卷积的计算公式为：</p>
+<script type="math/tex; mode=display">
+G_{k,l,n}=\sum_{i,j,m}K_{i,j,m,n}\cdot F_{k+i-1,l+j-1,m}</script><p>标准卷积的计算消耗为：</p>
+<script type="math/tex; mode=display">
+D_{K}\cdot D_{K}\cdot M\cdot N\cdot D_{F}\cdot D_{F}</script><p>而depthwise separable convolution的计算消耗为：</p>
+<script type="math/tex; mode=display">
+D_{K}\cdot D_{K}\cdot M\cdot D_{F}\cdot D_{F}+M\cdot N\cdot D_{F}\cdot D_{F}</script><p>前者为depthwise convolution的计算消耗，而后者为1x1的卷积的计算消耗，通过比较，二者的计算量之间的减少为：</p>
+<script type="math/tex; mode=display">
+\frac{D_{K}\cdot D_{K}\cdot M\cdot D_{F}\cdot D_{F}+M\cdot N\cdot D_{F}\cdot D_{F}}{D_{K}\cdot D_{K}\cdot M\cdot N\cdot D_{F}\cdot D_{F}}=\frac{1}{N}+\frac{1}{D_{K}^{2}}</script><p>如果使用3x3的卷积核，那么计算量将减小8-9倍，并且在准确率上只有微小的降低。再进一步进行分解[16,31]并不会减少很多计算量因为depthwise convolution的计算量已经很小了。</p>
+<h3 id="3-2-Network-Structure-and-Training"><a href="#3-2-Network-Structure-and-Training" class="headerlink" title="3.2-Network Structure and Training"></a>3.2-Network Structure and Training</h3><p>MobileNet除了第一层是标准卷积之外，其余结构都是基于depthwise separable convolution来构建的。整个网络结构如下图：<img src="\images\paper-MobileNets\MobileNet-Body-Architecture.PNG" alt="MobileNet的网络结构"></p>
+<p>值得一提的是，并不能以小数量的Mult-Adds就认为这个模型是高效的。让这些Mult-Adds操作能够高效实现同样也很重要。比如非结构化的稀疏矩阵操作并不一定比密集矩阵的操作更快，除非具有很高的稀疏度。我们的模型几乎将所有的计算转化为密集的1x1卷积操作，这种操作可以用一种经过高度优化的通用矩阵乘法（GEMM）来实现。通常的用GEMM实现的卷积操作需要先使用im2col来对输入在内存中重新进行排序，例如这样的操作可以用Caffe来实现。而我们的1x1卷积则不需要先排序，可以直接应用GEMM算法（最优的数值线性代数算法之一）。在MobileNet中，95%的Mult-Adds操作和75%的参数都来自1x1卷积。</p>
+<p>对于训练的细节：TensorFlow+RMSprop+asynchronous gradient descent(类似InceptionV3)+更少的正则化和数据增强(小模型不容易过拟合)+很少或者没有weight decay on the depthwise filters(因为里面已经只有很少的参数)</p>
+<h3 id="3-3-Width-Multiplier-Thinner-Models"><a href="#3-3-Width-Multiplier-Thinner-Models" class="headerlink" title="3.3-Width Multiplier: Thinner Models"></a>3.3-Width Multiplier: Thinner Models</h3><p>尽管当前的MobileNet已经很小很快了，不过有时候还需要更小的模型，我们引入一个超参数<script type="math/tex">\alpha</script>(width multiplier)来构建这些更小的模型，这个参数的目标是均匀的在每一层来让整个网络变得更加瘦小。给定一个<script type="math/tex">\alpha</script>，则让输入通道数M变为<script type="math/tex">\alpha M</script>，输出通道数N变为<script type="math/tex">\alpha N</script>，<script type="math/tex">\alpha</script>的取值通常为1，0.75，0.5，0.25，使用了该参数之后的计算量为：</p>
+<script type="math/tex; mode=display">
+D_{K}\cdot D_{K}\cdot \alpha M\cdot D_{F}\cdot D_{F}+\alpha M\cdot \alpha N\cdot D_{F}\cdot D_{F}</script><p>计算量大约变成了以前的<script type="math/tex">\alpha^{2}</script></p>
+<h3 id="3-4-Resolution-Multiplier-Reduced-Representation"><a href="#3-4-Resolution-Multiplier-Reduced-Representation" class="headerlink" title="3.4-Resolution Multiplier: Reduced Representation"></a>3.4-Resolution Multiplier: Reduced Representation</h3><p>第二个减少网络计算量的超参数是<script type="math/tex">\rho</script>(resolution multiplier)， 通过设置输入的分辨率来设置这一参数，然后内部的分辨率也会随之减少，在加上了超参数<script type="math/tex">\alpha,\rho</script>之后的计算量则变为：</p>
+<script type="math/tex; mode=display">
+D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \alpha N\cdot \rho D_{F}\cdot \rho D_{F}</script><p>通常<script type="math/tex">\rho</script>设定之后的分辨率为224，192，160，128。注意在设定该参数之后计算量会发生变化，但是模型参数则不会发生变化。</p>
+<h2 id="4-Experiments"><a href="#4-Experiments" class="headerlink" title="4-Experiments"></a>4-Experiments</h2><p>这部分主要讲了一些实验，首先是depthwise separable convolution，标准卷积的对比，瘦小和浅层MobileNet的对比。然后介绍了两个超参数的实验结果，包括ImageNet的准确度，Multi-Adds操作的数量和参数的数量。最后介绍了MobileNet在其它一些不同应用上（精细化分类，大尺度地理定位，人脸属性，目标检测，人脸嵌入）的实验结果。</p>
+<h3 id="4-1-Model-Choices"><a href="#4-1-Model-Choices" class="headerlink" title="4.1-Model Choices"></a>4.1-Model Choices</h3><p>试验结果表明，全卷积的MobileNet和depthwise separable convolution相比，精度差不多，但是depthwise separable convolution的参数和计算量相比而言小了很多。瘦小和浅层MobileNet相比，计算量差不多的情况下瘦小MobileNet精度更高一些。实验结果如图：<img src="\images\paper-MobileNets\Model-Choices-Experiment.PNG" alt="关于模型选择的实验结果"></p>
+<h3 id="4-2-Model-Shrinking-Hyperparameters"><a href="#4-2-Model-Shrinking-Hyperparameters" class="headerlink" title="4.2-Model Shrinking Hyperparameters"></a>4.2-Model Shrinking Hyperparameters</h3><p>这一部分是讲关于上述两个超参数调参的，其实验结果如下图所示：<img src="\images\paper-MobileNets\Model-Shrinking-Hyperparameters-experiment1.PNG" alt="超参数调参对比"></p>
+<p><img src="\images\paper-MobileNets\Model-Shrinking-Hyperparameters-experiment2.PNG" alt="超参数调参对比"></p>
+<p><img src="\images\paper-MobileNets\Model-Shrinking-Hyperparameters-experiment3.PNG" alt="与经典模型的对比"></p>
+<h3 id="4-3-Fine-Grained-Recognition"><a href="#4-3-Fine-Grained-Recognition" class="headerlink" title="4.3-Fine Grained Recognition"></a>4.3-Fine Grained Recognition</h3><p>利用Stanford Dogs dataset数据集和网上的一些包含噪声的数据上训练了应用于精细化分类的模型，并且进行了很好的调参，最后在减小计算量和模型尺寸的情况下得到了近似于state of the art的结果，实验结果如图<img src="\images\paper-MobileNets\Fine-Grained-Recognition-experiment.PNG" alt="精细化分类的实验结果"></p>
+<h3 id="4-4-Large-Scale-Geolocalizaton"><a href="#4-4-Large-Scale-Geolocalizaton" class="headerlink" title="4.4-Large Scale Geolocalizaton"></a>4.4-Large Scale Geolocalizaton</h3><p>PlaNet是将这个定位问题转化为一个分类问题来解决，PlaNet已经成功定位了很多照片，并且在这个问题上的表现已经超过了Im2GPS，用MobileNet结构在同样的数据下重新训练了PlaNet，实验结果如下图：<img src="\images\paper-MobileNets\Large-Scale-Geolocalizaton-experiment.PNG" alt="地理定位的实验结果"></p>
+<h3 id="4-5-Face-Attributes"><a href="#4-5-Face-Attributes" class="headerlink" title="4.5-Face Attributes"></a>4.5-Face Attributes</h3><p>MobileNet还能够用于压缩未知训练过程的大规模系统，在人脸属性分类系统中使用了MobileNet和distillation的协同作用，在将二者进行结合之后，系统不仅不需要进行正则化，而且表现出来了更强的性能，实验结果如下图：<img src="\images\paper-MobileNets\Face-Attributes-experiment.PNG" alt="人脸属性检测的实验结果"></p>
+<h3 id="4-6-Object-Detection"><a href="#4-6-Object-Detection" class="headerlink" title="4.6-Object Detection"></a>4.6-Object Detection</h3><p>这个实验利用VGG，Inception，MobileNet在SSD和Faster-RCNN上对COCO数据集进行了训练，结果如下图：<img src="\images\paper-MobileNets\Object-Detection-experiment.PNG" alt="目标检测的实验结果"></p>
+<h3 id="4-7-Face-Embeddings"><a href="#4-7-Face-Embeddings" class="headerlink" title="4.7-Face Embeddings"></a>4.7-Face Embeddings</h3><p>FaceNet是FaceEmbedding的state of the art结果，这里同样的利用distillation来训练Mobile FaceNet。结果如下图：<img src="\images\paper-MobileNets\Face-Embeddings-experiment.PNG" alt="人脸嵌入的实验结果"></p>
+<h2 id="5-Conclusion"><a href="#5-Conclusion" class="headerlink" title="5-Conclusion"></a>5-Conclusion</h2><p>提出了基于depthwise separable convolution的模型结构，并且使用了width multiplier和resolution multiplier两个超参数来控制模型的复杂度，并且在模型尺寸，速度，准确度上面与其他模型进行了对比，证明了MobileNet在多种应用之下的高效性，下一步打算对MobileNet进行改进和进一步开发。</p>
+<h2 id="6-其他的一些相关总结"><a href="#6-其他的一些相关总结" class="headerlink" title="6-其他的一些相关总结"></a>6-其他的一些相关总结</h2><p>数据集：ImageNet(图像分类)，Stanford Dogs dataset(精细化分类)，YFCC100M(人脸属性)，COCO(目标检测)</p>
+<p>相关的论文：</p>
+<p><strong>数据集</strong></p>
+<p>《Imagenet large scale visual recognition challenge》（ImageNet，ILSVRC 2012）</p>
+<p>《In First Workshop on Fine-Grained Visual Categorization》（Stanford Dogs dataset）</p>
+<p>《Yfcc100m: The new data in multimedia research》（YFCC100M）</p>
+<p><strong>更深更复杂精度更高的神经网络</strong></p>
+<p>《Inception-v4,inception-resnet and the impact of residual connections onlearning》（InceptionV4）</p>
+<p>《Rethinking the inception architecture for computer vision》（InceptionV3，空间维度的额外分解）</p>
+<p>《Deep residual learning for image recognition》（resnet）</p>
+<p>《Going deeper with convolutions》(GoogleNet)</p>
+<p>《Very deep convolutional networks for large-scale image recognition》（VGG16）</p>
+<p>《Imagenet classification with deep convolutional neural networks》（AlexNet）</p>
+<p><strong>神经网络的压缩加速</strong></p>
+<p>《Flattened convolutional neural networks for feedforward acceleration》（空间维度的额外分解）</p>
+<p>《Factorized convolutional neural networks》（对卷积进行分解）</p>
+<p>《Squeezenet: Alexnet-level accuracy with 50x fewer parameters and¡ 1mb model size》（利用bottleneck来实现小型网络）</p>
+<p>《Quantized convolutional neural networks for mobile devices》（基于product quantization进行压缩）</p>
+<p>《Xnornet:Imagenet classification using binary convolutional neural networks》（利用low bit networks）</p>
+<p>《Training deep neural networks with low precision multiplications》（利用low bit networks）</p>
+<p>《Quantized neural networks: Training neural networks with low precision weights and activations》（利用low bit networks）</p>
+<p>《Xception: Deep learning with depthwise separable convolutions》（缩放depthwise separable filters）</p>
+<p>《Structured transforms for small-footprint deep learning》（用于减少计算量的网络）</p>
+<p>《Deep fried convnets》（用于减少计算量的网络）</p>
+<p>《Compressing neural networks with the hashing trick》（利用哈希来压缩神经网络）</p>
+<p>《Rigid-motion scattering for image classification》（最初提出标准卷积分解为depthwise conv和1x1 conv）</p>
+<p>《Deep compression: Compressing deep neural network with pruning, trained quantization and huffman coding》（利用哈夫曼编码压缩网络）</p>
+<p>《Speeding up convolutional neural networks with low rank expansions》（额外的变量分解）</p>
+<p>《Speeding-up convolutional neural networks using fine-tuned cp-decomposition》（额外的变量分解）</p>
+<p>《Distilling the knowledge in a neural network》（利用distillation来从大型网络训练小网络，以进行压缩）</p>
+<p><strong>BN</strong></p>
+<p>《Batch normalization: Accelerating deep network training by reducing internal covariate shift》（InceptionV2也从此而来）</p>
+<p><strong>框架</strong></p>
+<p>《Caffe: Convolutional architecture for fast feature embedding》</p>
+<p>《Tensorflow: Large-scale machine learning on heterogeneous systems》</p>
+<p><strong>图像定位</strong></p>
+<p>《IM2GPS: estimating geographic information from a single image》（提出了Im2GPS）</p>
+<p>《Large-Scale Image Geolocalization》（关于Im2GPS）</p>
+<p>《PlaNet - Photo Geolocation with Convolutional Neural Networks》（PlaNet）</p>
+<p><strong>精细化分类</strong></p>
+<p>《The unreasonable effectiveness of noisy data for fine-grained recognition》</p>
+<p><strong>目标检测</strong></p>
+<p>《Faster r-cnn: Towards real-time object detection with region proposal networks》（Faster-RCNN框架）</p>
+<p>《Ssd: Single shot multibox detector》（SSD框架）</p>
+<p><strong>人脸嵌入</strong></p>
+<p>《Facenet: A unified embedding for face recognition and clustering》（FaceNet，基于三元损失来构建人脸嵌入）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/10/04/paper-MobileNets/" data-id="cjmvacedw000k9wezelc4us5g" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/09/28/paper-InceptionV4/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">[paper]InceptionV4总结</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<div id="gitalk-container"></div>     <script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '2193b885b967a685e247',
+        clientSecret: '49a60c8f19873532dc3e7a6658bbff6c95ce73c9',
+        repo: 'Lannyy.github.io',
+        owner: 'Lannyy',
+        admin: ['Lannyy'],
+        id: '2018/10/04/paper-MobileNets/',
+        distractionFreeMode: true,
+    });
+    gitalk.render('gitalk-container');
+</script></section>
+        
+          <aside id="sidebar">
+  
+    
+<div class="widget-wrap">
+  <h3 class="widget-title">ABOUT ME</h3>
+  <ul class="widget about-me">
+    
+    <li><img class="author" title="About me" src="/images/cute.jpg" /></li>
+    
+    
+    <li>Name：Tang Lang</li>
+    
+    <li>School：Xiamen University</li>
+    
+    <li>Email：langtang1996@gmail.com</li>
+    
+    <li>QQ：1660039482</li>
+    
+  </ul>
+</div>
+
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Cpp/" style="font-size: 15px;">Cpp</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/algorithm/" style="font-size: 12.5px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 17.5px;">optimization</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/10/04/paper-MobileNets/">paper-MobileNets</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/28/paper-InceptionV4/">[paper]InceptionV4总结</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/21/Matrix-Derivative/">[Matrix]关于向量与矩阵的求导</a>
+          </li>
+        
+          <li>
+            <a href="/2018/09/14/leetcode-stock/">[LeetCode]动态规划中股票问题的通用解法</a>
+          </li>
+        
+          <li>
+            <a href="/2018/08/31/最优化-凸集的定义与常见凸集/">[最优化]凸集的定义与常见凸集</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Tang Lang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

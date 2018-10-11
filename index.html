@@ -70,6 +70,67 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-paper-ShuffleNetV2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/10/11/paper-ShuffleNetV2/" class="article-date">
+  <time datetime="2018-10-11T02:19:56.000Z" itemprop="datePublished">2018-10-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/10/11/paper-ShuffleNetV2/">[paper]ShuffleNetV2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="《ShuffleNet-V2-Practical-Guidelines-for-Efficient-CNN-Architecture-Design》总结"><a href="#《ShuffleNet-V2-Practical-Guidelines-for-Efficient-CNN-Architecture-Design》总结" class="headerlink" title="《ShuffleNet V2: Practical Guidelines for Efficient CNN Architecture Design》总结"></a>《ShuffleNet V2: Practical Guidelines for Efficient CNN Architecture Design》总结</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>现在很多的网络设计在计算复杂度方面都只考虑了非直接度量（比如FLOPs），而对于直接度量（如速度等）并不只是由FLOPs来决定的，包括MAC（内存访问消耗）和平台特性都对速度有一定的影响。本文意在特定平台下进行直接度量，比仅仅考虑FLOPs要更好，并且在基于一系列控制实验下提出了一些对于高效率网络的指导准则，根据这些准则提出了ShuffleNetV2这样一种新的网络结构，全面的ablation experiments表明该模型在性能和精度的权衡上达到了state-of-the-art。</p>
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.Introduction</h2><p>自从AlexNet在ImageNet上取得了很好的成绩之后，ImageNet上的分类准确度又被一些新型的神经网络进一步改善，比如VGG，GoogLeNet，ResNet，DenseNet，ResNeXt，SE-Net等，而且还有<strong>自动网络结构搜索</strong>。除了精度之外，计算复杂度也是另外一个需要考虑的因素，现实世界的应用通常会受到很多平台的限制，这促进了很多轻量级神经网络结构的设计，以及更好的速度-精度平衡，比如Xception，MobileNet，MobileNetV2，ShuffleNet和CondenseNet等。在这些工作里面，group conv和depth-wise conv是至关重要的。</p>
+<p>为了评价计算复杂度，常用的评价标准就是FLOPs（在本文中的定义是mult-adds的数量），然而FLOPs只是一个近似的间接度量，而不是我们所关心的直接度量，例如速度，延迟等。这样的矛盾在最近的工作中已经被注意到了。比如MobileNetV2和NASNET-A有相近的FLOPs但是MobileNetV2的速度要快得多。下图说明模型有近似的FLOPs但是可能有不同的速度<img src="/images/paper-ShuffleNetV2/FLOPs-speed.PNG" alt="近似的FLOPs具有不同的速度">，因此仅仅使用FLOPs作为度量是不够的，并且有可能导致次优设计。</p>
+<p>在间接度量（FLOPs）和直接度量（速度）之间的矛盾主要来自于两个方面（<strong>度量和平台</strong>）：一是很多关键的影响速度的因素没有考虑进来，比如MAC（memory access cost，group conv是其中一个重要的组成，对于GPU这样强大的运算单元来说这可能会变成其瓶颈），还有就是DOP（degree of parallelism，在同样的FLOPs下，高DOP的模型可能要比低DOP的模型快很多）。第二个原因就是对于平台的依赖，比如张量分解这样的操作，尽管能够减少75%的FLOPs，但是在分解后CPU上的运行速度甚至比GPU更慢，后来发现这是由于最近的CUDNN库对于3x3卷积有特殊的优化，不能简单地认为3x3 conv就比1x1 conv要慢9倍。</p>
+<p>通过这些观察，发现在高效的神经网络设计中应该遵循两条原则，一是要使用直接度量而非间接度量，二是要在特定的平台上进行度量。基于这两条准则提出了更加有效的神经网络结构。在第二章中我们首先分析了两个代表性的state-of-the-art神经网络（ShuffleNetV1，MobileNetV2）的运行时性能，之后我们提出了高效网络设计的四条准则，比只考虑FLOPs更进一步。然而这些准则是平台独立的，我们进行了不同的控制实验来在两个平台上（GPU和ARM）验证它们（带有代码优化），来保证我们的结论是state-of-the-art。</p>
+<p>在第三章节中设计了ShuffleNetV2，通过第四章完整的验证实验，证明其在两个平台上都比之前的网络要更加准确和快速。</p>
+<h2 id="2-Practical-Guidelines-for-Efficient-Network-Design"><a href="#2-Practical-Guidelines-for-Efficient-Network-Design" class="headerlink" title="2.Practical Guidelines for Efficient Network Design"></a>2.Practical Guidelines for Efficient Network Design</h2><p>本研究是基于两个带有工业级优化的CNN库的被广泛应用的硬件平台上进行。注意到我们的CNN库要比大多数开源库更加高效，因此我们的观察和结论是牢固的并且在工业上是有实践价值的。GPU（单个GTX1080TI，卷积库是CUDNN7.0，并且激活了CUDNN的benchmarking函数来对于不同的卷积选择最快的算法），ARM（高通骁龙810，基于Neon实现，利用单线程来进行验证），其他的一些设置：开启全优化（张量融合之类的），输入图片尺寸：224x224，所有网络进行随机初始化，并且评估100次取平均运行时间。</p>
+<p>对于刚开始的研究我们选取MobileNetV2和ShuffleNetV1，尽管只有两个，但是这代表了最近的趋势，这两个网络的核心是group conv和depth-wise conv，这也同样是其他state-of-the-art网络的核心。整个运行时分解图如下：<img src="/images/paper-ShuffleNetV2/runtime-decompose.PNG" alt="运行时间分解图">，FLOPs只算了卷积部分，尽管其占了大部分时间，但是一些其他的内容比如：数据I/O，data shuffle和element-wise操作也占了很大一部分，因此FLOPs用作时间的估计是很不准确的。基于以上观察，我们对运行时间从几个方面进行了分析，并且得出了对于高效神经网络设计的一些实际经验。</p>
+<h3 id="G1-Equal-channel-width-minimize-memory-access-cost"><a href="#G1-Equal-channel-width-minimize-memory-access-cost" class="headerlink" title="G1.Equal channel width minimize memory access cost"></a>G1.Equal channel width minimize memory access cost</h3><p>很多现代网络都采用depth-wise conv，其中1x1卷积占了大部分复杂度，其FLOPs为<script type="math/tex">B=hwc_1c_2</script>，假设内存够大足够存储输入输出的特征和卷积核权重，MAC为<script type="math/tex">MAC=hwc_1+hwc_2+c_1c_2</script>，即为输入特征+输出特征+卷积核权重。通过均值不等式可以得到<script type="math/tex">MAC\ge 2\sqrt{hwB}+\frac{B}{hw}</script>，当<script type="math/tex">c_1=c_2</script>时该不等式取等号，即当输出通道数等于输入通道数时MAC最小。当然这只是理论上的，利用重复堆积10个block来作为评价网络，通过调整通道数来使整个FLOPs保持不变，实际的实验结果如下：<img src="/images/paper-ShuffleNetV2/channels-benchmark.PNG" alt="不同通道数的速度"></p>
+<h3 id="G2-Excessive-group-convolution-increase-MAC"><a href="#G2-Excessive-group-convolution-increase-MAC" class="headerlink" title="G2.Excessive group convolution increase MAC"></a>G2.Excessive group convolution increase MAC</h3><p>group conv是很多现代网络的核心，可以通过channel之间的稀疏连接来减少FLOPs，一方面可以在固定FLOPs下使用更多的channel，以此增加网络容量（从而改善精度），另一方面增加channel也会增加MAC。根据上一条里面的公式可以得到1x1 conv的FLOPs和MAC之间的关系为：<script type="math/tex">MAC=hwc_1+\frac{Bg}{c_1}+\frac{B}{hw}</script>，其中g为组数，可以看到在h，w，c1，c2，B固定的情况下，增加g会增加MAC。通过堆积10个1x1 group conv来构造评价网络，结果证明一味选取很大的group数并不好，其带来的精度提升的好处可能会被增加的计算消耗所抵消掉。实验结果如下：<img src="/images/paper-ShuffleNetV2/group-speed.PNG" alt="不同组数之间的对比">。</p>
+<h3 id="G3-Network-fragmentation-reduces-degree-of-parallelism"><a href="#G3-Network-fragmentation-reduces-degree-of-parallelism" class="headerlink" title="G3.Network fragmentation reduces degree of parallelism"></a>G3.Network fragmentation reduces degree of parallelism</h3><p>在GoogLeNet系列和自动生成结构系列，“多路径”结构在每个网络block被广泛应用，许多小操作（fragmented operators）在这里被应用，而不是少量的大操作。比如在NASNET-A中fragmented ops（比如某个block中单独的卷积/池化操作）是13，而在一些正则化结构中（比如ResNet）是2或3。这样的碎片结构已经表明对准确度有利，但是可能会降低效率因为这些操作对于一些高度并行计算的设备比如GPU很不友好。也会导致核的启动/同步等额外开销。为了对此影像进行量化，设计了实验block如下：<img src="/images/paper-ShuffleNetV2/DOP-net.PNG" alt="DOP实验的网络">，每个block重复10次。试验结果表明碎片化会明显降低了GPU上的速度，相对GPU，ARM上的速度降低更轻微一些。实验结果如图：<img src="/images/paper-ShuffleNetV2/DOP-speed.PNG" alt="网络碎片对速度的影响">。</p>
+<h3 id="G4-Element-wise-operations-are-non-negligible"><a href="#G4-Element-wise-operations-are-non-negligible" class="headerlink" title="G4.Element-wise operations are non-negligible"></a>G4.Element-wise operations are non-negligible</h3><p>如之前的图片所示，element-wise操作（张量相加，bias，ReLU等）占据了相当的时间，尤其是在GPU上面，它们具有比较小的FLOPs但是具有较大的MAC，尤其是depthwise conv作为element-wise操作，因为其具有较大的MAC/FLOPs比率。在bottleneck结构上进行了实验，针对ReLU和shortcut：<img src="/images/paper-ShuffleNetV2/elementwise-speed.PNG" alt="逐点操作的实验结果"></p>
+<h3 id="Conclusion-and-Discussion"><a href="#Conclusion-and-Discussion" class="headerlink" title="Conclusion and Discussion"></a>Conclusion and Discussion</h3><p>总结：1)应该使用尽量平衡的卷积（输入输出通道相等），2)了解group-conv的消耗，3)减少网络的碎片度，3)减少逐点操作。而且相比理论上而言，更应该考虑到网络在平台上的特性，并且应用在实际网络设计当中。之前的很多网络违背了这些规则，例如ShuffleNetV1太依赖group conv违背了G2，其瓶颈结构设计违背了G1，MobileNetV2的瓶颈设计违背了G1，在太厚的特征图上使用ReLU等违背了G4，自动生成的网络结构太过碎片化违背了G3。</p>
+<h2 id="3-ShuffleNet-V2：an-Efficient-Architecture"><a href="#3-ShuffleNet-V2：an-Efficient-Architecture" class="headerlink" title="3.ShuffleNet V2：an Efficient Architecture"></a>3.ShuffleNet V2：an Efficient Architecture</h2><p>轻量级网络设计的主要挑战是给定计算量下的有限的通道数。想在有限的FLOPs下增加通道数的办法有两个：1)pointwise group conv，2)瓶颈结构。之后又引出了channel shuffle这样的结构来增加不同channel的通讯。但是pointwise group conv和瓶颈结构都有违背之前的准则，现在的问题在于如何维持大量的平均匀分布的channel数，而不至于太密的卷积或者太多的组数。</p>
+<p>对于以上的需求做了一些设计：刚开始就对channel进行分割，然后在1x1 conv中不再使用group，也不使用瓶颈结构，而是让输入输出channel相等，并且只在一个支路上进行ReLu和depthwise conv。最后进行concat和channel shuffle。并且将concat，channel shuffle，split合并成一个element-wise操作。与V1相同可以利用s来对网络进行缩放，通过改变通道数，另外在进行split的时候为了简单起见采用了对半分的方式。ShuffleNetV2 block的结构如下：<img src="/images/paper-ShuffleNetV2/block-structure.PNG" alt="ShuffleNetV1和V2的block对比"></p>
+<p>ShuffleNetV2很高效，因此可以具有更多的通道数和模型容量，另外特征的对半分可以看作一种feature reuse，类似于DenseNet和CondenseNet。DenseNet和ShuffleNetV2在feature reuse上面的模式对比如下图：<img src="/images/paper-ShuffleNetV2/feature-reuse.PNG" alt="feature reuse的模式对比">ShuffleNetV2在feature reues上获取了和DenseNet同样的好处，却相比更加高效，后续的实验可以说明。</p>
+<h2 id="4-Experiment"><a href="#4-Experiment" class="headerlink" title="4.Experiment"></a>4.Experiment</h2><p>实验所使用的超参数和协议与ShuffleNetV1完全相同，在这里先放上实验结果，后面再对实验进行总结：<img src="/images/paper-ShuffleNetV2/experiments.PNG" alt="实验结果"></p>
+<p><strong>Accuracy vs. FLOPs</strong>：ShuffleNetV2明显可以超过其他所有网络，但是在40MFLOPs，224x224图像尺寸的时候由于通道数太少表现也欠佳。该模型和DenseNet相比，都有reuse features，但是本模型更高效。</p>
+<p><strong>Inference Speed vs. FLOPs/Accuracy</strong>：MobileNetV2在小FLOPs的时候非常慢，可能是由于具有过高的MAC。尽管MobileNetV1在准确度上欠佳，但是其在GPU上的面的速度很快，已经超过了ShuffleNetV2，可能是其更加满足之前的设计准则，尤其是G3，MobileNetV1的fragments是比ShuffleNetV2还要更小的。另外，IGCV2和IGCV3都很慢，可能是由于使用了过多的group conv，然后这些现象都与我们的设计准则相符合。目前的自动搜索出的神经网络结构都比较慢，应该是具有较多的fragments，这违背了G3，不过这个研究方向仍然是充满前景的。在accuracy vs. speed这个方面，ShuffleNetV2在GPU和CPU两个平台上都是表现最好的。</p>
+<p><strong>Compatibility with other methods</strong>：将ShuffleNetV2和其他结构相结合的时候，比如SE（squeeze and excitation），分类准确率有所提升，应该说明了其良好的兼容性。</p>
+<p><strong>Generalization to Large</strong> ：当ShuffleNetV2用作大模型的时候性能也很好，只不过在做得很深的时候为了加快收敛速度而增加了残差连接</p>
+<p><strong>Object Detection</strong>：在COCO数据集上来评估其泛化性能，使用state-of-the-art的轻量级检测器Light-Head RCNN来作为框架，在ImageNet上进行了训练然后在finetuned用作检测任务。后来发现Xception比较擅长检测任务，可能是由于block更大的接受域，收到这个的启发，我们在第一个1x1 conv之前加入了3x3的depthwise conv，最后在增加了一点FLOPs的情况下更好的改善了性能。另外在检测任务下，不同模型之间的速度差要小于分类任务（除去数据拷贝的开销和检测特有的开销）。ShuffleNetV2*有最好的精度并且比其它方法都要快，这启发出了另一个实际问题：如何让增加接受域的大小，这在高分辨率图像的目标检测中是至关重要的。</p>
+<h2 id="5-Conclusion"><a href="#5-Conclusion" class="headerlink" title="5.Conclusion"></a>5.Conclusion</h2><p>网络设计应该考虑直接度量而非间接度量，提供了结构设计的有效准则和一种高效的神经网络ShuffleNetV2，全面的实验充分证明了模型的有效性，希望这项工作能引出对于平台相关而且更加实际的网络设计。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/10/11/paper-ShuffleNetV2/" data-id="cjn4arkff000dz0ezrouhysxn" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-paper-MobileNets" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/10/04/paper-MobileNets/" class="article-date">
@@ -84,7 +145,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/04/paper-MobileNets/">paper-MobileNets</a>
+      <a class="article-title" href="/2018/10/04/paper-MobileNets/">[paper]MobileNets</a>
     </h1>
   
 
@@ -92,7 +153,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="paper-MobileNets总结"><a href="#paper-MobileNets总结" class="headerlink" title="[paper]MobileNets总结"></a>[paper]MobileNets总结</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>针对移动和嵌入式视觉应用，本文提出了一种高效的模型称之为MobileNets，基于depthwise separable convolutions构造的一种轻量级神经网络。该模型使用两个超参数来平衡准确率和延迟，并针对二者的平衡在ImageNet上做了广泛的实验，与其他模型相比展现出了强大的性能。并通过实验展现了ImageNet在各种应用上的强大之处，包括目标检测，精细化分类，人脸属性和大范围地理定位等。</p>
+        <h1 id="paper-《MobileNets-Efficient-Convolutional-Neural-Networks-for-Mobile-Vision"><a href="#paper-《MobileNets-Efficient-Convolutional-Neural-Networks-for-Mobile-Vision" class="headerlink" title="[paper]《MobileNets: Efficient Convolutional Neural Networks for Mobile Vision"></a>[paper]《MobileNets: Efficient Convolutional Neural Networks for Mobile Vision</h1><p>Applications》总结</p>
+<h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>针对移动和嵌入式视觉应用，本文提出了一种高效的模型称之为MobileNets，基于depthwise separable convolutions构造的一种轻量级神经网络。该模型使用两个超参数来平衡准确率和延迟，并针对二者的平衡在ImageNet上做了广泛的实验，与其他模型相比展现出了强大的性能。并通过实验展现了ImageNet在各种应用上的强大之处，包括目标检测，精细化分类，人脸属性和大范围地理定位等。</p>
 <h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1-Introduction"></a>1-Introduction</h2><p>自从AlexNet使深度CNN变得流行起来，CNN在计算机视觉方面变得无所不在，总体趋势在于发明更深更复杂的网络来实现更高的精度。然而这些改进在网络速度和尺寸上并没有起到促进作用，显示应用中的机器人，无人驾驶汽车，AR等都需要在有限的计算平台下具有实时性。</p>
 <p>本文提出了一种高效的网络结构和两个超参数构成的集合来构建用于以上应用的模型，章节2审视了前人在构建小型模型方面的经验，章节3描述了MobileNet的结构和宽度乘子，分辨率乘子这两个超参数，章节4描述了其在ImageNet和各种应用下的实验，最后章节5进行了总结。</p>
 <h2 id="2-Prior-Work"><a href="#2-Prior-Work" class="headerlink" title="2-Prior Work"></a>2-Prior Work</h2><p>构建高效的小尺寸网络在最近很流行，很多方法能被分类成两种：压缩欲训练网络或者直接训练小尺寸网络，本文提出的网络结构可以让搭建者来选择满足资源约束的小尺寸网络，MobileNet主要专注于优化延迟并产出小尺寸网络，许多网络都只考虑了尺寸而没有速度。 </p>
@@ -179,7 +241,7 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/04/paper-MobileNets/" data-id="cjmvacedw000k9wezelc4us5g" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/04/paper-MobileNets/" data-id="cjn4aua000000toez1zbltzcy" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -227,7 +289,7 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/09/28/paper-InceptionV4/" data-id="cjmvacedt000i9wezw2fxkowr" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/09/28/paper-InceptionV4/" data-id="cjn4arkf80008z0ez0yb4pry8" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -273,7 +335,7 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/09/21/Matrix-Derivative/" data-id="cjmvacedp000f9wezg75r4jc1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/09/21/Matrix-Derivative/" data-id="cjn4arkgx0013z0ezaceycyr2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Matrix/">Matrix</a></li></ul>
@@ -327,71 +389,10 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/09/14/leetcode-stock/" data-id="cjmvacedn000d9wez2u2wjmza" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/09/14/leetcode-stock/" data-id="cjn4arkfn000iz0ezc56pixhg" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-最优化-凸集的定义与常见凸集" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/31/最优化-凸集的定义与常见凸集/" class="article-date">
-  <time datetime="2018-08-31T10:41:26.000Z" itemprop="datePublished">2018-08-31</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/31/最优化-凸集的定义与常见凸集/">[最优化]凸集的定义与常见凸集</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="凸集的定义与常见凸集"><a href="#凸集的定义与常见凸集" class="headerlink" title="凸集的定义与常见凸集"></a>凸集的定义与常见凸集</h1><p>通常认为，如果某个实际问题可以表述为凸优化问题，那么事实上已经解决了这个问题，然而凸优化问题的识别还比较困难，本文将先介绍凸集的定义与常见凸集。</p>
-<h2 id="仿射集"><a href="#仿射集" class="headerlink" title="仿射集"></a>仿射集</h2><p>如果集合 <script type="math/tex">C\subseteq R^{n}</script> 是仿射的，等价于：对于任意的 <script type="math/tex">x_{1},x_{2}\in C</script> 及 <script type="math/tex">\theta \in R</script> 有 <script type="math/tex">\theta x_{1}+(1-\theta)x_{2}\in C</script> ，即 <script type="math/tex">C</script> 包含了 <script type="math/tex">C</script> 中任意两点的系数之和为1的线性组合。</p>
-<p>将其扩展到多个点的情况：如果 <script type="math/tex">\theta_{1}+\theta_{2}+...+\theta_{k}=1</script> ，我们则称具有 <script type="math/tex">\theta_{1}x_{1}+\theta_{2}x_{2}+...+\theta_{k}x_{k}</script> 形式的点为 <script type="math/tex">x_{1},x_{2},...,x_{k}</script> 的仿射组合。例如线性方程组的解集 <script type="math/tex">C=\{x|Ax=b\}</script>是一个仿射集。</p>
-<p>称由集合 <script type="math/tex">C\subseteq R^{n}</script> 中点的所有仿射组合所组成的集合为 <script type="math/tex">C</script> 的仿射包：</p>
-<script type="math/tex; mode=display">
-\mathrm{aff}\ C=\{\theta_{1}x_{1}+...+\theta_{k}x_{k}|x_{1},...,x_{k}\in C,\theta_{1}+\theta_{2}+...+\theta_{k}=1\}</script><p>仿射包是包含 <script type="math/tex">C</script> 的最小的仿射集合，即如果集合 <script type="math/tex">S</script> 满足 <script type="math/tex">C\subseteq S</script>，则 <script type="math/tex">\mathrm{aff}\ C\subseteq S</script> ，同时将集合 <script type="math/tex">C</script> 的仿射维数定义为其仿射包的维数。例如 <script type="math/tex">R^{2}</script> 上的单位圆环的维数为1，但其仿射维数为2，因为其仿射包为全空间 <script type="math/tex">R^{2}</script></p>
-<h2 id="凸集"><a href="#凸集" class="headerlink" title="凸集"></a>凸集</h2><p>如果集合 <script type="math/tex">C</script> 为凸集，那么对于任意的 <script type="math/tex">x_{1},x_{2}\in C</script> 与<script type="math/tex">0\le \theta\le 1</script>都有 <script type="math/tex">\theta x_{1}+(1-\theta)x_{2}\in C</script>，与仿射集的区别在于仿射集并没有 <script type="math/tex">\theta\ge0</script> 的要求，例如一条线段是凸集，而一条直线是仿射集。</p>
-<p>扩展到多维的情况，如果有 <script type="math/tex">\theta_{1}+\theta_{2}+...+\theta_{k}=1,\theta_{i}\ge0</script> ，则称具有 <script type="math/tex">\theta_{1}x_{1}+\theta_{2}x_{2}+...+\theta_{k}x_{k}</script> 形式的点为 <script type="math/tex">x_{1},x_{2},...,x_{k}</script> 的凸组合。</p>
-<p>称由集合 <script type="math/tex">C\subseteq R^{n}</script> 中点的所有凸组合所组成的集合为 <script type="math/tex">C</script> 的凸包：</p>
-<script type="math/tex; mode=display">
-\mathrm{conv}\ C=\{\theta_{1}x_{1}+...+\theta_{k}x_{k}|x_{1},...,x_{k}\in C,\theta_{1}+...+\theta_{k}=1,\theta_{i}\ge0\}</script><p>与仿射包同样，凸包也是包含 <script type="math/tex">C</script> 的最小的凸集，在一般情况下，设 <script type="math/tex">C\in R^{n}</script> 是凸集，<script type="math/tex">x</script> 是随机变量，并且 <script type="math/tex">x\in C</script> 的概率为1，那么 <script type="math/tex">E\ x\in C</script></p>
-<h2 id="一些重要的凸集"><a href="#一些重要的凸集" class="headerlink" title="一些重要的凸集"></a>一些重要的凸集</h2><p>识别出凸集对于识别凸优化问题较为重要，这里将介绍一些比较重要的凸集。</p>
-<p>任意的仿射集和子空间都是凸集，一些比较简单的例如空集 <script type="math/tex">\emptyset</script> ，单点集<script type="math/tex">\{x_{0}\}</script>，全空间 <script type="math/tex">R^{n}</script> ，直线/射线/线段都是凸的。</p>
-<p>还有一些比较重要的凸集如下：</p>
-<ol>
-<li>超平面 <script type="math/tex">\{x|a^{T}x=b \}</script>和半空间 <script type="math/tex">\{x|a^{T}x\le b\}</script></li>
-<li>Euclid球 <script type="math/tex">B(x_{c},r)=\{x|\ ||x-x_{c}||_{2}\le r\}</script></li>
-<li>椭球 <script type="math/tex">\xi=\{x|(x-x_{c})^{T}P^{-1}(x-x_{c})\le1\}</script></li>
-<li>范数球 <script type="math/tex">\{x|\ ||x-x_{c}||\le r\}</script>，其中 <script type="math/tex">||\cdot||</script> 是 <script type="math/tex">R^{n}</script> 中的范数</li>
-<li>范数锥 <script type="math/tex">C=\{(x,t)|\ ||x||\le t\}\subseteq R^{n+1}</script></li>
-<li>多面体 <script type="math/tex">P=\{x|a_{j}^{T}\le b_{j},j=1,...,m,c_{j}^{T}x=d_{j},j=1,...,p\}</script>，即为有限个半空间和超平面的交集，单纯形也为凸集，是一种特殊的多面体</li>
-<li>半正定锥 <script type="math/tex">S_{+}^{n}=\{X\in R^{n*n}|X=X^{T},X\succeq0\}</script>，即为半正定对称矩阵的集合</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/31/最优化-凸集的定义与常见凸集/" data-id="cjmvacee1000o9weztzp8kafx" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
 
     </footer>
   </div>
@@ -439,7 +440,7 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -458,7 +459,7 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -471,7 +472,11 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
       <ul>
         
           <li>
-            <a href="/2018/10/04/paper-MobileNets/">paper-MobileNets</a>
+            <a href="/2018/10/11/paper-ShuffleNetV2/">[paper]ShuffleNetV2</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/04/paper-MobileNets/">[paper]MobileNets</a>
           </li>
         
           <li>
@@ -484,10 +489,6 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
         
           <li>
             <a href="/2018/09/14/leetcode-stock/">[LeetCode]动态规划中股票问题的通用解法</a>
-          </li>
-        
-          <li>
-            <a href="/2018/08/31/最优化-凸集的定义与常见凸集/">[最优化]凸集的定义与常见凸集</a>
           </li>
         
       </ul>
@@ -529,21 +530,5 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
 
 
   </div>
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-        tex2jax: {
-            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
-            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
-            processEscapes: true
-        }
-    });
-    MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax();
-        for (var i = 0; i < all.length; ++i)
-            all[i].SourceElement().parentNode.className += ' has-jax';
-    });
-</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
 </body>
 </html>

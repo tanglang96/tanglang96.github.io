@@ -70,6 +70,58 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-最优化-求解线性方程组-3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/26/最优化-求解线性方程组-3/" class="article-date">
+  <time datetime="2018-07-26T14:24:16.000Z" itemprop="datePublished">2018-07-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/26/最优化-求解线性方程组-3/">[最优化]求解线性方程组(3)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="求解线性方程组-3"><a href="#求解线性方程组-3" class="headerlink" title="求解线性方程组(3)"></a>求解线性方程组(3)</h1><h2 id="矩阵的伪逆"><a href="#矩阵的伪逆" class="headerlink" title="矩阵的伪逆"></a>矩阵的伪逆</h2><p>这里所介绍的伪逆是<strong>Moore-Penrose逆矩阵</strong>，其定义为：给定矩阵<script type="math/tex">A\in R^{m*n}</script>，如果矩阵<script type="math/tex">A^{\dagger}\in R^{n*m}</script>满足<script type="math/tex">AA^{\dagger}A=A</script>，且存在两个矩阵<script type="math/tex">U\in R^{n*n},V\in R^{m*m}</script>使得</p>
+<script type="math/tex; mode=display">
+A^{\dagger}=UA^{T},A^{\dagger}=A^{T}V</script><p>那么则称<script type="math/tex">A^{\dagger}</script>是矩阵<script type="math/tex">A</script>的<strong>伪逆</strong>，可以通过证明得到，矩阵的伪逆是<strong>唯一</strong>的。</p>
+<p>对于矩阵<script type="math/tex">A\in R^{m*n},m\ge n</script>且<script type="math/tex">rank(A)=n</script>，可以根据以上定义验证得到<script type="math/tex">A</script>的伪逆为</p>
+<script type="math/tex; mode=display">
+A^{\dagger}=(A^{T}A)^{-1}A^{T}</script><p>对于矩阵<script type="math/tex">A\in R^{m*n},m\le n</script>且<script type="math/tex">rank(A)=m</script>，同样根据以上定义验证得到<script type="math/tex">A</script>的伪逆为</p>
+<script type="math/tex; mode=display">
+A^{\dagger}=A^{T}(AA^{T})^{-1}</script><p>以上两种情况是当矩阵为<strong>列满秩</strong>或者<strong>行满秩</strong>情况下的伪逆，而对于一般矩阵<script type="math/tex">A\in R^{m*n},rank(A)=r,r\le min(m,n)</script>，我们可以采用<strong>满秩分解</strong>的方法来求得其伪逆。</p>
+<p>对于任意矩阵<script type="math/tex">A\in R^{m*n},rank(A)=r,r\le min(m,n)</script>，都可以将其分解为一个行满秩矩阵和列满秩矩阵的乘积：<br>即<script type="math/tex">A=BC,B\in R^{m*r},c\in R^{r*n},rank(A)=rank(B)=rank(C)=r</script></p>
+<p>可以通过证明得到：</p>
+<p><script type="math/tex">A^{\dagger}=C^{\dagger}B^{\dagger}</script>，而其中<script type="math/tex">B^{\dagger}=(B^{T}B)^{-1}B^{T},C^{\dagger}=C^{T}(CC^{T})^{-1}</script>，即为一般矩阵的伪逆求法。</p>
+<h2 id="一般情况下线性方程组的解法"><a href="#一般情况下线性方程组的解法" class="headerlink" title="一般情况下线性方程组的解法"></a>一般情况下线性方程组的解法</h2><p>某线性方程组为<script type="math/tex">Ax=b,A\in R^{m*n},rank(A)=r</script>，向量<script type="math/tex">x^{*}=A^{\dagger}b</script>可在空间<script type="math/tex">R^{n}</script>中最小化<script type="math/tex">||Ax-b||^{2}</script>;而且在<script type="math/tex">R^{n}</script>中所有能够最小化<script type="math/tex">||Ax-b||^{2}</script>的向量中，向量<script type="math/tex">x^{*}=A^{\dagger}b</script>的范数最小，并且是唯一的。</p>
+<p>当<script type="math/tex">r=m</script>时，<script type="math/tex">A</script>是行满秩矩阵，此时<script type="math/tex">x^{*}=A^{\dagger}b=A^{T}(AA^{T})^{-1}b</script>，即为方程组<script type="math/tex">Ax=b</script>的<strong>最小范数解</strong>。</p>
+<p>当<script type="math/tex">r=n</script>时，<script type="math/tex">A</script>是列满秩矩阵，此时<script type="math/tex">x^{*}=A^{\dagger}b=(A^{T}A)^{-1}A^{T}b</script>，即为方程组<script type="math/tex">Ax=b</script>的<strong>最小二乘解</strong>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/07/26/最优化-求解线性方程组-3/" data-id="cjn5svrtt000zm8ezu336xmvy" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-最优化-求解线性方程组-2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/07/21/最优化-求解线性方程组-2/" class="article-date">
@@ -111,7 +163,7 @@ x^{(m+1)}=x^{(m)}+\mu(b_{1}-a_{1}^{T}x^{(m)})\frac{a_{1}}{a_{1}^{T}a_{1}}</scrip
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/21/最优化-求解线性方程组-2/" data-id="cjn4arkhe001ez0ezhgi848hf" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/21/最优化-求解线性方程组-2/" data-id="cjn5svrtm000um8ez4dp1r3vw" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -176,7 +228,7 @@ x^{(k+1)}=x^{(k)}+G_{k+1}^{-1}A_{k+1}^{T}(b^{(k+1)}-A_{k+1}x^{(k)})</script><p>�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/20/最优化-求解线性方程组-1/" data-id="cjn4arkfs000kz0ez2dafs2d5" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/20/最优化-求解线性方程组-1/" data-id="cjn5svrth000pm8ezzg03ugkf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -222,7 +274,7 @@ x^{(k+1)}=x^{(k)}+G_{k+1}^{-1}A_{k+1}^{T}(b^{(k+1)}-A_{k+1}x^{(k)})</script><p>�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/20/LeetCode-207-Course-Schedule/" data-id="cjn4arkfi000fz0ez0fvzkfhq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/20/LeetCode-207-Course-Schedule/" data-id="cjn5svrsp000am8ez2o9fg8fk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
@@ -274,53 +326,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/14/机器学习-机器学习中的数值计算-1/" data-id="cjn4arkhx001uz0ezqiqmn16z" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-机器学习-利用TensorFlow训练一个简单的神经网络" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/07/06/机器学习-利用TensorFlow训练一个简单的神经网络/" class="article-date">
-  <time datetime="2018-07-06T14:23:33.000Z" itemprop="datePublished">2018-07-06</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/06/机器学习-利用TensorFlow训练一个简单的神经网络/">[机器学习]利用TensorFlow训练一个简单的神经网络</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="利用TensorFlow训练一个简单的神经网络"><a href="#利用TensorFlow训练一个简单的神经网络" class="headerlink" title="利用TensorFlow训练一个简单的神经网络"></a>利用TensorFlow训练一个简单的神经网络</h1><p>我们在这里利用TensorFlow的Eager Execution 来构建模型，这样不用像以前一样创建Graph和Session了，可以使神经网络的训练更加方便快捷，下面以Iris数据集为例来训练一个神经网络，代码来自谷歌的教程。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#先导入相关的库</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import,division,print_function</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> tensorflow.contrib.eager <span class="keyword">as</span> tfe</span><br><span class="line"></span><br><span class="line">tf.enable_eager_execution()	<span class="comment">#采用eager_execution</span></span><br><span class="line"><span class="comment">#查看版本信息并检查采用eager_execution是否打开</span></span><br><span class="line">print(<span class="string">'TensorFlow Version:&#123;&#125;'</span>.format(tf.VERSION))</span><br><span class="line">print(<span class="string">'Eager execution:&#123;&#125;'</span>.format(tf.executing_eagerly()))</span><br></pre></td></tr></table></figure></p>
-<p>TensorFlow Version:1.8.0<br>Eager execution:True<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#获取数据集并显示在本地的保存位置</span><br><span class="line">train_dataset_url=&apos;http://download.tensorflow.org/data/iris_training.csv&apos;</span><br><span class="line">train_dataset_fp=tf.keras.utils.get_file(fname=os.path.basename(train_dataset_url),origin=train_dataset_url)</span><br><span class="line">print(&apos;Local copy of the dataset file:&#123;&#125;&apos;.format(train_dataset_fp))</span><br></pre></td></tr></table></figure></p>
-<p>Downloading data from <a href="http://download.tensorflow.org/data/iris_training.csv" target="_blank" rel="noopener">http://download.tensorflow.org/data/iris_training.csv</a><br>8192/2194 [================================================================================================================] - 0s 0us/step<br>Local copy of the dataset file:C:\Users\Frank.keras\datasets\iris_training.csv<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#对表格文件中的每一行进行解析，每行有5个元素，前面4个是特征，最后一个是标记</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse_csv</span><span class="params">(line)</span>:</span></span><br><span class="line">    example_defaults=[[<span class="number">0.</span>],[<span class="number">0.</span>],[<span class="number">0.</span>],[<span class="number">0.</span>],[<span class="number">0</span>]]</span><br><span class="line">    parsed_line=tf.decode_csv(line,example_defaults)</span><br><span class="line">    features=tf.reshape(parsed_line[:<span class="number">-1</span>],shape=(<span class="number">4</span>,))</span><br><span class="line">    label=tf.reshape(parsed_line[<span class="number">-1</span>],shape=())</span><br><span class="line">    <span class="keyword">return</span> features,label</span><br><span class="line">	</span><br><span class="line">train_dataset=tf.data.TextLineDataset(train_dataset_fp)	<span class="comment">#读取csv转换为dataset</span></span><br><span class="line">train_dataset=train_dataset.skip(<span class="number">1</span>)	<span class="comment">#跳过标题行</span></span><br><span class="line">train_dataset=train_dataset.map(parse_csv)	<span class="comment">#对每一行都进行映射</span></span><br><span class="line">train_dataset=train_dataset.shuffle(buffer_size=<span class="number">1000</span>)	<span class="comment">#随机打乱</span></span><br><span class="line">train_dataset=train_dataset.batch(<span class="number">32</span>)	<span class="comment">#分批</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#打印一组训练数据</span></span><br><span class="line">features,label=iter(train_dataset).next()</span><br><span class="line">print(<span class="string">'example features:'</span>,features[<span class="number">0</span>])</span><br><span class="line">print(<span class="string">'example label:'</span>,label[<span class="number">0</span>])</span><br></pre></td></tr></table></figure></p>
-<p>example features: tf.Tensor([6.8 3.  5.5 2.1], shape=(4,), dtype=float32)<br>example label: tf.Tensor(2, shape=(), dtype=int32)<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#建立神经网络模型，两个隐藏层</span></span><br><span class="line">model=tf.keras.Sequential([</span><br><span class="line">    tf.keras.layers.Dense(<span class="number">10</span>,activation=<span class="string">'relu'</span>,input_shape=(<span class="number">4</span>,)),</span><br><span class="line">    tf.keras.layers.Dense(<span class="number">10</span>,activation=<span class="string">'relu'</span>),</span><br><span class="line">    tf.keras.layers.Dense(<span class="number">3</span>)</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment">#定义损失函数为softmax后的cross_entropy，返回一个损失函数的对象</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss</span><span class="params">(model,x,y)</span>:</span></span><br><span class="line">    y_=model(x)</span><br><span class="line">    <span class="keyword">return</span> tf.losses.sparse_softmax_cross_entropy(labels=y,logits=y_)</span><br><span class="line"></span><br><span class="line"><span class="comment">#返回一个梯度对象</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">grad</span><span class="params">(model,inputs,targets)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:</span><br><span class="line">        loss_value=loss(model,inputs,targets)</span><br><span class="line">    <span class="keyword">return</span> tape.gradient(loss_value,model.variables)	<span class="comment">#返回梯度对象，传入损失函数和优化对象作为构造函数的参数</span></span><br><span class="line"></span><br><span class="line">optimizer=tf.train.GradientDescentOptimizer(learning_rate=<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line">train_loss_results=[]</span><br><span class="line">train_accuracy_results=[]</span><br><span class="line">num_epochs=<span class="number">201</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#优化过程迭代201次</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(num_epochs):</span><br><span class="line">    epoch_loss_avg=tfe.metrics.Mean()	<span class="comment">#交叉熵的平均误差对象</span></span><br><span class="line">    epoch_accuracy=tfe.metrics.Accuracy()	<span class="comment">#准确率对象</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> x,y <span class="keyword">in</span> train_dataset:</span><br><span class="line">        grads=grad(model,x,y)</span><br><span class="line">        optimizer.apply_gradients(zip(grads, model.variables),	<span class="comment">#将梯度对应的模型变量分组</span></span><br><span class="line">                              global_step=tf.train.get_or_create_global_step())</span><br><span class="line">        epoch_loss_avg(loss(model,x,y))</span><br><span class="line">        epoch_accuracy(tf.argmax(model(x),axis=<span class="number">1</span>,output_type=tf.int32),y)</span><br><span class="line">    train_loss_results.append(epoch_loss_avg.result())</span><br><span class="line">    train_accuracy_results.append(epoch_accuracy.result())</span><br><span class="line">    <span class="keyword">if</span> epoch % <span class="number">50</span> == <span class="number">0</span>:</span><br><span class="line">        print(<span class="string">"Epoch &#123;:03d&#125;: Loss: &#123;:.3f&#125;, Accuracy: &#123;:.3%&#125;"</span>.format(epoch,epoch_loss_avg.result(),epoch_accuracy.result()</span><br></pre></td></tr></table></figure></p>
-<p>Epoch 000: Loss: 1.217, Accuracy: 30.833%<br>Epoch 050: Loss: 0.524, Accuracy: 93.333%<br>Epoch 100: Loss: 0.261, Accuracy: 96.667%<br>Epoch 150: Loss: 0.169, Accuracy: 97.500%<br>Epoch 200: Loss: 0.133, Accuracy: 97.500%<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#训练过程损失函数和准确率的可视化																</span></span><br><span class="line">fig,axes=plt.subplots(<span class="number">2</span>,sharex=<span class="keyword">True</span>,figsize=(<span class="number">12</span>,<span class="number">8</span>))</span><br><span class="line">fig.suptitle(<span class="string">'Training Metrics'</span>)</span><br><span class="line">axes[<span class="number">0</span>].set_ylabel(<span class="string">"Loss"</span>, fontsize=<span class="number">14</span>)</span><br><span class="line">axes[<span class="number">0</span>].plot(train_loss_results)</span><br><span class="line"></span><br><span class="line">axes[<span class="number">1</span>].set_ylabel(<span class="string">"Accuracy"</span>, fontsize=<span class="number">14</span>)</span><br><span class="line">axes[<span class="number">1</span>].set_xlabel(<span class="string">"Epoch"</span>, fontsize=<span class="number">14</span>)</span><br><span class="line">axes[<span class="number">1</span>].plot(train_accuracy_results)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
-<p><img src="https://img-blog.csdn.net/20180706222128445?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#在测试集上测试模型表现</span></span><br><span class="line">test_url = <span class="string">"http://download.tensorflow.org/data/iris_test.csv"</span></span><br><span class="line"></span><br><span class="line">test_fp = tf.keras.utils.get_file(fname=os.path.basename(test_url),</span><br><span class="line">                                  origin=test_url)</span><br><span class="line"></span><br><span class="line">test_dataset = tf.data.TextLineDataset(test_fp)</span><br><span class="line">test_dataset = test_dataset.skip(<span class="number">1</span>)</span><br><span class="line">test_dataset = test_dataset.map(parse_csv)</span><br><span class="line">test_dataset = test_dataset.shuffle(<span class="number">1000</span>)</span><br><span class="line">test_dataset = test_dataset.batch(<span class="number">32</span>)</span><br><span class="line"></span><br><span class="line">test_accuracy = tfe.metrics.Accuracy()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (x, y) <span class="keyword">in</span> test_dataset:</span><br><span class="line">  prediction = tf.argmax(model(x), axis=<span class="number">1</span>, output_type=tf.int32)</span><br><span class="line">  test_accuracy(prediction, y)</span><br><span class="line"></span><br><span class="line">print(<span class="string">"Test set accuracy: &#123;:.3%&#125;"</span>.format(test_accuracy.result()))</span><br></pre></td></tr></table></figure></p>
-<p>Test set accuracy: 100.000%<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#使用模型来进行预测</span></span><br><span class="line">class_ids = [<span class="string">"Iris setosa"</span>, <span class="string">"Iris versicolor"</span>, <span class="string">"Iris virginica"</span>]</span><br><span class="line">predict_dataset = tf.convert_to_tensor([</span><br><span class="line">    [<span class="number">5.1</span>, <span class="number">3.3</span>, <span class="number">1.7</span>, <span class="number">0.5</span>,],</span><br><span class="line">    [<span class="number">5.9</span>, <span class="number">3.0</span>, <span class="number">4.2</span>, <span class="number">1.5</span>,],</span><br><span class="line">    [<span class="number">6.9</span>, <span class="number">3.1</span>, <span class="number">5.4</span>, <span class="number">2.1</span>]</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">predictions = model(predict_dataset)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, logits <span class="keyword">in</span> enumerate(predictions):</span><br><span class="line">  class_idx = tf.argmax(logits).numpy()</span><br><span class="line">  name = class_ids[class_idx]</span><br><span class="line">  print(<span class="string">"Example &#123;&#125; prediction: &#123;&#125;"</span>.format(i, name))</span><br></pre></td></tr></table></figure></p>
-<p>Example 0 prediction: Iris setosa<br>Example 1 prediction: Iris versicolor<br>Example 2 prediction: Iris virginica</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/06/机器学习-利用TensorFlow训练一个简单的神经网络/" data-id="cjn4arkhv001sz0ezetpdh9a5" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/14/机器学习-机器学习中的数值计算-1/" data-id="cjn5svrv2001sm8ezp4t4smbp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -336,7 +342,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -371,7 +377,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -390,7 +396,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -401,6 +407,10 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/10/12/paper-ShuffleNet/">[paper]ShuffleNet</a>
+          </li>
         
           <li>
             <a href="/2018/10/11/paper-ShuffleNetV2/">[paper]ShuffleNetV2</a>
@@ -416,10 +426,6 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
         
           <li>
             <a href="/2018/09/21/Matrix-Derivative/">[Matrix]关于向量与矩阵的求导</a>
-          </li>
-        
-          <li>
-            <a href="/2018/09/14/leetcode-stock/">[LeetCode]动态规划中股票问题的通用解法</a>
           </li>
         
       </ul>
@@ -461,5 +467,21 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
 
 
   </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
 </body>
 </html>

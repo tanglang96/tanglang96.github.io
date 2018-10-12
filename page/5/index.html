@@ -70,6 +70,65 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-机器学习-神经网络反向传播的推导" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/06/01/机器学习-神经网络反向传播的推导/" class="article-date">
+  <time datetime="2018-06-01T05:20:32.000Z" itemprop="datePublished">2018-06-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/06/01/机器学习-神经网络反向传播的推导/">[机器学习]神经网络反向传播的推导</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="神经网络反向传播的推导"><a href="#神经网络反向传播的推导" class="headerlink" title="神经网络反向传播的推导"></a>神经网络反向传播的推导</h1><p>对于神经网络的训练过程而言，其反向传播算法是训练过程的核心，神经网络根据预测值$\hat{y}$与实际值$y$的偏差从后向前来计算损失函数对于各个参数的梯度，从而利用梯度下降的方法来优化训练神经网络的各个参数。</p>
+<p>神经网络的计算流程图如下：<br><img src="https://img-blog.csdn.net/2018060112352186?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>从该流程图可以看到，如果我们要计算神经网络的参数$W^{[1]},b^{[1]},W^{[2]},b^{[2]}$，首先需要计算$\frac{\partial L}{\partial a^{[2]}}$和$\frac{\partial a^{[2]}}{\partial z^{[2]}}$，然后根据链式法则得到$\frac{\partial L}{\partial z^{[2]}}=\frac{\partial L}{\partial a^{[2]}}\frac{\partial a^{[2]}}{\partial z^{[2]}}$。</p>
+<p>之后再计算$\frac{\partial z^{[2]}}{\partial W^{[2]}}$和$\frac{\partial z^{[2]}}{\partial b^{[2]}}$，同样根据链式法则可以得到$\frac{\partial L}{\partial W^{[2]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial W^{[2]}}$以及得到$\frac{\partial L}{\partial b^{[2]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial b^{[2]}}$。这样便得到了$dW^{[2]}$和$db^{[2]}$。</p>
+<p>另外对于$dW^{[1]}$和$db^{[1]}$的计算，需要先计算$\frac{\partial z^{[1]}}{\partial W^{[1]}}$，$\frac{\partial a^{[1]}}{\partial z^{[1]}}$和$\frac{\partial z^{[2]}}{\partial a^{[1]}}$，同样根据链式法则可以得到$\frac{\partial L}{\partial W^{[1]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial a^{[1]}}\frac{\partial a^{[1]}}{\partial z^{[1]}}\frac{\partial z^{[1]}}{\partial W^{[1]}}$，以及$\frac{\partial L}{\partial b^{[1]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial a^{[1]}}\frac{\partial a^{[1]}}{\partial z^{[1]}}\frac{\partial z^{[1]}}{\partial b^{[1]}}$。这样也得到了$dW^{[1]}$和$db^{[1]}$。</p>
+<p>在使用随机梯度下降(SGD)优化算法以及交叉熵(Cross Entropy)损失函数的时候，我们令$a^{[2]}=\hat{y}$，即损失函数：</p>
+<script type="math/tex; mode=display">L(\hat{y},y)=-(ylog\hat{y}+(1-y)log(1-\hat{y}))</script><p>使用sigmoid激活函数，即</p>
+<script type="math/tex; mode=display">a^{[1]}=\sigma(z^{[1]})=\frac{1}{1+e^{-z^{[1]}}}\\a^{[2]}=\sigma(z^{[2]})=\frac{1}{1+e^{-z^{[2]}}}</script><p>将该激活函数和损失函数代入上面的计算过程，可以得到：</p>
+<script type="math/tex; mode=display">
+dz^{[2]}=a^{[2]}-y\\
+dW^{[2]}=dz^{[2]}a^{[1]T}\\
+db^{[2]}=dz^{[2]}\\
+dz^{[1]}=W^{[2]T}dz^{[2]}*\sigma^{'}(z^{[1]})\\
+dW^{[1]}=dz^{[1]}x^{T}\\
+db^{[1]}=dz^{[1]}</script><p>在进行随机梯度下降的过程中，随机选取样本中的一个错误分类点，根据该点计算当前的$dW^{[1]},db^{[1]},dW^{[2]},db^{[2]}$，然后利用以下公式来更新$W^{[1]},b^{[1]},W^{[2]},b^{[2]}$：</p>
+<script type="math/tex; mode=display">
+W^{[2]}:=W^{[2]}-\alpha *dW^{[2]}\\
+b^{[2]}:=b^{[2]}-\alpha *db^{[2]}\\
+W^{[1]}:=W^{[1]}-\alpha *dW^{[1]}\\
+b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
+<p>对于神经网络的训练，还有批量梯度下降(Batch Gradient Descent)和小批量梯度下降(Mini-Batch Gradient Descent)，带动量的随机梯度下降(Momentum)，RMSProp，Adam等方法，后面再做详解。</p>
+<p>To be continue…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/06/01/机器学习-神经网络反向传播的推导/" data-id="cjn5svruz001qm8ez585f0451" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Cpp-Cpp中的顺序容器" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/05/25/Cpp-Cpp中的顺序容器/" class="article-date">
@@ -125,7 +184,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/25/Cpp-Cpp中的顺序容器/" data-id="cjn4arkey0003z0ezix7g1gtn" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/25/Cpp-Cpp中的顺序容器/" data-id="cjn5svrsg0006m8ezie7qg69r" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
@@ -187,72 +246,10 @@ g(D|A)=H(D)-H(D|A)</script><h2 id="1-3-构建决策树的ID3算法"><a href="#1-
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/24/机器学习-决策树和随机森林算法简介/" data-id="cjn4arkho001mz0ezs9nf4rzu" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/24/机器学习-决策树和随机森林算法简介/" data-id="cjn5svruh001dm8ezusdn1dso" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Cpp-Cpp中的IO类" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/05/18/Cpp-Cpp中的IO类/" class="article-date">
-  <time datetime="2018-05-18T13:11:35.000Z" itemprop="datePublished">2018-05-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/18/Cpp-Cpp中的IO类/">[Cpp]Cpp中的IO类</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="C-中的IO类"><a href="#C-中的IO类" class="headerlink" title="C++中的IO类"></a>C++中的IO类</h1><p>C++语言不直接处理输入输出，而是通过一组定义在标准库中的类型来处理IO。这些类型支持从设备读取数据，向设备写入数据的IO操作，设备可以是文件，控制台窗口等。还有一些类型允许内存IO，即从string读取数据，向string写入数据等。</p>
-<p>应用程序不只从控制台窗口进行IO操作，常常需要读写命名文件，并且使用IO操作处理string的字符会很方便，所以在istream和ostream之外，标准库还定义了其他的一些IO类型，分别定义在三个独立的头文件中：<strong>iostream</strong>定义了用于读写流的基本类型，<strong>fstream</strong>定义了读写命名文件的类型，<strong>sstream</strong>定义了读写内存string对象的类型。</p>
-<p>类型ifstream和istringstream都<strong>继承</strong>自istream。因此我们可以像使用istream对象一样来使用ifstream和istringstream对象。需要注意的是，不<strong>能对IO对象进行拷贝或赋值，另外读写一个IO对象会改变其状态，因此传递和返回的引用不能是const的</strong>。</p>
-<h2 id="条件状态"><a href="#条件状态" class="headerlink" title="条件状态"></a>条件状态</h2><p>IO类定义了一些函数和标志，可以帮助我们访问和操纵流的<strong>条件状态</strong>。一个流一旦发生错误，其后的IO操作都会失败，确定一个流对象的最简单的方法就是将他作为一个条件去使用：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;word)</span><br></pre></td></tr></table></figure></p>
-<p>IO库定义了一个与机器无关的iostate类型，它提供了表达流状态的完整功能：<br><strong>badbit</strong>表示系统级错误，如不可恢复的读写错误；<strong>failbit</strong>表示可恢复错误，如期望读取数值缺读取了一个字符；达到文件结束的位置时，<strong>eofbit</strong>和<strong>failbit</strong>都会被置位。<strong>goodbit</strong>的值为0表示未出现错误。如果<strong>badbit</strong>，<strong>failbit</strong>，<strong>eofbit</strong>任意一个被置位，检测流的条件都会失败。</p>
-<h2 id="输出缓冲管理"><a href="#输出缓冲管理" class="headerlink" title="输出缓冲管理"></a>输出缓冲管理</h2><p>每个输出流都有一个<strong>缓冲区</strong>，用于保存程序读写的数据，如下面的代码<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">os&lt;&lt;<span class="string">"Hello,world"</span>;</span><br></pre></td></tr></table></figure></p>
-<p>有可能直接打印也有可能被操作系统保存到缓冲区中，随后再打印。<br>显式刷新缓冲区的几个方法：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;<span class="built_in">endl</span>;	<span class="comment">//输出字符串之后输出换行然后刷新缓冲区</span></span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;flush;	<span class="comment">//输出字符串之后直接刷新缓冲区</span></span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;ends;	<span class="comment">//输出字符串之后输出空白字符然后刷新缓冲区</span></span><br></pre></td></tr></table></figure></p>
-<p>当输入流关联到输出流的时候，任何试图从输入流读取数据的操作都会先刷新关联的输出流，标准库将cout和cin关联到一起，可以使用tie()函数手动将istream和ostream关联到一起。</p>
-<h1 id="文件输入输出"><a href="#文件输入输出" class="headerlink" title="文件输入输出"></a>文件输入输出</h1><h2 id="open和close函数"><a href="#open和close函数" class="headerlink" title="open和close函数"></a>open和close函数</h2><p>在定义了一个空文件流对象之后，可以调用open将其与文件关联起来<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ifstream <span class="title">in</span><span class="params">(ifile)</span></span>;	<span class="comment">//构造一个ifstream并打开给定文件</span></span><br><span class="line">ofstream out;	<span class="comment">//输出文件流未与任何文件相关联</span></span><br><span class="line">out.open(ifile+<span class="string">".copy"</span>)	<span class="comment">//打开指定文件</span></span><br></pre></td></tr></table></figure></p>
-<p>文件流打开之后就会保持和对应文件的关联，如果试图将这个文件流关联到另一个文件上，必须先关闭相应的文件流。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">in.close();	<span class="comment">//关闭文件</span></span><br><span class="line">in.open(ifile+<span class="string">"2"</span>);	<span class="comment">//关联到新的文件</span></span><br></pre></td></tr></table></figure></p>
-<h2 id="文件模式"><a href="#文件模式" class="headerlink" title="文件模式"></a>文件模式</h2><p>每个流都有一个关联的文件模式，用来指出如何使用文件，每个文件流类型都定义了一个默认的文件模式，当我们未指定文件模式时，就使用默认模式。与ifstream关联的文件默认以in模式（读方式）打开；与ofstream相关联的文件默认以out模式（写方式）打开。文件模式如下表：</p>
-<ul>
-<li>in           以只读方式打开</li>
-<li>out         以写方式打开</li>
-<li>app        每次写操作前均定位到文件末尾</li>
-<li>ate         打开文件后立即定义到文件末尾</li>
-<li>trunc      截断文件</li>
-<li>binary    以二进制进行IO</li>
-</ul>
-<p>默认情况下，当打开一个ofstream时，文件的内容会被丢弃。阻止一个ofstream清空给定文件内容的方法是同时指定app模式。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ofstream <span class="title">out</span><span class="params">(<span class="string">"file1"</span>)</span>	<span class="comment">//文件会被清空</span></span></span><br><span class="line"><span class="function">ofstream <span class="title">out</span><span class="params">(<span class="string">"file"</span>,ofstream::app|ofstream::out)</span>	<span class="comment">//以app方式打开会被保存</span></span></span><br></pre></td></tr></table></figure></p>
-<p>保留ofstream打开的文件中数据的唯一办法就是指定app形式打开或者in模式打开。</p>
-<h1 id="string流"><a href="#string流" class="headerlink" title="string流"></a>string流</h1><p>sstream头文件定义了三个类型来支持内存IO，这些类型可以向string写入数据，从string读取数据，就像string是个IO流一样。</p>
-<p>当我们的工作是对整行文本进行处理，而其他的一些工作是处理行内的单个单词时，通常可以使用<strong>istringstream</strong>。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> line,word;</span><br><span class="line"><span class="built_in">vector</span>&lt;PersonInfo&gt; people;</span><br><span class="line"><span class="keyword">while</span>(getline(<span class="built_in">cin</span>,line))&#123;	<span class="comment">//不断从cin读取一行</span></span><br><span class="line">	PersonInfo info;</span><br><span class="line">	<span class="function"><span class="built_in">istringstream</span> <span class="title">record</span><span class="params">(line)</span></span>;   <span class="comment">//利用读取的这一行初始化record对象</span></span><br><span class="line">	record&gt;&gt;info.name;      <span class="comment">//从这一行中单独处理每个单词</span></span><br><span class="line">	<span class="keyword">while</span>(record&gt;&gt;word)</span><br><span class="line">		info.phones.push_back(word);</span><br><span class="line">	people.push_back(info);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在我们逐步构造输出，希望最后一行打印时，ostringstream非常有用。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;entry:people)&#123;</span><br><span class="line">	<span class="built_in">ostringstream</span> formatted,badNums;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;nums:entry.phones)&#123;</span><br><span class="line">		<span class="keyword">if</span>(!valid(nums))&#123;   <span class="comment">//如果遇到无效电话号码，则放到badNums之后一起输出</span></span><br><span class="line">			badNums&lt;&lt;<span class="string">" "</span>&lt;&lt;nums;</span><br><span class="line">		&#125;<span class="keyword">else</span></span><br><span class="line">		formatted&lt;&lt;<span class="string">" "</span>&lt;&lt;format(nums);   <span class="comment">//将正常的电话号码都放到formatted中</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(badNums.str().empty())</span><br><span class="line">		os&lt;&lt;entry.name&lt;&lt;<span class="string">" "</span>&lt;&lt;formatted.str()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="built_in">cerr</span>&lt;&lt;<span class="string">"Input error: "</span>&lt;&lt;entry.name&lt;&lt;<span class="string">" invalid number(s) "</span>&lt;&lt;badNums.str()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/18/Cpp-Cpp中的IO类/" data-id="cjn4arkfb000az0ez6s4ccxbf" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
 
     </footer>
   </div>
@@ -319,7 +316,7 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/18/最优化-等式约束的优化问题求解/" data-id="cjn4arkh30016z0ez1cdhthso" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/18/最优化-等式约束的优化问题求解/" data-id="cjn5svrtw0011m8ezz6zmf13r" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -331,10 +328,10 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
 
 
   
-    <article id="post-Cpp-Cpp中的构造函数" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-Cpp-Cpp中的IO类" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/05/11/Cpp-Cpp中的构造函数/" class="article-date">
-  <time datetime="2018-05-11T10:48:20.000Z" itemprop="datePublished">2018-05-11</time>
+    <a href="/2018/05/18/Cpp-Cpp中的IO类/" class="article-date">
+  <time datetime="2018-05-18T13:11:35.000Z" itemprop="datePublished">2018-05-18</time>
 </a>
     
   </div>
@@ -345,7 +342,7 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/11/Cpp-Cpp中的构造函数/">[Cpp]Cpp中的构造函数</a>
+      <a class="article-title" href="/2018/05/18/Cpp-Cpp中的IO类/">[Cpp]Cpp中的IO类</a>
     </h1>
   
 
@@ -353,34 +350,35 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="C-中的构造函数"><a href="#C-中的构造函数" class="headerlink" title="C++中的构造函数"></a>C++中的构造函数</h1><p>每个类都分别定义了它的对象被初始化的方式，类通过一个或多个特殊的成员函数来控制其对象的初始化过程，这些函数就叫做<strong>构造函数(constructor)</strong>。构造函数的任务是初始化类对象的数据成员，无论何时只要类的对象被创建，就会执行构造函数。</p>
-<p>构造函数的名字和类名相同，但其没有返回类型。类可以包括多个构造函数，和其他重载函数差不多，不同的构造函数之间必须在参数数量或参数类型上有所区别。</p>
-<p>构造函数不能被声明为const的，在常量对象的创建过程中，可以为其中的参数写值，知道对象创建完成才会取得const属性。</p>
-<h2 id="默认构造函数"><a href="#默认构造函数" class="headerlink" title="默认构造函数"></a>默认构造函数</h2><p>当我们没有为类提供构造函数的时候，编译器会为我们隐式地定义一个构造函数，编译器创建的构造函数又被称为<strong>合成的默认构造函数</strong>，它将按照以下规则初始化类地数据成员</p>
+        <h1 id="C-中的IO类"><a href="#C-中的IO类" class="headerlink" title="C++中的IO类"></a>C++中的IO类</h1><p>C++语言不直接处理输入输出，而是通过一组定义在标准库中的类型来处理IO。这些类型支持从设备读取数据，向设备写入数据的IO操作，设备可以是文件，控制台窗口等。还有一些类型允许内存IO，即从string读取数据，向string写入数据等。</p>
+<p>应用程序不只从控制台窗口进行IO操作，常常需要读写命名文件，并且使用IO操作处理string的字符会很方便，所以在istream和ostream之外，标准库还定义了其他的一些IO类型，分别定义在三个独立的头文件中：<strong>iostream</strong>定义了用于读写流的基本类型，<strong>fstream</strong>定义了读写命名文件的类型，<strong>sstream</strong>定义了读写内存string对象的类型。</p>
+<p>类型ifstream和istringstream都<strong>继承</strong>自istream。因此我们可以像使用istream对象一样来使用ifstream和istringstream对象。需要注意的是，不<strong>能对IO对象进行拷贝或赋值，另外读写一个IO对象会改变其状态，因此传递和返回的引用不能是const的</strong>。</p>
+<h2 id="条件状态"><a href="#条件状态" class="headerlink" title="条件状态"></a>条件状态</h2><p>IO类定义了一些函数和标志，可以帮助我们访问和操纵流的<strong>条件状态</strong>。一个流一旦发生错误，其后的IO操作都会失败，确定一个流对象的最简单的方法就是将他作为一个条件去使用：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;word)</span><br></pre></td></tr></table></figure></p>
+<p>IO库定义了一个与机器无关的iostate类型，它提供了表达流状态的完整功能：<br><strong>badbit</strong>表示系统级错误，如不可恢复的读写错误；<strong>failbit</strong>表示可恢复错误，如期望读取数值缺读取了一个字符；达到文件结束的位置时，<strong>eofbit</strong>和<strong>failbit</strong>都会被置位。<strong>goodbit</strong>的值为0表示未出现错误。如果<strong>badbit</strong>，<strong>failbit</strong>，<strong>eofbit</strong>任意一个被置位，检测流的条件都会失败。</p>
+<h2 id="输出缓冲管理"><a href="#输出缓冲管理" class="headerlink" title="输出缓冲管理"></a>输出缓冲管理</h2><p>每个输出流都有一个<strong>缓冲区</strong>，用于保存程序读写的数据，如下面的代码<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">os&lt;&lt;<span class="string">"Hello,world"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>有可能直接打印也有可能被操作系统保存到缓冲区中，随后再打印。<br>显式刷新缓冲区的几个方法：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;<span class="built_in">endl</span>;	<span class="comment">//输出字符串之后输出换行然后刷新缓冲区</span></span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;flush;	<span class="comment">//输出字符串之后直接刷新缓冲区</span></span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;ends;	<span class="comment">//输出字符串之后输出空白字符然后刷新缓冲区</span></span><br></pre></td></tr></table></figure></p>
+<p>当输入流关联到输出流的时候，任何试图从输入流读取数据的操作都会先刷新关联的输出流，标准库将cout和cin关联到一起，可以使用tie()函数手动将istream和ostream关联到一起。</p>
+<h1 id="文件输入输出"><a href="#文件输入输出" class="headerlink" title="文件输入输出"></a>文件输入输出</h1><h2 id="open和close函数"><a href="#open和close函数" class="headerlink" title="open和close函数"></a>open和close函数</h2><p>在定义了一个空文件流对象之后，可以调用open将其与文件关联起来<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ifstream <span class="title">in</span><span class="params">(ifile)</span></span>;	<span class="comment">//构造一个ifstream并打开给定文件</span></span><br><span class="line">ofstream out;	<span class="comment">//输出文件流未与任何文件相关联</span></span><br><span class="line">out.open(ifile+<span class="string">".copy"</span>)	<span class="comment">//打开指定文件</span></span><br></pre></td></tr></table></figure></p>
+<p>文件流打开之后就会保持和对应文件的关联，如果试图将这个文件流关联到另一个文件上，必须先关闭相应的文件流。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">in.close();	<span class="comment">//关闭文件</span></span><br><span class="line">in.open(ifile+<span class="string">"2"</span>);	<span class="comment">//关联到新的文件</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="文件模式"><a href="#文件模式" class="headerlink" title="文件模式"></a>文件模式</h2><p>每个流都有一个关联的文件模式，用来指出如何使用文件，每个文件流类型都定义了一个默认的文件模式，当我们未指定文件模式时，就使用默认模式。与ifstream关联的文件默认以in模式（读方式）打开；与ofstream相关联的文件默认以out模式（写方式）打开。文件模式如下表：</p>
 <ul>
-<li>如果存在类内的初始值，用它来初始化成员</li>
-<li>如果不存在则默认初始化该成员</li>
+<li>in           以只读方式打开</li>
+<li>out         以写方式打开</li>
+<li>app        每次写操作前均定位到文件末尾</li>
+<li>ate         打开文件后立即定义到文件末尾</li>
+<li>trunc      截断文件</li>
+<li>binary    以二进制进行IO</li>
 </ul>
-<p>合成的默认构造函数只适合非常简单的类，对于普通的类来说，必须定义它自己的构造函数，原因如下：</p>
-<ol>
-<li>编译器只有在发现类不包含任何构造函数的情况下才会创建默认的构造函数</li>
-<li>对于某些类，合成的默认构造函数可能会执行错误的操作，比如对数组或指针进行默认初始化，其值将是未定义的</li>
-<li>编译器有时候不能为某些类创建默认构造函数，如果该类里面含有其他类的成员而该类成员没有默认构造函数，则编译器不能执行默认初始化</li>
-</ol>
-<p>当且仅当我们既需要普通的构造函数也需要默认构造函数的时候，可以使用=default来定义<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sales_data</span>&#123;</span></span><br><span class="line">	Sales_data()=<span class="keyword">default</span>;  <span class="comment">//默认构造函数</span></span><br><span class="line">	Sales_data(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;s):bookNo(s)&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="构造函数初始值列表"><a href="#构造函数初始值列表" class="headerlink" title="构造函数初始值列表"></a>构造函数初始值列表</h2><p>对于Sales_data类的其他构造函数<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Sales_data(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;s):bookNo(s)&#123;&#125;  <span class="comment">//s作为bookNo的初值</span></span><br><span class="line">Sales_data(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> &amp;s,<span class="keyword">unsigned</span> n,<span class="keyword">double</span> p):bookNo(s),units_sold(n),revenue(p*n)&#123;&#125;</span><br><span class="line"><span class="comment">//s作为bookNo的初值，n作为units_sold的初值，p*n作为revenue的初值</span></span><br></pre></td></tr></table></figure></p>
-<p> 在参数列表与大括号之间新出现的部分称为构造函数初始值列表，它负责为新创建对象的一个或几个数据成员赋初值，另外需要注意构造函数不应该轻易覆盖掉类内的初始值，除非新赋的值与原值不同。</p>
-<p>需要注意，成员的初始化顺序与它们在类定义中出现的顺序一致：第一个成员先被初始化，然后第二个等等。构造函数初始值列表中初始值的前后位置关系不会影响实际的初始化顺序，因此最好令构造函数初始值的顺序与成员声明的顺序一致。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">X</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">int</span> j;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	X(<span class="keyword">int</span> val):j(val),i(j)&#123;&#125;</span><br><span class="line">	<span class="comment">//会出现错误，因为i在j之前被初始化</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<h2 id="委托构造函数"><a href="#委托构造函数" class="headerlink" title="委托构造函数"></a>委托构造函数</h2><p>C++11新标准扩展了构造函数初始值的功能，使得我们能够定义委托构造函数，一个委托构造函数使用它所属类的其他构造函数执行它自己的初始化过程，或者说把它自己的一些或全部职责委托给了其他的构造函数。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sales_data</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	Sales_data(<span class="built_in">std</span>::<span class="built_in">string</span> s,<span class="keyword">unsigned</span> cnt,<span class="keyword">double</span> price):bookNo(s),units_sold(cnt),revenue(cnt*price)&#123;&#125;</span><br><span class="line">	<span class="comment">//下面的构造函数都委托给其他的构造函数</span></span><br><span class="line">	Sales_data():Sales_data(<span class="string">" "</span>,<span class="number">0</span>,<span class="number">0</span>)&#123;&#125;</span><br><span class="line">	Sales_data(<span class="built_in">std</span>::<span class="built_in">string</span> s):Sales_data(s,<span class="number">0</span>,<span class="number">0</span>)&#123;&#125;</span><br><span class="line">	Sales_data(<span class="built_in">std</span>::istream &amp;is):Sales_data()&#123;read(is,*<span class="keyword">this</span>);&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="隐式的类类型转换"><a href="#隐式的类类型转换" class="headerlink" title="隐式的类类型转换"></a>隐式的类类型转换</h2><p>在某个类中，接受string的构造函数和接受istream的构造函数分别定义了这两种类型向该类的转换规则<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> null_book=<span class="string">"9999"</span>;</span><br><span class="line">item.combine(null_book);</span><br><span class="line"><span class="comment">//编译器用给定的string自动创建了一个Sales_data的对象</span></span><br></pre></td></tr></table></figure></p>
-<p>注意，编译器只会执行一步类型转换，例如从字面量再到string对象再到Sales_data对象的转换是不被允许的。</p>
-<p>在我们不需要进行类型转换的时候可以使用<strong>explicit</strong>关键字进行抑制<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Sales_data</span>&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	Sales_data()=<span class="keyword">default</span>;</span><br><span class="line">	explicit Sales_data(const std::string &amp;s):bookNo(s)&#123;&#125; //不能从string对象转换为Sales_data对象</span><br><span class="line">	<span class="function"><span class="keyword">explicit</span> <span class="title">Sales_data</span><span class="params">(<span class="built_in">std</span>::istream&amp;)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>在不使用隐式转换的时候，另外可以使用显式转换<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">item.combine(<span class="keyword">static_cast</span>&lt;Sales_data&gt;(<span class="built_in">cin</span>));</span><br></pre></td></tr></table></figure></p>
+<p>默认情况下，当打开一个ofstream时，文件的内容会被丢弃。阻止一个ofstream清空给定文件内容的方法是同时指定app模式。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ofstream <span class="title">out</span><span class="params">(<span class="string">"file1"</span>)</span>	<span class="comment">//文件会被清空</span></span></span><br><span class="line"><span class="function">ofstream <span class="title">out</span><span class="params">(<span class="string">"file"</span>,ofstream::app|ofstream::out)</span>	<span class="comment">//以app方式打开会被保存</span></span></span><br></pre></td></tr></table></figure></p>
+<p>保留ofstream打开的文件中数据的唯一办法就是指定app形式打开或者in模式打开。</p>
+<h1 id="string流"><a href="#string流" class="headerlink" title="string流"></a>string流</h1><p>sstream头文件定义了三个类型来支持内存IO，这些类型可以向string写入数据，从string读取数据，就像string是个IO流一样。</p>
+<p>当我们的工作是对整行文本进行处理，而其他的一些工作是处理行内的单个单词时，通常可以使用<strong>istringstream</strong>。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> line,word;</span><br><span class="line"><span class="built_in">vector</span>&lt;PersonInfo&gt; people;</span><br><span class="line"><span class="keyword">while</span>(getline(<span class="built_in">cin</span>,line))&#123;	<span class="comment">//不断从cin读取一行</span></span><br><span class="line">	PersonInfo info;</span><br><span class="line">	<span class="function"><span class="built_in">istringstream</span> <span class="title">record</span><span class="params">(line)</span></span>;   <span class="comment">//利用读取的这一行初始化record对象</span></span><br><span class="line">	record&gt;&gt;info.name;      <span class="comment">//从这一行中单独处理每个单词</span></span><br><span class="line">	<span class="keyword">while</span>(record&gt;&gt;word)</span><br><span class="line">		info.phones.push_back(word);</span><br><span class="line">	people.push_back(info);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在我们逐步构造输出，希望最后一行打印时，ostringstream非常有用。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;entry:people)&#123;</span><br><span class="line">	<span class="built_in">ostringstream</span> formatted,badNums;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;nums:entry.phones)&#123;</span><br><span class="line">		<span class="keyword">if</span>(!valid(nums))&#123;   <span class="comment">//如果遇到无效电话号码，则放到badNums之后一起输出</span></span><br><span class="line">			badNums&lt;&lt;<span class="string">" "</span>&lt;&lt;nums;</span><br><span class="line">		&#125;<span class="keyword">else</span></span><br><span class="line">		formatted&lt;&lt;<span class="string">" "</span>&lt;&lt;format(nums);   <span class="comment">//将正常的电话号码都放到formatted中</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(badNums.str().empty())</span><br><span class="line">		os&lt;&lt;entry.name&lt;&lt;<span class="string">" "</span>&lt;&lt;formatted.str()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="built_in">cerr</span>&lt;&lt;<span class="string">"Input error: "</span>&lt;&lt;entry.name&lt;&lt;<span class="string">" invalid number(s) "</span>&lt;&lt;badNums.str()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/11/Cpp-Cpp中的构造函数/" data-id="cjn4arkes0001z0ez1n6377kg" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/18/Cpp-Cpp中的IO类/" data-id="cjn5svrs40003m8ezev0b7fck" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
@@ -396,7 +394,7 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -431,7 +429,7 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -450,7 +448,7 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -461,6 +459,10 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/10/12/paper-ShuffleNet/">[paper]ShuffleNet</a>
+          </li>
         
           <li>
             <a href="/2018/10/11/paper-ShuffleNetV2/">[paper]ShuffleNetV2</a>
@@ -476,10 +478,6 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
         
           <li>
             <a href="/2018/09/21/Matrix-Derivative/">[Matrix]关于向量与矩阵的求导</a>
-          </li>
-        
-          <li>
-            <a href="/2018/09/14/leetcode-stock/">[LeetCode]动态规划中股票问题的通用解法</a>
           </li>
         
       </ul>
@@ -521,5 +519,21 @@ D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二�
 
 
   </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
 </body>
 </html>

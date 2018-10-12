@@ -70,6 +70,63 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-paper-ShuffleNet" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/10/12/paper-ShuffleNet/" class="article-date">
+  <time datetime="2018-10-12T01:28:55.000Z" itemprop="datePublished">2018-10-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/10/12/paper-ShuffleNet/">[paper]ShuffleNet</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="《ShuffleNet-An-Extremely-Efficient-Convolutional-Neural-Network-for-Mobile-Devices》总结"><a href="#《ShuffleNet-An-Extremely-Efficient-Convolutional-Neural-Network-for-Mobile-Devices》总结" class="headerlink" title="《ShuffleNet: An Extremely Efficient Convolutional Neural Network for Mobile Devices》总结"></a>《ShuffleNet: An Extremely Efficient Convolutional Neural Network for Mobile Devices》总结</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>本文介绍了一种很高效的网络ShuffleNet，其主要在于pointwise group conv和channel shuffle两种操作，可以在维持精度的时候大量减少计算消耗，在ImageNet和COCO上面的表现都超过了之前的网络</p>
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.Introduction</h2><p>构造更深，更宽的神经网络在解决视觉识别上面是发展趋势。然而本文提出另外一个极端：在有限的计算资源下达到最佳的性能。现有的很多方法（剪枝压缩等）都只是在处理基本的神经网络，而这里提出了一种给定计算资源下的高效网络结构。</p>
+<p>现在的state-of-the-art网络对资源都比较消耗计算资源，主要是因为太密集的1x1 conv，本文使用了1x1 group conv来减小计算量，并且使用channel shuffle来增加各个channel之间的通讯，这样可以编码更多信息，基于这两个技术而构建了ShuffleNet，基于这两个设计准则，在ImageNet和COCO上都取得了更好的性能，另外在真实的硬件平台上也有明显的加速效果</p>
+<h2 id="2-Related-Work"><a href="#2-Related-Work" class="headerlink" title="2.Related Work"></a>2.Related Work</h2><p><strong>Efficient Model Designs</strong>：GoogLeNet增加了网络深度但是相比简单的conv层堆积减少了计算量。SqueezeNet在维持精度的情况下明显减少了计算量。ResNet利用有效的瓶颈结构来得到较高的性能。SENet引入了一个结构单元在小计算量的情况下加速性能。另外最近有工作利用强化学习和模型搜索来探索高效的模型设计，得到的NASNet得到了不错的精度表现，但是在较小的FLOPs下表现比较一般。</p>
+<p><strong>Group Convolution</strong>：group conv最开始在AlexNet当中被提出，当时是为了在多个GPU上进行分布式训练，后来在ResNeXt当中表现了其有效性。Xception中的Depthwise separable conv总结了Inception系列网络的想法，后来MobieNet利用depthwise separable conv实现了state-of-the-art。</p>
+<p><strong>Channel Shuffle Operations</strong>：channel shuffle的思想在之前的工作中很少被提出来，即使cuda-convnet支持”random sparse conv”层，等价于后面带有group conv层的random channel shuffle。最近有工作在two-stage conv上应用这个思想但是却没有channel shuffle自身在小模型设计上的有效性。</p>
+<p><strong>Model Acceleration</strong>：这个是为了在保留模型精度的时候加速推断，对网络连接或者通道进行剪枝可以在保留性能的时候去掉冗余的连接。quantization和factorization可以减少计算当中的冗余从而加速推断。另外在不修改参数的时候，优化的卷积算法比如FFT都会减少实际当中的时间消耗。另外distilling可以从大模型中训练小模型，可以让训练小模型变得更加容易。</p>
+<h2 id="3-Approch"><a href="#3-Approch" class="headerlink" title="3.Approch"></a>3.Approch</h2><h3 id="3-1-Channel-Shuffle-for-Group-Convolutions"><a href="#3-1-Channel-Shuffle-for-Group-Convolutions" class="headerlink" title="3.1 Channel Shuffle for Group Convolutions"></a>3.1 Channel Shuffle for Group Convolutions</h3><p>现在的很多state-of-the-art网络，比如Xception和ResNeXt都有太多的1x1 conv，在每个block中占了大量的计算量，如果在限制计算资源的情况下就只能有更少的channel数，这样会降低模型的精度。要解决这个问题可以使用channel之间的稀疏连接，例如group conv就是其中的一个例子。然而这样会导致一个组内的输出只与这个组内的输入相关，会导致channel group之间的联系变得较弱，可以通过channel shuffle可以让group conv从不同的group获取信息，从而解决这个问题。具体操作为(g,n)维度先转置，然后展开，然后再reshape为(g,n)，其中g为group数，n为每组channel数。当两个卷积有不同的group数的时候依然是有效的，并且这个shuffle操作也是可以微分的。<img src="/images/paper-ShuffleNet/channel-shuffle.PNG" alt="Channel shuffle"></p>
+<h3 id="3-2-ShuffleNet-Unit"><a href="#3-2-ShuffleNet-Unit" class="headerlink" title="3.2 ShuffleNet Unit"></a>3.2 ShuffleNet Unit</h3><p>这个unit是专门为小网络设计的，使用了bottleneck的结构。unit分为两种，一种是没有stride，输入输出维度一样的，采用残差结构，最后是求和。另外一种是有stride的，同样残差结构不过最后采用了concat。这个Unit相比ResNet和ResNeXt更加高效，比如给定输入维度<script type="math/tex">c*h*w</script>，瓶颈通道数为<script type="math/tex">m</script>，ResNet的FLOPs为<script type="math/tex">hw(2cm+9m^{2})</script>，ResNeXt的FLOPs为<script type="math/tex">hw(2cm+9m^2/g)</script>，ShuffleNet unit的FLOPs为<script type="math/tex">hw(2cm/g+9m)</script>，也就相当于在给定计算资源的情况下ShuffleNet unit能够使用更宽的特征图。另外depthwise conv虽然只有很小的理论上的复杂度，但是FLOPs/MAC比较小，这个在后面的ShuffleNetV2中有提到，所以只在bottleneck那里使用depthwise conv。<img src="/images/paper-ShuffleNet/ShuffleNet-unit.PNG" alt="ShuffleNet unit"></p>
+<h3 id="3-3-Network-Architecture"><a href="#3-3-Network-Architecture" class="headerlink" title="3.3 Network Architecture"></a>3.3 Network Architecture</h3><p>在整个网络里面，为了简化，Bottleneck的channel数为输入的<script type="math/tex">1/4</script>，这里提供一个尽可能简单的参考模型，尽管进一步调参可能会取得更好的结果。其中的参数<script type="math/tex">g</script>控制连接的稀疏度，更多的group可能会帮助编码更多信息，但是对于单个conv可能会降低其性能，在ShuffleNetV2中也从另一个角度讨论了该问题：过多的group会增加MAC从而降低速度。另外用一个超参数<script type="math/tex">s</script>来对网络进行缩放，通过缩放调整通道数来实现。<img src="/images/paper-ShuffleNet/architecture.PNG" alt="ShuffleNet网络结构"></p>
+<h2 id="4-Experiments"><a href="#4-Experiments" class="headerlink" title="4.Experiments"></a>4.Experiments</h2><p>主要在ImageNet上做的实验，因为小型网络更加容易遭遇过拟合，所以使用了很轻微的data augmentation。</p>
+<h3 id="4-1-1-Ablation-Study"><a href="#4-1-1-Ablation-Study" class="headerlink" title="4.1.1 Ablation Study"></a>4.1.1 Ablation Study</h3><p>这里主要对于两个方面进行分析，一是pointwise group conv，二是channel shuffle。这两个是ShuffleNet的核心组件</p>
+<p>对于pointwise group conv，这里利用不同规模(缩放s)，不同group的网络进行对比，实验表明对于比较大的网络，当group达到一定值之后对于单个conv，其输入的通道数过少，将会影响表达性能。但是当缩放因子比较小的时候，网络比较小在group增大的时候更能明显提高性能，因为对于小网络而言，更宽的特征图可以带来更大的好处。<img src="/images/paper-ShuffleNet/group-ex.PNG" alt="1x1 group conv实验"></p>
+<p>对于channel shuffle，实验证明channel shuffle明显能够持续提高分类分数，尤其当group比较大的时候性能更好，此时的跨组信息交换变得更加重要。<img src="/images/paper-ShuffleNet/shuffle-ex.PNG" alt="shuffle实验"></p>
+<h3 id="4-2-Comparison-with-Other-Structure-Units"><a href="#4-2-Comparison-with-Other-Structure-Units" class="headerlink" title="4.2 Comparison with Other Structure Units"></a>4.2 Comparison with Other Structure Units</h3><p>在之前的ShuffleNet框架上与一些unit进行了对比，实验结果如图<img src="/images/paper-ShuffleNet/unit-ex.PNG" alt="不同unit"></p>
+<h3 id="4-3-Comparison-with-MobileNets-and-Other-Frameworks"><a href="#4-3-Comparison-with-MobileNets-and-Other-Frameworks" class="headerlink" title="4.3 Comparison with MobileNets and Other Frameworks"></a>4.3 Comparison with MobileNets and Other Frameworks</h3><p>这里主要将ShuffleNet与其它一些经典的结构相比较，其中值得注意的是在ShuffleNet和MobileNet相比较的过程中，减少ShuffleNet的深度也明显会比MobileNet更好，这说明ShuffleNet与之相比关键在于unit的设计而非网络深度，另外可以将ShuffleNet与其他优秀设计比如SE模块（Squeeze-and-Excitation）相组合，可以进一步提升其性能但是会变得比较慢。<img src="/images/paper-ShuffleNet/mobile-ex.PNG" alt="与MobileNet相比"></p>
+<p><img src="/images/paper-ShuffleNet/other-ex.PNG" alt="与其他结构相比"></p>
+<h3 id="4-4-Generalization-Ability"><a href="#4-4-Generalization-Ability" class="headerlink" title="4.4 Generalization Ability"></a>4.4 Generalization Ability</h3><p>为了探究ShuffleNet的泛化和迁移学习的性能，在COCO上进行了测试，利用Faster-RCNN的框架来进行实验。在这项任务上依旧比MobileNet好了很多，可能是由于网络结构设计没有过多的冗余装饰，所以泛化性能比较好。<img src="/images/paper-ShuffleNet/coco-ex.PNG" alt="关于泛化性能的实验"></p>
+<h3 id="4-5-Actual-Speedup-Evaluation"><a href="#4-5-Actual-Speedup-Evaluation" class="headerlink" title="4.5 Actual Speedup Evaluation"></a>4.5 Actual Speedup Evaluation</h3><p>这里在ARM平台上进行了测试，group数较大的时候（比如g=8）性能最好但是g=3的时候在性能和推断时间上有着比较好的平衡，但是依旧要比其他网络更优秀。<img src="/images/paper-ShuffleNet/speed-ex.PNG" alt="实际的速度测试"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/10/12/paper-ShuffleNet/" data-id="cjn5svrt8000km8ez3euzjj0p" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-paper-ShuffleNetV2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/10/11/paper-ShuffleNetV2/" class="article-date">
@@ -119,7 +176,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/11/paper-ShuffleNetV2/" data-id="cjn4arkff000dz0ezrouhysxn" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/11/paper-ShuffleNetV2/" data-id="cjn5svruv001nm8ezem69rsu3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -241,7 +298,7 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/04/paper-MobileNets/" data-id="cjn4aua000000toez1zbltzcy" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/04/paper-MobileNets/" data-id="cjn5svrt4000hm8ezed4e6mcj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -289,7 +346,7 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/09/28/paper-InceptionV4/" data-id="cjn4arkf80008z0ez0yb4pry8" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/09/28/paper-InceptionV4/" data-id="cjn5svrsz000fm8ezojvhsz4g" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -335,64 +392,10 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/09/21/Matrix-Derivative/" data-id="cjn4arkgx0013z0ezaceycyr2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/09/21/Matrix-Derivative/" data-id="cjn5svrst000cm8ezdq63tytk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Matrix/">Matrix</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-leetcode-stock" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/09/14/leetcode-stock/" class="article-date">
-  <time datetime="2018-09-14T05:09:44.000Z" itemprop="datePublished">2018-09-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/14/leetcode-stock/">[LeetCode]动态规划中股票问题的通用解法</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="动态规划中股票问题的通用解法"><a href="#动态规划中股票问题的通用解法" class="headerlink" title="动态规划中股票问题的通用解法"></a>动态规划中股票问题的通用解法</h1><p>有一类动态规划的问题是给定一个股票价格序列，然后计算买卖股票所能获得的最大收益，这类问题通常有很多变种，例如只允许交易一次，允许交易多次或者增收交易税等。即问题的最大收益通常由交易的时间和允许的最大交易次数（每次交易指一次买与一次卖的一个组合）决定的。</p>
-<p>可以用T[i][k]表示在第i天结束的时候最多经过k次交易所能获得的最大收益，另外在第i天结束的时候可以有两种状态，手上有股票T[i][k][1]或者手上没有股票T[i][k][0]，可以得到以下初始状态：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T[<span class="number">-1</span>][k][<span class="number">0</span>] = <span class="number">0</span>, T[<span class="number">-1</span>][k][<span class="number">1</span>] = -Infinity</span><br><span class="line">T[i][<span class="number">0</span>][<span class="number">0</span>] = <span class="number">0</span>, T[i][<span class="number">0</span>][<span class="number">1</span>] = -Infinity</span><br></pre></td></tr></table></figure></p>
-<p>其中T[-1][k][0] = 0与T[i][0][0] = 0意味着在初始状态下(i=-1)即没有股票的时候收益为0，在最多允许0次交易的情况下收益也为0。而T[-1][k][1]=T[i][0][1] = -Infinity意味着在初始情况下手里有股票以及允许0次交易的情况下手里有股票是不可能的，将其收益设为-Infinity。</p>
-<p>而对于状态的转移，我们可以得到以下的公式<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">T[i][k][<span class="number">0</span>] = max(T[i<span class="number">-1</span>][k][<span class="number">0</span>], T[i<span class="number">-1</span>][k][<span class="number">1</span>] + prices[i])</span><br><span class="line"><span class="comment">//对于在第i天结束的时候手里没有股票的情况下，在这一天所能采取的操作有两种</span></span><br><span class="line"><span class="comment">//1.不进行交易，即最大收益为T[i-1][k][0]</span></span><br><span class="line"><span class="comment">//2.进行卖出，即第i天的最大收益为上一天有股票时的最大收益加上当天的卖价为T[i-1][k][1] + prices[i]</span></span><br><span class="line">T[i][k][<span class="number">1</span>] = max(T[i<span class="number">-1</span>][k][<span class="number">1</span>], T[i<span class="number">-1</span>][k<span class="number">-1</span>][<span class="number">0</span>] - prices[i])</span><br><span class="line"><span class="comment">//在第i天结束手里有股票时，同样有两种操作：</span></span><br><span class="line"><span class="comment">//1.不进行交易，即为T[i-1][k][0]</span></span><br><span class="line"><span class="comment">//2.进行买入，这时的买入增加了一次交易次数，那么i-1天结束的最大交易次数为k-1，即当天结束的最大收益为T[i-1][k-1][0] - prices[i]</span></span><br></pre></td></tr></table></figure></p>
-<p>由于收益最多的时候最后一步应该是将股票卖出，即最后返回的应该为T[i][k][0]</p>
-<h2 id="LeetCode里面相关的经典题目"><a href="#LeetCode里面相关的经典题目" class="headerlink" title="LeetCode里面相关的经典题目"></a>LeetCode里面相关的经典题目</h2><p> <a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock/#/description" target="_blank" rel="noopener">Best Time to Buy and Sell Stock</a><br>这道题目是求只允许一次交易的情况下所能获得的最大收益，即k=1的情况，其解法如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; prices)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> T_i10=<span class="number">0</span>,T_i11=INT_MIN;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> price:prices)&#123;</span><br><span class="line">            T_i10=max(T_i10,T_i11+price);</span><br><span class="line">            T_i11=max(T_i11,-price);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> T_i10;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/#/description" target="_blank" rel="noopener">Best Time to Buy and Sell Stock II</a><br>这道题目是不限制交易次数的情况，即k=Infinity的时候，此时k-1=k，那么状态转移方程可以写成如下形式：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T[i][k][<span class="number">0</span>] = max(T[i<span class="number">-1</span>][k][<span class="number">0</span>], T[i<span class="number">-1</span>][k][<span class="number">1</span>] + prices[i])</span><br><span class="line">T[i][k][<span class="number">1</span>] = max(T[i<span class="number">-1</span>][k][<span class="number">1</span>], T[i<span class="number">-1</span>][k<span class="number">-1</span>][<span class="number">0</span>] - prices[i]) = max(T[i<span class="number">-1</span>][k][<span class="number">1</span>], T[i<span class="number">-1</span>][k][<span class="number">0</span>] - prices[i])</span><br></pre></td></tr></table></figure></p>
-<p>因为T[i][k][0]在前一步进行了更新，那么可以利用一个临时变量来保存T[i][k][0]，其代码如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; prices)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> T_ik0=<span class="number">0</span>,T_ik1=INT_MIN;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> price:prices)&#123;</span><br><span class="line">            <span class="keyword">int</span> T_ik0_old=T_ik0;</span><br><span class="line">            T_ik0=max(T_ik0,T_ik1+price);</span><br><span class="line">            T_ik1=max(T_ik1,T_ik0_old-price);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> T_ik0;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iii/description/" target="_blank" rel="noopener">Best Time to Buy and Sell Stock III</a><br>这道题目是找在限制最大交易次数为2的情况下所能获得的最大收益，此时k=2或k=1，与k=1的情况类似，其状态转移方程可以写成以下形式：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">T[i][<span class="number">2</span>][<span class="number">0</span>] = max(T[i<span class="number">-1</span>][<span class="number">2</span>][<span class="number">0</span>], T[i<span class="number">-1</span>][<span class="number">2</span>][<span class="number">1</span>] + prices[i])</span><br><span class="line">T[i][<span class="number">2</span>][<span class="number">1</span>] = max(T[i<span class="number">-1</span>][<span class="number">2</span>][<span class="number">1</span>], T[i<span class="number">-1</span>][<span class="number">1</span>][<span class="number">0</span>] - prices[i])</span><br><span class="line">T[i][<span class="number">1</span>][<span class="number">0</span>] = max(T[i<span class="number">-1</span>][<span class="number">1</span>][<span class="number">0</span>], T[i<span class="number">-1</span>][<span class="number">1</span>][<span class="number">1</span>] + prices[i])</span><br><span class="line">T[i][<span class="number">1</span>][<span class="number">1</span>] = max(T[i<span class="number">-1</span>][<span class="number">1</span>][<span class="number">1</span>], -prices[i])</span><br></pre></td></tr></table></figure></p>
-<p>最后返回的最优解即为T[i][k][0]=T[i][2][0]，完整解法如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; prices)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> T_i10=<span class="number">0</span>,T_i11=INT_MIN;</span><br><span class="line">        <span class="keyword">int</span> T_i20=<span class="number">0</span>,T_i21=INT_MIN;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> price:prices)&#123;</span><br><span class="line">            T_i20=max(T_i20,T_i21+price);</span><br><span class="line">            T_i21=max(T_i21,T_i10-price);</span><br><span class="line">            T_i10=max(T_i10,T_i11+price);</span><br><span class="line">            T_i11=max(T_i11,-price);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> T_i20;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-iv/description/" target="_blank" rel="noopener">Best Time to Buy and Sell Stock IV</a><br>这道题目是将k作为参数传入求解函数里面，可以看出来每一次能够获得收益的交易都是需要两天时间的，那么当k&gt;=n/2的时候再增加k也不会增加收益，那么此时可以看作是k=Infinity，这种情况与前面的问题相同。当k &lt; n/2的时候则跟k=2的情况类似，可以通过创建数组的方式来向前更新。解法如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="keyword">int</span> k, <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; prices)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(k&gt;=prices.size()&gt;&gt;<span class="number">1</span>)&#123;</span><br><span class="line">            <span class="keyword">int</span> T_ik0=<span class="number">0</span>,T_ik1=INT_MIN;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> price:prices)&#123;</span><br><span class="line">                <span class="keyword">int</span> T_ik0_old=T_ik0;</span><br><span class="line">                T_ik0=max(T_ik0,T_ik1+price);</span><br><span class="line">                T_ik1=max(T_ik1,T_ik0_old-price);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> T_ik0;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; T_ik0(k+<span class="number">1</span>,<span class="number">0</span>);</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; T_ik1(k+<span class="number">1</span>,INT_MIN);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> price:prices)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=k;j&gt;<span class="number">0</span>;j--)&#123;</span><br><span class="line">                T_ik0[j]=max(T_ik0[j],T_ik1[j]+price);</span><br><span class="line">                T_ik1[j]=max(T_ik1[j],T_ik0[j<span class="number">-1</span>]-price);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> T_ik0[k];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/#/description" target="_blank" rel="noopener">Best Time to Buy and Sell Stock with Cooldown</a><br>这道题目并没有限制k的取值，即为Infinity，但是有另外一个限制就是不能在前一天卖掉股票然后第二天又马上买入，起到一个cooldown的作用。那么在这个状态转移方程中，对于T[i][k][1]的更新会有所不同，在第i天采取休息的情况下是相同的，在采取买入的操作的时候更新为T[i-2][k-1][0]=T[i-2][k][0]，其状态转移方程如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">T[i][k][<span class="number">0</span>] = max(T[i<span class="number">-1</span>][k][<span class="number">0</span>], T[i<span class="number">-1</span>][k][<span class="number">1</span>] + prices[i])</span><br><span class="line">T[i][k][<span class="number">1</span>] = max(T[i<span class="number">-1</span>][k][<span class="number">1</span>], T[i<span class="number">-2</span>][k][<span class="number">0</span>] - prices[i])</span><br></pre></td></tr></table></figure></p>
-<p>该题目的代码为：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; prices)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> T_ik0_pre=<span class="number">0</span>,T_ik0=<span class="number">0</span>,T_ik1=INT_MIN;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> price:prices)&#123;</span><br><span class="line">            <span class="keyword">int</span> T_ik0_old=T_ik0;</span><br><span class="line">            T_ik0=max(T_ik0,T_ik1+price);</span><br><span class="line">            T_ik1=max(T_ik1,T_ik0_pre-price);</span><br><span class="line">            T_ik0_pre=T_ik0_old;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> T_ik0;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p><a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/description/" target="_blank" rel="noopener">Best Time to Buy and Sell Stock with Transaction Fee</a><br>这道题目与之前的不同在于，每次交易都要增收一定额度的交易税，而同样也是不限制交易次数的，这个可以在每次交易的时候（卖或者买的时候都可以）减去交易税的金额，然后再更新相应的最大收益T[i][k][0]或者T[i][k][1]，其状态转移方程如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">T[i][k][<span class="number">0</span>] = max(T[i<span class="number">-1</span>][k][<span class="number">0</span>], T[i<span class="number">-1</span>][k][<span class="number">1</span>] + prices[i])</span><br><span class="line">T[i][k][<span class="number">1</span>] = max(T[i<span class="number">-1</span>][k][<span class="number">1</span>], T[i<span class="number">-1</span>][k][<span class="number">0</span>] - prices[i] - fee)</span><br><span class="line"></span><br><span class="line"><span class="keyword">or</span></span><br><span class="line"></span><br><span class="line">T[i][k][<span class="number">0</span>] = max(T[i<span class="number">-1</span>][k][<span class="number">0</span>], T[i<span class="number">-1</span>][k][<span class="number">1</span>] + prices[i] - fee)</span><br><span class="line">T[i][k][<span class="number">1</span>] = max(T[i<span class="number">-1</span>][k][<span class="number">1</span>], T[i<span class="number">-1</span>][k][<span class="number">0</span>] - prices[i])</span><br></pre></td></tr></table></figure></p>
-<p>算法代码如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">maxProfit</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; prices, <span class="keyword">int</span> fee)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> T_ik0=<span class="number">0</span>,T_ik1=LONG_MIN;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> price:prices)&#123;</span><br><span class="line">            <span class="keyword">long</span> T_ik0_old=T_ik0;</span><br><span class="line">            T_ik0=max(T_ik0,T_ik1+price);</span><br><span class="line">            T_ik1=max(T_ik1,T_ik0_old-price-fee);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> (<span class="keyword">int</span>)T_ik0;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>参考文章：<a href="https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/discuss/108870/Most-consistent-ways-of-dealing-with-the-series-of-stock-problems" target="_blank" rel="noopener">https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-transaction-fee/discuss/108870/Most-consistent-ways-of-dealing-with-the-series-of-stock-problems</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/09/14/leetcode-stock/" data-id="cjn4arkfn000iz0ezc56pixhg" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
 
     </footer>
   </div>
@@ -405,7 +408,7 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
 
   <nav id="page-nav">
     
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -440,7 +443,7 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -459,7 +462,7 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -470,6 +473,10 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/10/12/paper-ShuffleNet/">[paper]ShuffleNet</a>
+          </li>
         
           <li>
             <a href="/2018/10/11/paper-ShuffleNetV2/">[paper]ShuffleNetV2</a>
@@ -485,10 +492,6 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
         
           <li>
             <a href="/2018/09/21/Matrix-Derivative/">[Matrix]关于向量与矩阵的求导</a>
-          </li>
-        
-          <li>
-            <a href="/2018/09/14/leetcode-stock/">[LeetCode]动态规划中股票问题的通用解法</a>
           </li>
         
       </ul>
@@ -530,5 +533,21 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
 
 
   </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
 </body>
 </html>

@@ -70,6 +70,52 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-机器学习-利用TensorFlow训练一个简单的神经网络" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/06/机器学习-利用TensorFlow训练一个简单的神经网络/" class="article-date">
+  <time datetime="2018-07-06T14:23:33.000Z" itemprop="datePublished">2018-07-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/06/机器学习-利用TensorFlow训练一个简单的神经网络/">[机器学习]利用TensorFlow训练一个简单的神经网络</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="利用TensorFlow训练一个简单的神经网络"><a href="#利用TensorFlow训练一个简单的神经网络" class="headerlink" title="利用TensorFlow训练一个简单的神经网络"></a>利用TensorFlow训练一个简单的神经网络</h1><p>我们在这里利用TensorFlow的Eager Execution 来构建模型，这样不用像以前一样创建Graph和Session了，可以使神经网络的训练更加方便快捷，下面以Iris数据集为例来训练一个神经网络，代码来自谷歌的教程。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#先导入相关的库</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> absolute_import,division,print_function</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot <span class="keyword">as</span> plt</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> tensorflow.contrib.eager <span class="keyword">as</span> tfe</span><br><span class="line"></span><br><span class="line">tf.enable_eager_execution()	<span class="comment">#采用eager_execution</span></span><br><span class="line"><span class="comment">#查看版本信息并检查采用eager_execution是否打开</span></span><br><span class="line">print(<span class="string">'TensorFlow Version:&#123;&#125;'</span>.format(tf.VERSION))</span><br><span class="line">print(<span class="string">'Eager execution:&#123;&#125;'</span>.format(tf.executing_eagerly()))</span><br></pre></td></tr></table></figure></p>
+<p>TensorFlow Version:1.8.0<br>Eager execution:True<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#获取数据集并显示在本地的保存位置</span><br><span class="line">train_dataset_url=&apos;http://download.tensorflow.org/data/iris_training.csv&apos;</span><br><span class="line">train_dataset_fp=tf.keras.utils.get_file(fname=os.path.basename(train_dataset_url),origin=train_dataset_url)</span><br><span class="line">print(&apos;Local copy of the dataset file:&#123;&#125;&apos;.format(train_dataset_fp))</span><br></pre></td></tr></table></figure></p>
+<p>Downloading data from <a href="http://download.tensorflow.org/data/iris_training.csv" target="_blank" rel="noopener">http://download.tensorflow.org/data/iris_training.csv</a><br>8192/2194 [================================================================================================================] - 0s 0us/step<br>Local copy of the dataset file:C:\Users\Frank.keras\datasets\iris_training.csv<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#对表格文件中的每一行进行解析，每行有5个元素，前面4个是特征，最后一个是标记</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">parse_csv</span><span class="params">(line)</span>:</span></span><br><span class="line">    example_defaults=[[<span class="number">0.</span>],[<span class="number">0.</span>],[<span class="number">0.</span>],[<span class="number">0.</span>],[<span class="number">0</span>]]</span><br><span class="line">    parsed_line=tf.decode_csv(line,example_defaults)</span><br><span class="line">    features=tf.reshape(parsed_line[:<span class="number">-1</span>],shape=(<span class="number">4</span>,))</span><br><span class="line">    label=tf.reshape(parsed_line[<span class="number">-1</span>],shape=())</span><br><span class="line">    <span class="keyword">return</span> features,label</span><br><span class="line">	</span><br><span class="line">train_dataset=tf.data.TextLineDataset(train_dataset_fp)	<span class="comment">#读取csv转换为dataset</span></span><br><span class="line">train_dataset=train_dataset.skip(<span class="number">1</span>)	<span class="comment">#跳过标题行</span></span><br><span class="line">train_dataset=train_dataset.map(parse_csv)	<span class="comment">#对每一行都进行映射</span></span><br><span class="line">train_dataset=train_dataset.shuffle(buffer_size=<span class="number">1000</span>)	<span class="comment">#随机打乱</span></span><br><span class="line">train_dataset=train_dataset.batch(<span class="number">32</span>)	<span class="comment">#分批</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#打印一组训练数据</span></span><br><span class="line">features,label=iter(train_dataset).next()</span><br><span class="line">print(<span class="string">'example features:'</span>,features[<span class="number">0</span>])</span><br><span class="line">print(<span class="string">'example label:'</span>,label[<span class="number">0</span>])</span><br></pre></td></tr></table></figure></p>
+<p>example features: tf.Tensor([6.8 3.  5.5 2.1], shape=(4,), dtype=float32)<br>example label: tf.Tensor(2, shape=(), dtype=int32)<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#建立神经网络模型，两个隐藏层</span></span><br><span class="line">model=tf.keras.Sequential([</span><br><span class="line">    tf.keras.layers.Dense(<span class="number">10</span>,activation=<span class="string">'relu'</span>,input_shape=(<span class="number">4</span>,)),</span><br><span class="line">    tf.keras.layers.Dense(<span class="number">10</span>,activation=<span class="string">'relu'</span>),</span><br><span class="line">    tf.keras.layers.Dense(<span class="number">3</span>)</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment">#定义损失函数为softmax后的cross_entropy，返回一个损失函数的对象</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">loss</span><span class="params">(model,x,y)</span>:</span></span><br><span class="line">    y_=model(x)</span><br><span class="line">    <span class="keyword">return</span> tf.losses.sparse_softmax_cross_entropy(labels=y,logits=y_)</span><br><span class="line"></span><br><span class="line"><span class="comment">#返回一个梯度对象</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">grad</span><span class="params">(model,inputs,targets)</span>:</span></span><br><span class="line">    <span class="keyword">with</span> tf.GradientTape() <span class="keyword">as</span> tape:</span><br><span class="line">        loss_value=loss(model,inputs,targets)</span><br><span class="line">    <span class="keyword">return</span> tape.gradient(loss_value,model.variables)	<span class="comment">#返回梯度对象，传入损失函数和优化对象作为构造函数的参数</span></span><br><span class="line"></span><br><span class="line">optimizer=tf.train.GradientDescentOptimizer(learning_rate=<span class="number">0.01</span>)</span><br><span class="line"></span><br><span class="line">train_loss_results=[]</span><br><span class="line">train_accuracy_results=[]</span><br><span class="line">num_epochs=<span class="number">201</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#优化过程迭代201次</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> range(num_epochs):</span><br><span class="line">    epoch_loss_avg=tfe.metrics.Mean()	<span class="comment">#交叉熵的平均误差对象</span></span><br><span class="line">    epoch_accuracy=tfe.metrics.Accuracy()	<span class="comment">#准确率对象</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> x,y <span class="keyword">in</span> train_dataset:</span><br><span class="line">        grads=grad(model,x,y)</span><br><span class="line">        optimizer.apply_gradients(zip(grads, model.variables),	<span class="comment">#将梯度对应的模型变量分组</span></span><br><span class="line">                              global_step=tf.train.get_or_create_global_step())</span><br><span class="line">        epoch_loss_avg(loss(model,x,y))</span><br><span class="line">        epoch_accuracy(tf.argmax(model(x),axis=<span class="number">1</span>,output_type=tf.int32),y)</span><br><span class="line">    train_loss_results.append(epoch_loss_avg.result())</span><br><span class="line">    train_accuracy_results.append(epoch_accuracy.result())</span><br><span class="line">    <span class="keyword">if</span> epoch % <span class="number">50</span> == <span class="number">0</span>:</span><br><span class="line">        print(<span class="string">"Epoch &#123;:03d&#125;: Loss: &#123;:.3f&#125;, Accuracy: &#123;:.3%&#125;"</span>.format(epoch,epoch_loss_avg.result(),epoch_accuracy.result()</span><br></pre></td></tr></table></figure></p>
+<p>Epoch 000: Loss: 1.217, Accuracy: 30.833%<br>Epoch 050: Loss: 0.524, Accuracy: 93.333%<br>Epoch 100: Loss: 0.261, Accuracy: 96.667%<br>Epoch 150: Loss: 0.169, Accuracy: 97.500%<br>Epoch 200: Loss: 0.133, Accuracy: 97.500%<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#训练过程损失函数和准确率的可视化																</span></span><br><span class="line">fig,axes=plt.subplots(<span class="number">2</span>,sharex=<span class="keyword">True</span>,figsize=(<span class="number">12</span>,<span class="number">8</span>))</span><br><span class="line">fig.suptitle(<span class="string">'Training Metrics'</span>)</span><br><span class="line">axes[<span class="number">0</span>].set_ylabel(<span class="string">"Loss"</span>, fontsize=<span class="number">14</span>)</span><br><span class="line">axes[<span class="number">0</span>].plot(train_loss_results)</span><br><span class="line"></span><br><span class="line">axes[<span class="number">1</span>].set_ylabel(<span class="string">"Accuracy"</span>, fontsize=<span class="number">14</span>)</span><br><span class="line">axes[<span class="number">1</span>].set_xlabel(<span class="string">"Epoch"</span>, fontsize=<span class="number">14</span>)</span><br><span class="line">axes[<span class="number">1</span>].plot(train_accuracy_results)</span><br><span class="line"></span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://img-blog.csdn.net/20180706222128445?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#在测试集上测试模型表现</span></span><br><span class="line">test_url = <span class="string">"http://download.tensorflow.org/data/iris_test.csv"</span></span><br><span class="line"></span><br><span class="line">test_fp = tf.keras.utils.get_file(fname=os.path.basename(test_url),</span><br><span class="line">                                  origin=test_url)</span><br><span class="line"></span><br><span class="line">test_dataset = tf.data.TextLineDataset(test_fp)</span><br><span class="line">test_dataset = test_dataset.skip(<span class="number">1</span>)</span><br><span class="line">test_dataset = test_dataset.map(parse_csv)</span><br><span class="line">test_dataset = test_dataset.shuffle(<span class="number">1000</span>)</span><br><span class="line">test_dataset = test_dataset.batch(<span class="number">32</span>)</span><br><span class="line"></span><br><span class="line">test_accuracy = tfe.metrics.Accuracy()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (x, y) <span class="keyword">in</span> test_dataset:</span><br><span class="line">  prediction = tf.argmax(model(x), axis=<span class="number">1</span>, output_type=tf.int32)</span><br><span class="line">  test_accuracy(prediction, y)</span><br><span class="line"></span><br><span class="line">print(<span class="string">"Test set accuracy: &#123;:.3%&#125;"</span>.format(test_accuracy.result()))</span><br></pre></td></tr></table></figure></p>
+<p>Test set accuracy: 100.000%<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#使用模型来进行预测</span></span><br><span class="line">class_ids = [<span class="string">"Iris setosa"</span>, <span class="string">"Iris versicolor"</span>, <span class="string">"Iris virginica"</span>]</span><br><span class="line">predict_dataset = tf.convert_to_tensor([</span><br><span class="line">    [<span class="number">5.1</span>, <span class="number">3.3</span>, <span class="number">1.7</span>, <span class="number">0.5</span>,],</span><br><span class="line">    [<span class="number">5.9</span>, <span class="number">3.0</span>, <span class="number">4.2</span>, <span class="number">1.5</span>,],</span><br><span class="line">    [<span class="number">6.9</span>, <span class="number">3.1</span>, <span class="number">5.4</span>, <span class="number">2.1</span>]</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line">predictions = model(predict_dataset)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i, logits <span class="keyword">in</span> enumerate(predictions):</span><br><span class="line">  class_idx = tf.argmax(logits).numpy()</span><br><span class="line">  name = class_ids[class_idx]</span><br><span class="line">  print(<span class="string">"Example &#123;&#125; prediction: &#123;&#125;"</span>.format(i, name))</span><br></pre></td></tr></table></figure></p>
+<p>Example 0 prediction: Iris setosa<br>Example 1 prediction: Iris versicolor<br>Example 2 prediction: Iris virginica</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/07/06/机器学习-利用TensorFlow训练一个简单的神经网络/" data-id="cjn5svrum001gm8ezcly76o78" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-机器学习-在极客云上进行深度学习" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/06/29/机器学习-在极客云上进行深度学习/" class="article-date">
@@ -99,7 +145,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/29/机器学习-在极客云上进行深度学习/" data-id="cjn4arkhq001oz0ez4sttbshb" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/06/29/机器学习-在极客云上进行深度学习/" data-id="cjn5svrv6001vm8ezg9voswdh" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -156,7 +202,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/15/机器学习-KITTI的雷达-摄像头数据融合/" data-id="cjn4arkhg001gz0ezvw50vx6v" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/06/15/机器学习-KITTI的雷达-摄像头数据融合/" data-id="cjn5svru90018m8ezltttxy3i" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -224,7 +270,7 @@ g(x^{*})\le0</script><p>那么在求解不等式约束的最优化问题的时�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/08/最优化-不等式约束的优化问题求解/" data-id="cjn4arkgz0014z0ezs3j5chlf" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/06/08/最优化-不等式约束的优化问题求解/" data-id="cjn5svrte000nm8ez4ft3f9sf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -285,69 +331,10 @@ g(x^{*})\le0</script><p>那么在求解不等式约束的最优化问题的时�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/01/Cpp-Cpp中的关联容器/" data-id="cjn4arkef0000z0ez2cshdax1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/06/01/Cpp-Cpp中的关联容器/" data-id="cjn5svrsd0005m8ezomfvdans" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-机器学习-神经网络反向传播的推导" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/06/01/机器学习-神经网络反向传播的推导/" class="article-date">
-  <time datetime="2018-06-01T05:20:32.000Z" itemprop="datePublished">2018-06-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/01/机器学习-神经网络反向传播的推导/">[机器学习]神经网络反向传播的推导</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="神经网络反向传播的推导"><a href="#神经网络反向传播的推导" class="headerlink" title="神经网络反向传播的推导"></a>神经网络反向传播的推导</h1><p>对于神经网络的训练过程而言，其反向传播算法是训练过程的核心，神经网络根据预测值$\hat{y}$与实际值$y$的偏差从后向前来计算损失函数对于各个参数的梯度，从而利用梯度下降的方法来优化训练神经网络的各个参数。</p>
-<p>神经网络的计算流程图如下：<br><img src="https://img-blog.csdn.net/2018060112352186?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>从该流程图可以看到，如果我们要计算神经网络的参数$W^{[1]},b^{[1]},W^{[2]},b^{[2]}$，首先需要计算$\frac{\partial L}{\partial a^{[2]}}$和$\frac{\partial a^{[2]}}{\partial z^{[2]}}$，然后根据链式法则得到$\frac{\partial L}{\partial z^{[2]}}=\frac{\partial L}{\partial a^{[2]}}\frac{\partial a^{[2]}}{\partial z^{[2]}}$。</p>
-<p>之后再计算$\frac{\partial z^{[2]}}{\partial W^{[2]}}$和$\frac{\partial z^{[2]}}{\partial b^{[2]}}$，同样根据链式法则可以得到$\frac{\partial L}{\partial W^{[2]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial W^{[2]}}$以及得到$\frac{\partial L}{\partial b^{[2]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial b^{[2]}}$。这样便得到了$dW^{[2]}$和$db^{[2]}$。</p>
-<p>另外对于$dW^{[1]}$和$db^{[1]}$的计算，需要先计算$\frac{\partial z^{[1]}}{\partial W^{[1]}}$，$\frac{\partial a^{[1]}}{\partial z^{[1]}}$和$\frac{\partial z^{[2]}}{\partial a^{[1]}}$，同样根据链式法则可以得到$\frac{\partial L}{\partial W^{[1]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial a^{[1]}}\frac{\partial a^{[1]}}{\partial z^{[1]}}\frac{\partial z^{[1]}}{\partial W^{[1]}}$，以及$\frac{\partial L}{\partial b^{[1]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial a^{[1]}}\frac{\partial a^{[1]}}{\partial z^{[1]}}\frac{\partial z^{[1]}}{\partial b^{[1]}}$。这样也得到了$dW^{[1]}$和$db^{[1]}$。</p>
-<p>在使用随机梯度下降(SGD)优化算法以及交叉熵(Cross Entropy)损失函数的时候，我们令$a^{[2]}=\hat{y}$，即损失函数：</p>
-<script type="math/tex; mode=display">L(\hat{y},y)=-(ylog\hat{y}+(1-y)log(1-\hat{y}))</script><p>使用sigmoid激活函数，即</p>
-<script type="math/tex; mode=display">a^{[1]}=\sigma(z^{[1]})=\frac{1}{1+e^{-z^{[1]}}}\\a^{[2]}=\sigma(z^{[2]})=\frac{1}{1+e^{-z^{[2]}}}</script><p>将该激活函数和损失函数代入上面的计算过程，可以得到：</p>
-<script type="math/tex; mode=display">
-dz^{[2]}=a^{[2]}-y\\
-dW^{[2]}=dz^{[2]}a^{[1]T}\\
-db^{[2]}=dz^{[2]}\\
-dz^{[1]}=W^{[2]T}dz^{[2]}*\sigma^{'}(z^{[1]})\\
-dW^{[1]}=dz^{[1]}x^{T}\\
-db^{[1]}=dz^{[1]}</script><p>在进行随机梯度下降的过程中，随机选取样本中的一个错误分类点，根据该点计算当前的$dW^{[1]},db^{[1]},dW^{[2]},db^{[2]}$，然后利用以下公式来更新$W^{[1]},b^{[1]},W^{[2]},b^{[2]}$：</p>
-<script type="math/tex; mode=display">
-W^{[2]}:=W^{[2]}-\alpha *dW^{[2]}\\
-b^{[2]}:=b^{[2]}-\alpha *db^{[2]}\\
-W^{[1]}:=W^{[1]}-\alpha *dW^{[1]}\\
-b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
-<p>对于神经网络的训练，还有批量梯度下降(Batch Gradient Descent)和小批量梯度下降(Mini-Batch Gradient Descent)，带动量的随机梯度下降(Momentum)，RMSProp，Adam等方法，后面再做详解。</p>
-<p>To be continue…</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/01/机器学习-神经网络反向传播的推导/" data-id="cjn4arkhs001qz0ezwvi6wx5u" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
 
     </footer>
   </div>
@@ -360,7 +347,7 @@ b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -395,7 +382,7 @@ b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -414,7 +401,7 @@ b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -425,6 +412,10 @@ b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/10/12/paper-ShuffleNet/">[paper]ShuffleNet</a>
+          </li>
         
           <li>
             <a href="/2018/10/11/paper-ShuffleNetV2/">[paper]ShuffleNetV2</a>
@@ -440,10 +431,6 @@ b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
         
           <li>
             <a href="/2018/09/21/Matrix-Derivative/">[Matrix]关于向量与矩阵的求导</a>
-          </li>
-        
-          <li>
-            <a href="/2018/09/14/leetcode-stock/">[LeetCode]动态规划中股票问题的通用解法</a>
           </li>
         
       </ul>
@@ -485,5 +472,21 @@ b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
 
 
   </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
 </body>
 </html>

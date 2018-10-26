@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>[paper]HashingTricks | Math &amp; Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="《Compressing Neural Networks with the Hashing Trick》总结Abstract深度网络在移有链接动设备上应用越来越多，一个dilemma变得越来越明显：深度学习的趋势是开发能够吸收更大数据集的模型，然而移动设备的存储空间有限，不能存储过大的模型，这里提出了一种HashedNets，通过减少神经网络的内部固有冗余来实现模型尺寸的减少。HashedNets">
+<meta name="keywords" content="machine learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[paper]HashingTricks">
+<meta property="og:url" content="http://yoursite.com/2018/10/15/paper-HashingTricks/index.html">
+<meta property="og:site_name" content="Math &amp; Code">
+<meta property="og:description" content="《Compressing Neural Networks with the Hashing Trick》总结Abstract深度网络在移有链接动设备上应用越来越多，一个dilemma变得越来越明显：深度学习的趋势是开发能够吸收更大数据集的模型，然而移动设备的存储空间有限，不能存储过大的模型，这里提出了一种HashedNets，通过减少神经网络的内部固有冗余来实现模型尺寸的减少。HashedNets">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/paper-HashingTricks/weights-share.PNG">
+<meta property="og:updated_time" content="2018-10-19T02:53:40.369Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[paper]HashingTricks">
+<meta name="twitter:description" content="《Compressing Neural Networks with the Hashing Trick》总结Abstract深度网络在移有链接动设备上应用越来越多，一个dilemma变得越来越明显：深度学习的趋势是开发能够吸收更大数据集的模型，然而移动设备的存储空间有限，不能存储过大的模型，这里提出了一种HashedNets，通过减少神经网络的内部固有冗余来实现模型尺寸的减少。HashedNets">
+<meta name="twitter:image" content="http://yoursite.com/images/paper-HashingTricks/weights-share.PNG">
+  
+    <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Math &amp; Code</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">---By Frank,the best or nothing</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-paper-HashingTricks" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/10/15/paper-HashingTricks/" class="article-date">
+  <time datetime="2018-10-15T07:07:09.000Z" itemprop="datePublished">2018-10-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      [paper]HashingTricks
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="《Compressing-Neural-Networks-with-the-Hashing-Trick》总结"><a href="#《Compressing-Neural-Networks-with-the-Hashing-Trick》总结" class="headerlink" title="《Compressing Neural Networks with the Hashing Trick》总结"></a>《Compressing Neural Networks with the Hashing Trick》总结</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>深度网络在移有链接动设备上应用越来越多，一个dilemma变得越来越明显：深度学习的趋势是开发能够吸收更大数据集的模型，然而移动设备的存储空间有限，不能存储过大的模型，这里提出了一种HashedNets，通过减少神经网络的内部固有冗余来实现模型尺寸的减少。HashedNets利用一个低开销的哈希函数来将连接权重随机分组进不同的哈希桶，而同一个哈希桶里面的所有连接都使用同一个参数值，这些参数在标准的反向传播过程中被进行调整。这个哈希过程不会引入额外的内存开销。在不同的benchmark数据集上性能说明HashedNets可以在保留泛化性能的基础上明显减少存储需要。</p>
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.Introduction</h2><p>近十年里，深度神经网络在很多应用领域里都设立了新的性能标准，这些领域包括：物体分类，语音识别，图像字幕生成和域适应。随着数据的增加，为了获取更多参数信息，神经网络中的参数数量也在增加。并且在工业集群和高性能GPU上进行训练，这是发展的一个趋势。而另外一个趋势在于机器学习开始向移动设备和嵌入式设备上进行迁移，这些设备具有比较低的能耗，并且关键在于他们只有比较小的工作内存。</p>
+<p>这两个趋势之间的分离导致了state-of-the-art的网络应用在移动设备上的dilemma。在工业集群上训练好的最高效的模型可能也会超过移动设备的运行内存。语音识别领域的一个解决办法就是把经过处理的语音传到计算中心然后在服务器端进行计算。然而这样需要有比较高的带宽，另外一个办法就是为移动设备上的应用训练小型网络，但是这样会损失精度（从2018年来看的话这种方法还是可行的，一方面移动设备计算能力增长很快，另一方面ShuffleNet等轻量化网络在精度上也很不错）。</p>
+<p>这样的dilemma促进了网络压缩的发展，研究表明神经网络当中有大量的冗余，作者表明其中只有一小部分是有用的，并且使用了权重矩阵的低秩分解对其进行了开发。另外有研究表明深层网络压缩成一层浅网络，通过利用完全训练好的网络的输出来训练小网络来实现（从2018的角度来看就是ditillation，应该也是2015年Hinton第一次提出这个名词，不过06年就有相关的想法出现）。还有利用reduced bit precision来实现的，还有1989年lecun提出去除神经网络中不重要的权重。总而言之，神经网络中很多权重参数都是没用的。</p>
+<p>通过很多benchmark证明HashedNets能够在少量影响精度的情况下大幅减少模型尺寸。在同样的内存限制下，Hashing的方法要比low-rank分解具有更多可调节的参数。同样发现在有限的参数集下，重复使用参数，对神经网络进行扩张也是很有好处的，另外HashedNets的网络再扩张之后也不对其他的网络结构设计造成影响（dropout正则化之类的）。</p>
+<h2 id="2-Feature-Hashing"><a href="#2-Feature-Hashing" class="headerlink" title="2.Feature Hashing"></a>2.Feature Hashing</h2><h2 id="3-Notation"><a href="#3-Notation" class="headerlink" title="3.Notation"></a>3.Notation</h2><p>这一节主要介绍了向量，矩阵等符号表示，以及公式当中的符号所代表的含义等。</p>
+<h2 id="4-HashedNets"><a href="#4-HashedNets" class="headerlink" title="4.HashedNets"></a>4.HashedNets</h2><p>这一章节主要介绍了HashedNets，一种模型尺寸和内存要求都大幅减少的神经网络的变种，之后最先介绍了在网络连接之间进行随机权重共享的方法实现，然后描述了如何利用hashing trick对其进行改善，从而避免更多内存开销。</p>
+<h3 id="4-1-Random-weight-sharing"><a href="#4-1-Random-weight-sharing" class="headerlink" title="4.1.Random weight sharing"></a>4.1.Random weight sharing</h3><p>全连接的网络层有很多参数，如果对于每一层都有内存限制，如果超过了内存限制，需要减小每一层所占内存，通常有两个办法：1.减少连接的节点数。2.减少权重矩阵中的位精度。然而如果内存限制已经很小了，那么这两种方法将会降低网络的泛化能力。这里提出了一种新的方法：利用一个虚拟的权重矩阵，通过权值共享减小其有效内存消耗。具体结构如图所示：<img src="/images/paper-HashingTricks/weights-share.PNG" alt="单隐层全连接网络中的权值共享"></p>
+<h3 id="4-2-Hashed-Neural-Nets-HashedNets"><a href="#4-2-Hashed-Neural-Nets-HashedNets" class="headerlink" title="4.2.Hashed Neural Nets (HashedNets)"></a>4.2.Hashed Neural Nets (HashedNets)</h3><p>随机权值共享的一个简单的实现就是用第二个矩阵来包含每个连接的分组情况，然而这样过于详细的表示方法在节省内存这方面上表现并不好。这里打算利用哈希的方式来实现权值共享，利用<script type="math/tex">w^{l}_i</script>来存储第<script type="math/tex">l</script>层的第<script type="math/tex">i</script>个有效权重，<script type="math/tex">V^l_{i,j}</script>代表虚拟权重，然后利用哈希函数<script type="math/tex">h^l(i,j)</script>来将虚拟权重上的下标映射到有效权重上，即<script type="math/tex">V^{l}_{ij}=w^{l}_{h^l(i,j)}</script>，这里利用开源的xxHash来实现这一功能</p>
+<h3 id="4-3-Feature-hashing-versus-weight-sharing"><a href="#4-3-Feature-hashing-versus-weight-sharing" class="headerlink" title="4.3.Feature hashing versus weight sharing"></a>4.3.Feature hashing versus weight sharing</h3><p>HashedNets的单层计算公式为<script type="math/tex">z_i=\sum^{m}_{j=1}V_{ij}a_j=\sum^{m}_{j=1}w_{h(i,j)}a_j</script>，同样可以通过特征哈希的方式来对HashedNets进行阐释，即将输入的m维特征通过哈希的方式映射到k维中，可以得到与权值共享同样的结果，可以看作对HashedNets的另一种解释。</p>
+<p>在特征哈希中，哈希函数表示为</p>
+<script type="math/tex; mode=display">
+[\phi_{i}(a)]_{k}=\sum_{j:h(i,j)=k}a_j</script><p>其中<script type="math/tex">i</script>表示权值矩阵当中的第<script type="math/tex">i</script>行，<script type="math/tex">[\phi_{i}(a)]_{k}</script>表示在映射之后的k维的特征空间中的第<script type="math/tex">k</script>个元素，可以将<script type="math/tex">z_i</script>写成以下形式：</p>
+<script type="math/tex; mode=display">
+z_i=\sum_{k=1}^{K}w_{k}[\phi_{i}(a)]_{k}=\sum_{k=1}^{K}w_{k}\sum_{j:h(i,j)=k}a_j</script><p>另外继续通过变换可以得到：</p>
+<script type="math/tex; mode=display">
+z_{i}=\sum^{m}_{j=1}\sum_{k=1}^{K}w_{k}a_{j}\delta_{[h(i,j)=k]}=\sum^{m}_{j=1}w_{h(i,j)a_{j}}</script><p>这个表达式与权值共享得到的表达式是一样的，因此二者其实是等价的。</p>
+<p>Sign factor：出于权值随机共享和特征哈希之间的等价性，HashedNets继承了一些特征哈希的优点，比如在特征哈希中可以通过引入<script type="math/tex">\xi(i,j)</script>，以此消除由于冲突而引起的的内积偏差。</p>
+<p>Sparsity：以前的研究表明，在稀疏特征向量的时候应用特征哈希是最有用的，因为此时的冲突比较小。在隐藏层里面使用稀疏诱导的激活函数可以进一步促进该现象，比如ReLU。在这里全部使用了ReLU激活函数因为稀疏诱导性和很强的泛化性能。</p>
+<p>Alternative neural network architectures：这里主要研究的是全连接的前向传播网络，HashedNets也能应用在其他网络上，比如RNN等，同样也可以与其他网络压缩方法相融合，比如使用Low-bit存储，移除某些边，或者通过其他大型网络的输出来训练HashedNets等。    </p>
+<h3 id="4-4-Training-HashedNets"><a href="#4-4-Training-HashedNets" class="headerlink" title="4.4.Training HashedNets"></a>4.4.Training HashedNets</h3><p>这里分为三个部分来介绍：1.在前向传播阶段计算一个哈希层的输出。2.从输出层向输入层传播梯度。3.在反向传播的过程中计算对权重<script type="math/tex">W^l</script>的梯度</p>
+<p>前向传播的公式：</p>
+<script type="math/tex; mode=display">
+a_i^{l+1}=f(\sum^{n^l}_{j}w^{l}_{h^{l}(i,j)}\xi^{l}(i,j)a_{j}^l)</script><p>误差项：</p>
+<script type="math/tex; mode=display">
+\delta_{j}^{l}=(\sum_{i=1}^{n^{l+1}}\xi^{l}(i,j)w^{l}_{h^{l}(i,j)}\delta_{i}^{l+1})f'(z_{j}^l    )</script><p>损失函数对于参数的梯度：</p>
+<script type="math/tex; mode=display">
+\frac{\partial L}{\partial V_{ij}^{l}}=a^{l}_{j}\delta_{i}^{l+1}\\
+\frac{\partial V_{ij}^l}{\partial w_{k}^{l}}=\xi^{l}(i,j)\delta_{h^{l}(i,j)=k}</script><p>上面公式中第一个是损失函数对虚拟权重的微分，后一个是虚拟权重对真实权重的微分，利用链式法则将二者结合起来则得到：</p>
+<script type="math/tex; mode=display">
+\frac{\partial L}{\partial w_{k}^{l}}=\sum_{i,j}\frac{\partial L}{\partial V_{ij}^l}\frac{\partial V_{ij}^{l}}{\partial    w_{k}^{l}}=\sum_{i=1}^{n^{l+1}}\sum_{j}a_{j}^{l}\delta_{i}^{l+1}\xi^{l}(i,j)\delta_{h^{l}(i,j)=k}</script><h2 id="5-Related-Work"><a href="#5-Related-Work" class="headerlink" title="5.Related Work"></a>5.Related Work</h2><p>深度神经网络在很多真实世界应用中都取得了巨大的进展，包括图像分类，目标检测，图像检索，语音识别和文字表达等。现在已经有了很多尝试去在各种语境下减少神经网络的复杂度，最流行的方法就是卷积神经网络，在每一个感知野里面都用了同样的滤波器，既能够减小模型尺寸也能改善泛化性能。另外与池化相结合能够减少层之间的连接，只展示输入特征的一部分。自编码器则在编码器与解码器之间使用同样的权值。</p>
+<p>其他有一些方法可以减少网络中自由参数的数量，但是并不一定能减少内存开销。有一种用于正则化的软权值共享的方法，将权值建模成一个混合高斯模型：对权值进行聚类，使得同一个组的权重有同样的值。因为权值在训练之前并不清楚，所以在训练过程中对权重进行聚类。这个方法与HashedNets不同，需要大量的参数来记录每个权重值所对应的组成员。</p>
+<p>还有一种方法是直接去掉不重要的权重，但是这种方法同样需要大量的参数来存储稀疏的权重值。另外有方法在实验中表明随机去掉网络中的连接将导致很好的经验性能，这点与HashedNets的想法类似。</p>
+<p>有的方法利用减少数值表示精度的方法来减少模型的尺寸，比如16位的定点表示相比双精度浮点表示减少为1/4的存储量，然而在性能上只有少量降低，这个方法可以拿来与其他方法相耦合。</p>
+<p>最近的研究表明通过直接学习每一层的低秩分解发现神经网络参数中有大量的冗余，直接从低秩分解恢复来的网络只是轻微的降低了性能，相比所有权重值都作为自由参数的情况下。后续的工作用了类似的技术来加速CNN的测试速度，而不是在减少存储空间和内存开销。HashedNets与这项工作是互补的，两种方法可以组合在一起。</p>
+<p>另一种方法就是蒸馏，作者表明蒸馏出来的模型相比只在标签上进行训练有更好的泛化性能。还有一种nested dropout方法，可以对隐藏节点的重要性进行排序，在训练完成之后去掉这些节点。</p>
+<p>一种方法是第一次提出对于移动和嵌入式设备进行NLP模型的优化，提出了随机特征混合基于哈希函数来对特征进行分组，能够显著减少特征数量和参数数量，在特征哈希的帮助下，Vowpal Wabbit大规模学习系统能够对数据集进行缩放。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/10/15/paper-HashingTricks/" data-id="cjnpw6261000em0awhvb7qrum" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/10/22/paper-darts/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          [paper]darts
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/10/12/paper-ShuffleNet/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">[paper]ShuffleNet</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<div id="gitalk-container"></div>     <script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '2193b885b967a685e247',
+        clientSecret: '49a60c8f19873532dc3e7a6658bbff6c95ce73c9',
+        repo: 'Lannyy.github.io',
+        owner: 'Lannyy',
+        admin: ['Lannyy'],
+        id: '2018/10/15/paper-HashingTricks/',
+        distractionFreeMode: true,
+    });
+    gitalk.render('gitalk-container');
+</script></section>
+        
+          <aside id="sidebar">
+  
+    
+<div class="widget-wrap">
+  <h3 class="widget-title">ABOUT ME</h3>
+  <ul class="widget about-me">
+    
+    <li><img class="author" title="About me" src="/images/cute.jpg" /></li>
+    
+    
+    <li>Name：Tang Lang</li>
+    
+    <li>School：Xiamen University</li>
+    
+    <li>Email：langtang1996@gmail.com</li>
+    
+    <li>QQ：1660039482</li>
+    
+  </ul>
+</div>
+
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Cpp/" style="font-size: 15px;">Cpp</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/algorithm/" style="font-size: 12.5px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 17.5px;">optimization</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/10/22/paper-darts/">[paper]darts</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/15/paper-HashingTricks/">[paper]HashingTricks</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/12/paper-ShuffleNet/">[paper]ShuffleNet</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/11/paper-ShuffleNetV2/">[paper]ShuffleNetV2</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/04/paper-MobileNets/">[paper]MobileNets</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Tang Lang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

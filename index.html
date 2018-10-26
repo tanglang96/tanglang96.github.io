@@ -70,6 +70,165 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-paper-darts" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/10/22/paper-darts/" class="article-date">
+  <time datetime="2018-10-22T05:12:00.000Z" itemprop="datePublished">2018-10-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/10/22/paper-darts/">[paper]darts</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="《DARTS-Differentiable-Architecture-Search》总结"><a href="#《DARTS-Differentiable-Architecture-Search》总结" class="headerlink" title="《DARTS: Differentiable Architecture Search》总结"></a>《DARTS: Differentiable Architecture Search》总结</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>这篇论文旨在挑战结构搜索，通过将该任务定义成一个可微分的形式，而不是像传统的做法：在离散的不可微分的空间中利用增强学习来实现结构搜索。该方法基于结构表示的连续松弛，允许使用梯度下降等高效的方法进行结构搜索。后续实验表明该算法在探索高性能的用于图像识别的CNN结构和语言建模的RNN结构上都有良好的表现，并且比现有的state-of-the-art非微分结构要快得多。</p>
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1 Introduction"></a>1 Introduction</h2><p>自动搜索的网络结构在图像分类和目标检测等任务上取得了很有竞争力的表现，然而目前最好的结构搜索算法对于计算能力有非常高的要求。比如利用强化学习获得一个在CIFAR-10和ImageNet上的state-of-the-art结构需要1800GPU days。现在也有一些加速的方法，比如设置搜索空间/权值/性能预测的特定结构和跨结构的权值共享。但在可扩展性上的基本矛盾依旧存在。这些主流方法（RL，MCTS，SMBO，bayesian优化）比较低效率的原因在于：将这个结构搜索问题看作一个离散空间上的黑箱优化问题，这就导致了需要大量的结构评估次数。</p>
+<p>在这项工作中提出了解决该问题的另外一种方法：darts（Differentiable Architecture Search），将搜索空间进行松弛，使其变得连续，因此这个结构可以通过梯度下降的方法进行优化，使得darts可以实现与state-of-the-art相竞争的性能，并且只需要少得多的计算量。该方法也超过了另外一个高效的网络搜索方法的性能（ENAS）。darts比其他很多网络都要更加简单，因为其不包含任何controller/hypernetworks/performance predictors。目前darts在搜索CNN和RNN上的性能都表现良好。</p>
+<p>在连续空间上进行结构搜索的想法并不是最新的想法，但是在这里也有一些主要的区别：前人的工作主要是做fine -tune，比如filter shape等。darts能够在复杂的有较大搜索空间的图拓扑结构中探索高性能结构，并且能够同时应用于CNN和RNN。实验已经证明，darts在CIFAR-10，ImageNet，PTB上都取得了很好的结果。</p>
+<p>本文的主要贡献可以总结为如下几条：</p>
+<p>1.介绍了一种可微分的结构搜索算法，可以同时应用在CNN和RNN上</p>
+<p>2.通过在图像分类和语言建模的实验，证明了基于梯度的结构搜索实现了在CIFAR-10上的有竞争力的结果，在PTB上的性能超过了其他state-of-the-art结构，有趣的是目前最好的结构搜索算法利用了不可微的，基于RL和evoluiton的搜索技巧。</p>
+<p>3.实现了很好的结构搜索效率，使用的基于梯度的优化而不是非微分的搜索技术</p>
+<p>4.darts在cifar-10和PTB上学习的结构可以被迁移到ImageNet和wikitext2上</p>
+<h2 id="2-Differentiable-Architecture-Search"><a href="#2-Differentiable-Architecture-Search" class="headerlink" title="2 Differentiable Architecture Search"></a>2 Differentiable Architecture Search</h2><p>这一节首先总体介绍了搜索空间，整个计算流程被描述成一张有向无环图。之后介绍了连接的连续松弛，以及权值和结构的联合优化。最后介绍了一种近似技术来使计算变得可行且高效。</p>
+<h3 id="2-1-Search-Space"><a href="#2-1-Search-Space" class="headerlink" title="2.1 Search Space"></a>2.1 Search Space</h3><p>目的是搜索一种计算cell来作为最后结构的building block，可以将其搭建成CNN或者循环连接成RNN。一个cell里面是有N个节点的有向无环图，其中每个节点<script type="math/tex">x^{(i)}</script>相当于一个feature map，每个有向边<script type="math/tex">(i,j)</script>相当于一个操作<script type="math/tex">o^{(i,j)}</script>，用于对<script type="math/tex">x^{(i)}</script>进行变换，每个节点都是由之前的节点计算而来：</p>
+<script type="math/tex; mode=display">
+x^{(i)}=\sum_{j<i}o^{(i,j)}(x^{(j)})</script><p>当两个节点之间没有连接时，引入一种空操作，记为<script type="math/tex">zero</script>操作</p>
+<p><img src="/images/paper-darts/overview.PNG" alt="当Node=4的搜索过程"></p>
+<h3 id="2-2-Continuous-Relaxation-and-Optimization"><a href="#2-2-Continuous-Relaxation-and-Optimization" class="headerlink" title="2.2 Continuous Relaxation and Optimization"></a>2.2 Continuous Relaxation and Optimization</h3><p>令<script type="math/tex">O</script>为所有可能操作所构成的集合，其中每个操作表示为<script type="math/tex">o(\cdot)</script>，为了让搜索空间变得连续，像softmax一样将可行操作的选择在所有操作上进行松弛化</p>
+<script type="math/tex; mode=display">
+\bar{o}^{(i,j)}(x)=\sum_{o\in O}\frac{exp(\alpha_{o}^{(i,j)})}{\sum_{o^{'}\in O}exp(\alpha_{o^{'}}^{(i,j)})}o(x)</script><p>两个节点<script type="math/tex">i,j</script>之间的操作编码为<script type="math/tex">|O|</script>维的向量<script type="math/tex">\alpha^{(i,j)}</script>，进行松弛之后，搜索结构的任务变成了搜索一个集合<script type="math/tex">\alpha=\{\alpha^{(i,j)}\}</script>，该集合也称作对于结构的编码，最后再将混合操作<script type="math/tex">\bar{o}^{(i,j)}</script>替换为最可能的操作即可，例如可以选择向量中权值最大的对应操作作为选定的操作。</p>
+<p>在进行松弛之后，下一个目标就是对于权值<script type="math/tex">w</script>和网络结构<script type="math/tex">\alpha</script>进行联合优化，与RL和evolution一样都是使用valset的精度作为reward，不过这里是使用的梯度方法进行优化而不是在离散空间上进行搜索。以<script type="math/tex">L_{train},L_{val}</script>分别作为训练集和验证集上的损失，而损失是由<script type="math/tex">w,\alpha</script>共同决定的，这里引出一个双层优化问题：</p>
+<script type="math/tex; mode=display">
+min_{\alpha}\ L_{val}(w^{*}(\alpha),\alpha)\\
+s.t. \ w^{*}(\alpha)=argmin_{w}\ L_{train}(w,\alpha)</script><p>其实也可以将<script type="math/tex">\alpha</script>看作一个超参数，只不过这个超参数的维度要远大于那些标量超参数</p>
+<h3 id="2-3-Approximation"><a href="#2-3-Approximation" class="headerlink" title="2.3 Approximation"></a>2.3 Approximation</h3><p>直接求解这样的双层优化问题是很困难的，这里给出了一种近似的算法：</p>
+<p><img src="/images/paper-darts/algorithm.PNG" alt="联合优化的算法"></p>
+<p>其实也就是在初始情况下先固定网络结构，对权值<script type="math/tex">w</script>进行优化，然后再在当前权值的基础上对网络结构<script type="math/tex">\alpha</script>进行优化，往返进行直到收敛为止，最后再将混合操作确定成某个操作。注意上述公式在更新网络结构<script type="math/tex">\alpha</script>时其中的<script type="math/tex">w-\xi \nabla_{w}L_{train}(w,\alpha)</script>作为一个单步的梯度下降是为了近似<script type="math/tex">w^{*}(\alpha)</script>，一种相似的方法应用在了model transfer的meta-learning上，这样的迭代算法在<script type="math/tex">w,\alpha</script>之间定义了一个Stackelberg game，然而目前并不能保证该算法可以收敛，不过在实际应用中在合适选择<script type="math/tex">\xi</script>的时候是可以收敛的。同时注意到当在权值的优化中使用动量的时候，单步前向算法同样会随之改变，之前的分析仍然是有用的。</p>
+<p>在第一步中对<script type="math/tex">w</script>的梯度就是普通的神经网络反向传播过程，而在第二步中要对网络结构<script type="math/tex">\alpha</script>进行升级，需要计算<script type="math/tex">L_{val}(w-\xi\nabla_{w}L_{train}(w,\alpha),\alpha)</script>对<script type="math/tex">\alpha</script>的梯度，通过计算可以得到：</p>
+<script type="math/tex; mode=display">
+\nabla_{\alpha}L_{val}(w-\xi\nabla_{w}L_{train}(w,\alpha),\alpha)=\nabla_{\alpha}L_{val}(w',\alpha)-\xi\nabla_{\alpha,w}^{2}L_{train}(w,\alpha)\nabla_{w'}L_{val}(w',\alpha)</script><p>其中<script type="math/tex">w'=w-\xi\nabla_{w}L_{train}(w,\alpha)</script>，是单步前向过程之后的结果，在上面公式的后面一项包括矩阵与向量之间的乘积，这个操作需要大量的计算量，不过可以通过一种近似方法来实现，令<script type="math/tex">\epsilon</script>为一个极小量：</p>
+<script type="math/tex; mode=display">
+\nabla_{\alpha,w}^{2}L_{train}(w,\alpha)\nabla_{w'}L_{val}(w',\alpha)\thickapprox\frac{\nabla_{\alpha}L_{train}(w^{+},\alpha)-\nabla_{\alpha}L_{train}(w^{-},\alpha)}{2\epsilon}</script><p>其中的<script type="math/tex">w^{+}=w+\epsilon\nabla_{w'}L_{val}(w',\alpha),w^{-}=w-\epsilon\nabla_{w'}L_{val}(w',\alpha)</script></p>
+<p>可以将计算复杂度从<script type="math/tex">O(|\alpha||w|)</script>减少为<script type="math/tex">O(|\alpha|+|w|)</script></p>
+<p>当<script type="math/tex">\xi=0</script>的时候，上面公式中的二阶项则不起作用了，整个损失函数对于<script type="math/tex">\alpha</script>的梯度则变为<script type="math/tex">\nabla_{\alpha}L_{val}(w,\alpha)</script>，这样的话相当于去掉为了近似下一个<script type="math/tex">w</script>而进行的单步传播，这样会提升速度但是会导致更差的性能，在之后将<script type="math/tex">\xi=0</script>的情况称为一阶近似，而将<script type="math/tex">\xi>0</script>的情况称为二阶近似</p>
+<h3 id="2-4-Deriving-Discrete-Architectures"><a href="#2-4-Deriving-Discrete-Architectures" class="headerlink" title="2.4 Deriving Discrete Architectures"></a>2.4 Deriving Discrete Architectures</h3><p>在训练完成了之后需要生成对应的离散结构，首先对于每个中间节点选取k个最强的前继节点，在这里对于CNN，k=2，对于RNN，k=1。这个edge的强度定义为：<script type="math/tex">max_{o\in O,o\neq zero}\frac{exp(\alpha_{o}^{(i,j)})}{\sum_{o'\in O}exp(\alpha_{o'}^{(i,j)})}</script></p>
+<p>然后将每一个混合操作通过取最大的可能值来确定为一个具体操作</p>
+<p>在一个简单的L_val和L_train下进行实验所得到的收敛路径如下图，通过与该问题的解析解的对比，在迭代算法中正确的选择<script type="math/tex">\xi</script>可以收敛到一个更好的结果<img src="/images/paper-darts/path.PNG" alt="收敛路径的对比"></p>
+<h2 id="3-Experiments-and-Results"><a href="#3-Experiments-and-Results" class="headerlink" title="3. Experiments and Results"></a>3. Experiments and Results</h2><p>在CIFAR-10和PTB上进行的实验包含两个阶段：结构搜索和结构评估。在第一个阶段搜索可能的cell并基于在val集上的表现决定最好的cell集。在第二个阶段用这些cell来组建更大的网络，然后在测试集上来报告其性能。最后利用最好的cell来对可迁移性进行了评估。这里的总结主要写CNN相关的部分，而不包括RNN的内容。</p>
+<h3 id="3-1-Architecture-Search"><a href="#3-1-Architecture-Search" class="headerlink" title="3.1 Architecture Search"></a>3.1 Architecture Search</h3><p>这里只总结卷积相关的部分，操作集包括<script type="math/tex">O</script>：3x3和5x5 separable conv，3x3和5x5 dilated separable conv，3x3 max pooling，3x3 avg pooling，identy，zero。所有的操作是stride=1，对于卷积操作使用了ReLU-Conv-BN的顺序，并且每个separable conv都应用了两次。</p>
+<p>这里的conv cell包括7个node，输出节点定义为内部节点的depthwise concat，cell k里面的第一个和第二个node与cell k-1和cell k-2的输出相等，并且在必要的时候使用1x1 conv。在网络1/3和2/3部分的cell是reduction cell，在这里面所有与输入节点相连的操作都是stride=2。于是结构编码分为<script type="math/tex">\alpha_{normal},\alpha_{reduce}</script>。</p>
+<p>在整个搜索过程中结构会发生变化，在BN中使用batch-specific statistics而不是global moving avg，在所有BN中都禁止了可学习的仿射参数。</p>
+<p>将CIFAR-10的训练数据的一半作为val set，训练了一个cell=8，50epochs，batch_size=64，initial_channels=16，这些参数设定保证能在一个gpu上进行训练，w的优化使用momentum SGD，<script type="math/tex">\alpha</script>的优化使用Adam，总共花了一天时间在单个GPU上。<img src="/images/paper-darts/search.PNG" alt="CNN搜索过程"></p>
+<h3 id="3-2-Architecture-Evaluation"><a href="#3-2-Architecture-Evaluation" class="headerlink" title="3.2 Architecture Evaluation"></a>3.2 Architecture Evaluation</h3><p>为了选取应用于evaluation的结构，用不同的随机数种子运行了4次darts，根据验证集的性能选取了最好的cell。然后再将权值随机初始化后进行训练，再观察其在测试集上的表现。</p>
+<p>通过小型网络将cell选定之后再训练较大的网络，20 cells，600 epoch，batch_size=96，一些其他的增强措施：cutout，path dropout，auxiliary towers。单个GPU上训练了1.5天。</p>
+<h3 id="3-3-Results-Analysis"><a href="#3-3-Results-Analysis" class="headerlink" title="3.3 Results Analysis"></a>3.3 Results Analysis</h3><p>darts在cifar10和imagenet的实验结果如下图，在imagenet上使用了和cifar10一样的cells：</p>
+<p><img src="/images/paper-darts/result1.PNG" alt="cifar10训练结果"></p>
+<p><img src="/images/paper-darts/result2.PNG" alt="imagenet的实验结果"></p>
+<p>上图中的NASNet和AmoebaNet是state-of-the-art，相比而言在效果上差距不大，但是搜索时间少了很多，同样的对于imagenet数据集也是一样的效果。</p>
+<h2 id="4-Conclusion"><a href="#4-Conclusion" class="headerlink" title="4. Conclusion"></a>4. Conclusion</h2><p>darts是第一个可微分的结构搜索算法，同时应用于CNN和RNN，通过在连续空间内进行搜索，darts可以在图像分类和语言建模的任务上面匹配甚至性能超过state-of-the-art的非微分结构搜索算法，并且明显更加高效。在未来会利用darts探索一种在更大的任务上的直接结构搜索</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/10/22/paper-darts/" data-id="cjnpw626h000zm0awjq96kfy9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-paper-HashingTricks" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/10/15/paper-HashingTricks/" class="article-date">
+  <time datetime="2018-10-15T07:07:09.000Z" itemprop="datePublished">2018-10-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/10/15/paper-HashingTricks/">[paper]HashingTricks</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="《Compressing-Neural-Networks-with-the-Hashing-Trick》总结"><a href="#《Compressing-Neural-Networks-with-the-Hashing-Trick》总结" class="headerlink" title="《Compressing Neural Networks with the Hashing Trick》总结"></a>《Compressing Neural Networks with the Hashing Trick》总结</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>深度网络在移有链接动设备上应用越来越多，一个dilemma变得越来越明显：深度学习的趋势是开发能够吸收更大数据集的模型，然而移动设备的存储空间有限，不能存储过大的模型，这里提出了一种HashedNets，通过减少神经网络的内部固有冗余来实现模型尺寸的减少。HashedNets利用一个低开销的哈希函数来将连接权重随机分组进不同的哈希桶，而同一个哈希桶里面的所有连接都使用同一个参数值，这些参数在标准的反向传播过程中被进行调整。这个哈希过程不会引入额外的内存开销。在不同的benchmark数据集上性能说明HashedNets可以在保留泛化性能的基础上明显减少存储需要。</p>
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.Introduction</h2><p>近十年里，深度神经网络在很多应用领域里都设立了新的性能标准，这些领域包括：物体分类，语音识别，图像字幕生成和域适应。随着数据的增加，为了获取更多参数信息，神经网络中的参数数量也在增加。并且在工业集群和高性能GPU上进行训练，这是发展的一个趋势。而另外一个趋势在于机器学习开始向移动设备和嵌入式设备上进行迁移，这些设备具有比较低的能耗，并且关键在于他们只有比较小的工作内存。</p>
+<p>这两个趋势之间的分离导致了state-of-the-art的网络应用在移动设备上的dilemma。在工业集群上训练好的最高效的模型可能也会超过移动设备的运行内存。语音识别领域的一个解决办法就是把经过处理的语音传到计算中心然后在服务器端进行计算。然而这样需要有比较高的带宽，另外一个办法就是为移动设备上的应用训练小型网络，但是这样会损失精度（从2018年来看的话这种方法还是可行的，一方面移动设备计算能力增长很快，另一方面ShuffleNet等轻量化网络在精度上也很不错）。</p>
+<p>这样的dilemma促进了网络压缩的发展，研究表明神经网络当中有大量的冗余，作者表明其中只有一小部分是有用的，并且使用了权重矩阵的低秩分解对其进行了开发。另外有研究表明深层网络压缩成一层浅网络，通过利用完全训练好的网络的输出来训练小网络来实现（从2018的角度来看就是ditillation，应该也是2015年Hinton第一次提出这个名词，不过06年就有相关的想法出现）。还有利用reduced bit precision来实现的，还有1989年lecun提出去除神经网络中不重要的权重。总而言之，神经网络中很多权重参数都是没用的。</p>
+<p>通过很多benchmark证明HashedNets能够在少量影响精度的情况下大幅减少模型尺寸。在同样的内存限制下，Hashing的方法要比low-rank分解具有更多可调节的参数。同样发现在有限的参数集下，重复使用参数，对神经网络进行扩张也是很有好处的，另外HashedNets的网络再扩张之后也不对其他的网络结构设计造成影响（dropout正则化之类的）。</p>
+<h2 id="2-Feature-Hashing"><a href="#2-Feature-Hashing" class="headerlink" title="2.Feature Hashing"></a>2.Feature Hashing</h2><h2 id="3-Notation"><a href="#3-Notation" class="headerlink" title="3.Notation"></a>3.Notation</h2><p>这一节主要介绍了向量，矩阵等符号表示，以及公式当中的符号所代表的含义等。</p>
+<h2 id="4-HashedNets"><a href="#4-HashedNets" class="headerlink" title="4.HashedNets"></a>4.HashedNets</h2><p>这一章节主要介绍了HashedNets，一种模型尺寸和内存要求都大幅减少的神经网络的变种，之后最先介绍了在网络连接之间进行随机权重共享的方法实现，然后描述了如何利用hashing trick对其进行改善，从而避免更多内存开销。</p>
+<h3 id="4-1-Random-weight-sharing"><a href="#4-1-Random-weight-sharing" class="headerlink" title="4.1.Random weight sharing"></a>4.1.Random weight sharing</h3><p>全连接的网络层有很多参数，如果对于每一层都有内存限制，如果超过了内存限制，需要减小每一层所占内存，通常有两个办法：1.减少连接的节点数。2.减少权重矩阵中的位精度。然而如果内存限制已经很小了，那么这两种方法将会降低网络的泛化能力。这里提出了一种新的方法：利用一个虚拟的权重矩阵，通过权值共享减小其有效内存消耗。具体结构如图所示：<img src="/images/paper-HashingTricks/weights-share.PNG" alt="单隐层全连接网络中的权值共享"></p>
+<h3 id="4-2-Hashed-Neural-Nets-HashedNets"><a href="#4-2-Hashed-Neural-Nets-HashedNets" class="headerlink" title="4.2.Hashed Neural Nets (HashedNets)"></a>4.2.Hashed Neural Nets (HashedNets)</h3><p>随机权值共享的一个简单的实现就是用第二个矩阵来包含每个连接的分组情况，然而这样过于详细的表示方法在节省内存这方面上表现并不好。这里打算利用哈希的方式来实现权值共享，利用<script type="math/tex">w^{l}_i</script>来存储第<script type="math/tex">l</script>层的第<script type="math/tex">i</script>个有效权重，<script type="math/tex">V^l_{i,j}</script>代表虚拟权重，然后利用哈希函数<script type="math/tex">h^l(i,j)</script>来将虚拟权重上的下标映射到有效权重上，即<script type="math/tex">V^{l}_{ij}=w^{l}_{h^l(i,j)}</script>，这里利用开源的xxHash来实现这一功能</p>
+<h3 id="4-3-Feature-hashing-versus-weight-sharing"><a href="#4-3-Feature-hashing-versus-weight-sharing" class="headerlink" title="4.3.Feature hashing versus weight sharing"></a>4.3.Feature hashing versus weight sharing</h3><p>HashedNets的单层计算公式为<script type="math/tex">z_i=\sum^{m}_{j=1}V_{ij}a_j=\sum^{m}_{j=1}w_{h(i,j)}a_j</script>，同样可以通过特征哈希的方式来对HashedNets进行阐释，即将输入的m维特征通过哈希的方式映射到k维中，可以得到与权值共享同样的结果，可以看作对HashedNets的另一种解释。</p>
+<p>在特征哈希中，哈希函数表示为</p>
+<script type="math/tex; mode=display">
+[\phi_{i}(a)]_{k}=\sum_{j:h(i,j)=k}a_j</script><p>其中<script type="math/tex">i</script>表示权值矩阵当中的第<script type="math/tex">i</script>行，<script type="math/tex">[\phi_{i}(a)]_{k}</script>表示在映射之后的k维的特征空间中的第<script type="math/tex">k</script>个元素，可以将<script type="math/tex">z_i</script>写成以下形式：</p>
+<script type="math/tex; mode=display">
+z_i=\sum_{k=1}^{K}w_{k}[\phi_{i}(a)]_{k}=\sum_{k=1}^{K}w_{k}\sum_{j:h(i,j)=k}a_j</script><p>另外继续通过变换可以得到：</p>
+<script type="math/tex; mode=display">
+z_{i}=\sum^{m}_{j=1}\sum_{k=1}^{K}w_{k}a_{j}\delta_{[h(i,j)=k]}=\sum^{m}_{j=1}w_{h(i,j)a_{j}}</script><p>这个表达式与权值共享得到的表达式是一样的，因此二者其实是等价的。</p>
+<p>Sign factor：出于权值随机共享和特征哈希之间的等价性，HashedNets继承了一些特征哈希的优点，比如在特征哈希中可以通过引入<script type="math/tex">\xi(i,j)</script>，以此消除由于冲突而引起的的内积偏差。</p>
+<p>Sparsity：以前的研究表明，在稀疏特征向量的时候应用特征哈希是最有用的，因为此时的冲突比较小。在隐藏层里面使用稀疏诱导的激活函数可以进一步促进该现象，比如ReLU。在这里全部使用了ReLU激活函数因为稀疏诱导性和很强的泛化性能。</p>
+<p>Alternative neural network architectures：这里主要研究的是全连接的前向传播网络，HashedNets也能应用在其他网络上，比如RNN等，同样也可以与其他网络压缩方法相融合，比如使用Low-bit存储，移除某些边，或者通过其他大型网络的输出来训练HashedNets等。    </p>
+<h3 id="4-4-Training-HashedNets"><a href="#4-4-Training-HashedNets" class="headerlink" title="4.4.Training HashedNets"></a>4.4.Training HashedNets</h3><p>这里分为三个部分来介绍：1.在前向传播阶段计算一个哈希层的输出。2.从输出层向输入层传播梯度。3.在反向传播的过程中计算对权重<script type="math/tex">W^l</script>的梯度</p>
+<p>前向传播的公式：</p>
+<script type="math/tex; mode=display">
+a_i^{l+1}=f(\sum^{n^l}_{j}w^{l}_{h^{l}(i,j)}\xi^{l}(i,j)a_{j}^l)</script><p>误差项：</p>
+<script type="math/tex; mode=display">
+\delta_{j}^{l}=(\sum_{i=1}^{n^{l+1}}\xi^{l}(i,j)w^{l}_{h^{l}(i,j)}\delta_{i}^{l+1})f'(z_{j}^l    )</script><p>损失函数对于参数的梯度：</p>
+<script type="math/tex; mode=display">
+\frac{\partial L}{\partial V_{ij}^{l}}=a^{l}_{j}\delta_{i}^{l+1}\\
+\frac{\partial V_{ij}^l}{\partial w_{k}^{l}}=\xi^{l}(i,j)\delta_{h^{l}(i,j)=k}</script><p>上面公式中第一个是损失函数对虚拟权重的微分，后一个是虚拟权重对真实权重的微分，利用链式法则将二者结合起来则得到：</p>
+<script type="math/tex; mode=display">
+\frac{\partial L}{\partial w_{k}^{l}}=\sum_{i,j}\frac{\partial L}{\partial V_{ij}^l}\frac{\partial V_{ij}^{l}}{\partial    w_{k}^{l}}=\sum_{i=1}^{n^{l+1}}\sum_{j}a_{j}^{l}\delta_{i}^{l+1}\xi^{l}(i,j)\delta_{h^{l}(i,j)=k}</script><h2 id="5-Related-Work"><a href="#5-Related-Work" class="headerlink" title="5.Related Work"></a>5.Related Work</h2><p>深度神经网络在很多真实世界应用中都取得了巨大的进展，包括图像分类，目标检测，图像检索，语音识别和文字表达等。现在已经有了很多尝试去在各种语境下减少神经网络的复杂度，最流行的方法就是卷积神经网络，在每一个感知野里面都用了同样的滤波器，既能够减小模型尺寸也能改善泛化性能。另外与池化相结合能够减少层之间的连接，只展示输入特征的一部分。自编码器则在编码器与解码器之间使用同样的权值。</p>
+<p>其他有一些方法可以减少网络中自由参数的数量，但是并不一定能减少内存开销。有一种用于正则化的软权值共享的方法，将权值建模成一个混合高斯模型：对权值进行聚类，使得同一个组的权重有同样的值。因为权值在训练之前并不清楚，所以在训练过程中对权重进行聚类。这个方法与HashedNets不同，需要大量的参数来记录每个权重值所对应的组成员。</p>
+<p>还有一种方法是直接去掉不重要的权重，但是这种方法同样需要大量的参数来存储稀疏的权重值。另外有方法在实验中表明随机去掉网络中的连接将导致很好的经验性能，这点与HashedNets的想法类似。</p>
+<p>有的方法利用减少数值表示精度的方法来减少模型的尺寸，比如16位的定点表示相比双精度浮点表示减少为1/4的存储量，然而在性能上只有少量降低，这个方法可以拿来与其他方法相耦合。</p>
+<p>最近的研究表明通过直接学习每一层的低秩分解发现神经网络参数中有大量的冗余，直接从低秩分解恢复来的网络只是轻微的降低了性能，相比所有权重值都作为自由参数的情况下。后续的工作用了类似的技术来加速CNN的测试速度，而不是在减少存储空间和内存开销。HashedNets与这项工作是互补的，两种方法可以组合在一起。</p>
+<p>另一种方法就是蒸馏，作者表明蒸馏出来的模型相比只在标签上进行训练有更好的泛化性能。还有一种nested dropout方法，可以对隐藏节点的重要性进行排序，在训练完成之后去掉这些节点。</p>
+<p>一种方法是第一次提出对于移动和嵌入式设备进行NLP模型的优化，提出了随机特征混合基于哈希函数来对特征进行分组，能够显著减少特征数量和参数数量，在特征哈希的帮助下，Vowpal Wabbit大规模学习系统能够对数据集进行缩放。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/10/15/paper-HashingTricks/" data-id="cjnpw6261000em0awhvb7qrum" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-paper-ShuffleNet" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/10/12/paper-ShuffleNet/" class="article-date">
@@ -115,7 +274,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/12/paper-ShuffleNet/" data-id="cjn5svrt8000km8ez3euzjj0p" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/12/paper-ShuffleNet/" data-id="cjnpw626b000sm0awi646kdah" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -176,7 +335,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/11/paper-ShuffleNetV2/" data-id="cjn5svruv001nm8ezem69rsu3" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/11/paper-ShuffleNetV2/" data-id="cjnpw626b000um0aw74f3yh65" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -298,104 +457,10 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/04/paper-MobileNets/" data-id="cjn5svrt4000hm8ezed4e6mcj" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/04/paper-MobileNets/" data-id="cjnpw626b000nm0aw7lmwfl9w" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-paper-InceptionV4" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/09/28/paper-InceptionV4/" class="article-date">
-  <time datetime="2018-09-28T09:47:58.000Z" itemprop="datePublished">2018-09-28</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/28/paper-InceptionV4/">[paper]InceptionV4总结</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="《Inception-v4-Inception-ResNet-and-the-Impact-of-Residual-Connections-on-Learning》总结"><a href="#《Inception-v4-Inception-ResNet-and-the-Impact-of-Residual-Connections-on-Learning》总结" class="headerlink" title="《Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning》总结"></a>《Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning》总结</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>近些年，非常深的卷积神经网络在提升图像识别的性能表现上具有最大的促进作用。而Inception网络结构在具有很好的性能的同时还具有相对较低的计算消耗。最近的残差连接与传统结构的结合在2015 ILSVRC上取到了最好的结果，与InceptionV3的效果相近。考虑将Inception网络与残差连接相结合，充分的证据表明残差连接可以很大程度上加速Inception网络的训练，同样也有证据表明残差连接的Inception相比不带残差连接的几乎同样计算量的Inception网络性能要稍有优势。本文也提出了一些新的残差连接和不带残差连接的Inception网络，这些改变同样也明显改善了2012 ILSVRC的单帧分类性能。最后还提到了利用合适的激活缩放可以使非常宽的残差连接Inception网络的训练变得更加稳定</p>
-<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.Introduction</h2><p>2012年的AlexNet在CV任务中取得了很好的成绩，深层的CNN在各种CV领域内取得了很成功的应用。因为残差连接在训练深层结构中是至关重要的，本文将残差连接和深层的Inception网络相结合，这样将在保持计算量的同时收获所有残差连接的优点。</p>
-<p>除了直接的结合之外，本文还探索了是否可以将Inception自身做的更深和更宽来实现更好的性能，因此本文设计了InceptionV4，并由于Tensorflow的分布式计算的技术不再需要将模型进行划分。</p>
-<p>本文还将Inception-V3，Inception-V4和同样计算消耗的残差连接的Inception网络进行了比较，很明显InceptionV4和Inception-ResNet-V2的单帧性能表现在ImageNet的验证集上相类似，都超过了state-of-the-art的结果。最后发现这种集成的性能也并没有达到数据集上分类噪声的程度，仍然还有改进的空间。</p>
-<h2 id="2-Related-Work"><a href="#2-Related-Work" class="headerlink" title="2.Related Work"></a>2.Related Work</h2><p>CNN在大型的图片识别任务上变得很流行，Network in network，VGGNet和GoogLeNet(InceptionV1)都是一些重要的里程碑。He 给出了充分的理论和实践说明残差连接的优点，尤其是在检测上面的应用。作者强调残差连接在训练很深的CNN模型上是内在必要的，但是我们的发现并<strong>不支持</strong>这一观点，至少在图像识别这方面不支持，这大概需要更多的论点支撑和对残差连接在深层网络的作用的理解。实验的章节证明<strong>就算没有残差连接我们也不难训练很深的网络</strong>，不过<strong>残差连接能够很好的改善训练速度</strong>，这也是对于其使用的重要观点。</p>
-<p>从InceptionV1开始该网络结构经过了多次改善，通过引入BN得到了V2，通过进行额外的因子分解得到了V3。</p>
-<h2 id="3-Architectural-Choices"><a href="#3-Architectural-Choices" class="headerlink" title="3.Architectural Choices"></a>3.Architectural Choices</h2><p>这一章节主要介绍了网络的具体结构</p>
-<p>在残差版本的Inception网络中使用了更加简单的Inception block，每个Inception block后面都有一个1*1的卷积来补偿通道数的改变。另外一个Inception和残差版本的小区别在于，在残差版本中，BN仅仅利用在传统层的顶部而不在summations的顶部，这是由于想让网络具有更多的Inception blocks，并可以在单个GPU上进行训练所做的妥协，事实上如果都使用BN会更友好处</p>
-<p>当filters超过1000的时候，网络会在训练的早期就训练失败，降低学习率或者增加额外的BN都不能避免这一现象。He提出了利用先低学习率warm up，然后高学习率进行训练可以改善这一现象，然而本文发现通过对残差量进行缩放可以更加可靠的解决该问题，这样并不会损失准确性并且可以让训练更加稳定。<br><img src="\images\paper-InceptionV4\scaling.PNG" alt="残差变量的缩放"></p>
-<h2 id="4-Training-Methodology"><a href="#4-Training-Methodology" class="headerlink" title="4.Training Methodology"></a>4.Training Methodology</h2><p>这一章节主要介绍了一些训练的细节，利用的tensorflow分布式计算框架，GPU为Nvidia的Kepler，最好的模型使用的RMSProp算法，dacay=0.9，<script type="math/tex">\epsilon=1.0</script>，学习率为0.045，以每两个epoch，0.94的指数衰减率进行衰减。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/09/28/paper-InceptionV4/" data-id="cjn5svrsz000fm8ezojvhsz4g" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Matrix-Derivative" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/09/21/Matrix-Derivative/" class="article-date">
-  <time datetime="2018-09-21T08:19:52.000Z" itemprop="datePublished">2018-09-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/21/Matrix-Derivative/">[Matrix]关于向量与矩阵的求导</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="向量与矩阵的求导"><a href="#向量与矩阵的求导" class="headerlink" title="向量与矩阵的求导"></a>向量与矩阵的求导</h1><p>机器学习的算法中会遇到大量的与矩阵相关的微分与求导，在这里介绍一些常见的矩阵和向量相关的求导公式。</p>
-<p>可以将常见的数据类型分为标量（scalar），向量（vector）和矩阵（matrix）这么几种，其中常见的求导运算分别为标量对标量/向量/矩阵的求导，向量对标量/向量的求导，矩阵对标量的求导这么几种，其他的求导计算的结果为张量，这里暂时不讨论。</p>
-<p>对于求导结果的表示，分为分子布局（Numerator-layout notation）和分母布局（Denominator-layout notation）两种，这两种表示方式都是正确的，目前并没有相关的标准，最近看的《凸优化》上面通常采用分子布局的方式。</p>
-<p>在分子布局的情况下，相关的求导维数如下表：<br><img src="\images\导数.PNG" alt="向量和矩阵求导的表格"></p>
-<p>如果是向量与标量之间的求导，或者矩阵与标量之间的求导，求导结果即为矩阵或向量对标量的逐点求导得到的矩阵或向量，向量与向量之间的求导则会得到一个矩阵，称之为Jacobian matrix。</p>
-<p>当向量对标量求导时为：<img src="\images\vector-scalar.svg" alt="向量对标量求导"><br>标量对向量求导时为：<img src="\images\scalar-vector.svg" alt="标量对向量求导"><br>矩阵与标量之间的求导的与上面的类似，当标量对矩阵求导时同样也需要转置。</p>
-<p>当两个向量之间求导时，会得到一个雅各比矩阵：<img src="\images\vector-vector.svg" alt="向量对向量求导"></p>
-<p>一些常见的矩阵求导公式如下：<br><img src="\images\vector-by-vector.PNG" alt="向量对向量的求导"><br><img src="\images\vector-by-scalar.PNG" alt="向量对标量的求导"><br><img src="\images\scalar-by-vector-1.PNG" alt="标量对向量的求导"><br><img src="\images\scalar-by-vector-2.PNG" alt="标量对向量的求导"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/09/21/Matrix-Derivative/" data-id="cjn5svrst000cm8ezdq63tytk" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Matrix/">Matrix</a></li></ul>
 
     </footer>
   </div>
@@ -443,7 +508,7 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -462,7 +527,7 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -475,6 +540,14 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
       <ul>
         
           <li>
+            <a href="/2018/10/22/paper-darts/">[paper]darts</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/15/paper-HashingTricks/">[paper]HashingTricks</a>
+          </li>
+        
+          <li>
             <a href="/2018/10/12/paper-ShuffleNet/">[paper]ShuffleNet</a>
           </li>
         
@@ -484,14 +557,6 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
         
           <li>
             <a href="/2018/10/04/paper-MobileNets/">[paper]MobileNets</a>
-          </li>
-        
-          <li>
-            <a href="/2018/09/28/paper-InceptionV4/">[paper]InceptionV4总结</a>
-          </li>
-        
-          <li>
-            <a href="/2018/09/21/Matrix-Derivative/">[Matrix]关于向量与矩阵的求导</a>
           </li>
         
       </ul>

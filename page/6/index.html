@@ -70,6 +70,138 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-最优化-等式约束的优化问题求解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/05/18/最优化-等式约束的优化问题求解/" class="article-date">
+  <time datetime="2018-05-18T13:11:35.000Z" itemprop="datePublished">2018-05-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/05/18/最优化-等式约束的优化问题求解/">[最优化]等式约束的优化问题求解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="等式约束的优化问题求解"><a href="#等式约束的优化问题求解" class="headerlink" title="等式约束的优化问题求解"></a>等式约束的优化问题求解</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>本文将讨论下类形状的优化问题</p>
+<script type="math/tex; mode=display">
+minimize\quad f(x)\\
+subject\  to\quad h(x)=0</script><p>其中$x\in R^{n},f:R^{n}\to R,h:R^{n}\to R^{m},h=[h_{1},…,h_{m}]^{T},m\le n$，假定函数$h$连续可微，即$h\in C^{1}$。<br>下面介绍几个基本概念：</p>
+<p><strong>正则点</strong>：对于满足约束 <script type="math/tex">h_{1}(x^{*})=0,...,h_{m}(x^{*})=0</script> 的点<script type="math/tex">x^{**}</script>，如果梯度向量 <script type="math/tex">\nabla h_{1}(x^{*}),...,\nabla h_{m}(x^{*})</script> 是线性无关的，则称<script type="math/tex">x^{*}</script>是该约束的一个正则点。</p>
+<p><strong>切线空间</strong>：曲面<script type="math/tex">S={x\in R^{n}:h(x)=0}</script>中点<script type="math/tex">x^{*}</script>处的切线空间为集合<script type="math/tex">T(x^{*})=\{ y:Dh(x^{*})y=0\}</script>。可以看出切线空间<script type="math/tex">T(x^{*})</script>是矩阵<script type="math/tex">Dh(x^{*})</script>的零空间，即<script type="math/tex">T(x^{*})=N(Dh(x^{*}))</script>。</p>
+<p><strong>法线空间</strong>：曲面<script type="math/tex">S={x\in R^{n}:h(x)=0}</script>中点<script type="math/tex">x^{*}</script>处的法线空间为集合<script type="math/tex">N(x^{*})=\{ x\in R^{n}:x=Dh(x^{*})^{T}z,z\in R^{m}\}</script>。可以看出法线空间<script type="math/tex">N(x^{*})</script>是矩阵<script type="math/tex">Dh(x^{*})</script>的零空间，即<script type="math/tex">N(x^{*})=R(Dh(x^{*})^{T})</script>。</p>
+<h2 id="拉格朗日条件"><a href="#拉格朗日条件" class="headerlink" title="拉格朗日条件"></a>拉格朗日条件</h2><p>首先考虑只包含两个决策变量和一个等式约束的优化问题。令<script type="math/tex">h:R^{2}\to R</script>为约束函数，可知函数定义域中<script type="math/tex">x</script>处的梯度<script type="math/tex">\nabla h(x)</script>与通过该点的<script type="math/tex">h(x)</script>水平集正交，选择点<script type="math/tex">x^{*}=[x^{*}_{1},x^{*}_{1}]^{T}</script>使得<script type="math/tex">h(x^{*})=0</script>，且<script type="math/tex">\nabla h(x^{*})\neq 0</script>，经过点<script type="math/tex">x^{*}</script>的水平集为集合<script type="math/tex">\{ x:h(x)=0\}</script>。可利用曲线<script type="math/tex">x(t)</script>在<script type="math/tex">x^{*}</script>领域内进行参数化，<script type="math/tex">x(t)</script>是一个连续可微的向量函数<script type="math/tex">h:R\to R^{2}</script>：</p>
+<script type="math/tex; mode=display">
+x(t)=[x_{1}(t),x_{1}(t)]^{T},t\in (a,b),x^{*}=x(t^{*}),\dot{x}(t^{*})\neq 0,t^{*}\in (a,b)</script><p>接下来可以证明，<script type="math/tex">\nabla h(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交。由于<script type="math/tex">h</script>在曲线<script type="math/tex">\{x(t):t\in (a,b)\}</script>上是常数0，即对于所有的<script type="math/tex">t\in (a,b)</script>都有</p>
+<script type="math/tex; mode=display">
+h(x(t))=0</script><p>因此对于任意的<script type="math/tex">t\in(a,b)</script>都有</p>
+<script type="math/tex; mode=display">
+\frac{d}{dt}h(x(t))=0</script><p>利用链式法则可以得到</p>
+<script type="math/tex; mode=display">
+\frac{d}{dt}h(x(t))=\nabla h(x(t))^{T}\dot{x}(t)=0</script><p>因此<script type="math/tex">\nabla h(x^{*})</script>和<script type="math/tex">\dot{x}(t^{*})</script>正交<br>当<script type="math/tex">x^{*}</script>是<script type="math/tex">f:R\to R^{2}</script>在满足<script type="math/tex">h(x)=0</script>上的极小点的时候，可以证明，<script type="math/tex">\nabla f(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交，构造关于<script type="math/tex">t</script>的复合函数：</p>
+<script type="math/tex; mode=display">
+\phi(t)=f(x(t))</script><p>当<script type="math/tex">t=t^{*}</script>的时候取得极小值，根据无约束极值问题的一阶必要条件可知</p>
+<script type="math/tex; mode=display">
+\frac{d\phi}{dt}(t^{*})=0</script><p>利用链式法则可以得到</p>
+<script type="math/tex; mode=display">
+\frac{d}{dt}\phi(t^{*})=\nabla f(x(t^{*}))^{T}\dot{x}(t^{*})=\nabla f(x^{*})^{T}\dot{x}(t^{*})=0</script><p>因此，<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\dot{x}(t^{*})</script>正交，上面已经证明<script type="math/tex">\nabla f(x^{*})</script>与<script type="math/tex">\dot{x}(t^{*})</script>正交，那么向量<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\nabla h(x^{*})</script>平行，那么可以得到这种情况下的拉格朗日定理：</p>
+<p><strong>n=2,m=3时的拉格朗日定理：</strong>设点<script type="math/tex">x^{*}</script>是函数<script type="math/tex">f:R^{2}\to R</script>的一个极小点，约束条件是<script type="math/tex">h(x)=0,h:R^{2}\to R</script>,那么<script type="math/tex">\nabla f(x^{*})</script>和<script type="math/tex">\nabla h(x^{*})</script>平行，即如果<script type="math/tex">\nabla h(x^{*})\neq 0</script>，则存在标量<script type="math/tex">\lambda^{*}</script>，使得</p>
+<script type="math/tex; mode=display">
+\nabla f(x^{*})+\lambda^{*}\nabla h(x^{*})=0</script><p>其中<script type="math/tex">\lambda^{*}</script>为拉格朗日乘子。<br>将这个定理推广到一般情况下，即<script type="math/tex">f:R^{n}\to R,h:R^{n}\to R^{m},m\le n</script>的时候，可以得到：<br><strong>拉格朗日定理：</strong><script type="math/tex">x^{*}</script>是<script type="math/tex">f:R^{n}\to R</script>的局部极小点（或极大点），约束条件为<script type="math/tex">h(x)=0,h:R^{n}\to R^{m},m\le n</script>。如果<script type="math/tex">x^{*}</script>是正则点，那么存在<script type="math/tex">\lambda^{*}\in R^{m}</script>使得</p>
+<script type="math/tex; mode=display">
+D f(x^{*})+\lambda^{*T}D h(x^{*})=0</script><h2 id="二阶条件"><a href="#二阶条件" class="headerlink" title="二阶条件"></a>二阶条件</h2><p><strong>二阶必要条件：</strong>设<script type="math/tex">x^{*}</script>是<script type="math/tex">f:R^{n}\to R</script>在约束条件<script type="math/tex">h(x)=0,h:R^{n}\to R^{m},m\le n,f,h\in C^{2}</script>下的局部极小点。如果<script type="math/tex">x^{*}</script>是正则点，那么存在<script type="math/tex">\lambda^{*}\in R^{m}</script>使得</p>
+<p> 1.<script type="math/tex">D f(x^{*})+\lambda^{*T}D h(x^{*})=0^{T}</script><br> 2.对于所有的<script type="math/tex">y\in T(x^{*})</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*})y\ge 0</script></p>
+<p><strong>二阶充分条件：</strong>函数<script type="math/tex">f,h\in C^{2}</script>，如果存在点<script type="math/tex">x^{*}\in R^{n}</script>和<script type="math/tex">\lambda^{*}\in R^{m}</script>，使得</p>
+<p> 1.<script type="math/tex">D f(x^{*})+\lambda^{*T}D h(x^{*})=0^{T}</script><br> 2.对于所有的<script type="math/tex">y\in T(x^{*})</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*})y> 0</script></p>
+<p>那么<script type="math/tex">x^{*}</script>是<script type="math/tex">f</script>在约束条件<script type="math/tex">h(x)=0</script>下的严格局部极小点</p>
+<p>本文介绍了等式约束下的拉格朗日乘子法，后面还将会介绍不等式约束下的拉格朗日乘子法以及KKT条件等，To be continue…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/05/18/最优化-等式约束的优化问题求解/" data-id="cjnpw626m001dm0awult73nl5" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Cpp-Cpp中的IO类" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/05/18/Cpp-Cpp中的IO类/" class="article-date">
+  <time datetime="2018-05-18T13:11:35.000Z" itemprop="datePublished">2018-05-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/05/18/Cpp-Cpp中的IO类/">[Cpp]Cpp中的IO类</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="C-中的IO类"><a href="#C-中的IO类" class="headerlink" title="C++中的IO类"></a>C++中的IO类</h1><p>C++语言不直接处理输入输出，而是通过一组定义在标准库中的类型来处理IO。这些类型支持从设备读取数据，向设备写入数据的IO操作，设备可以是文件，控制台窗口等。还有一些类型允许内存IO，即从string读取数据，向string写入数据等。</p>
+<p>应用程序不只从控制台窗口进行IO操作，常常需要读写命名文件，并且使用IO操作处理string的字符会很方便，所以在istream和ostream之外，标准库还定义了其他的一些IO类型，分别定义在三个独立的头文件中：<strong>iostream</strong>定义了用于读写流的基本类型，<strong>fstream</strong>定义了读写命名文件的类型，<strong>sstream</strong>定义了读写内存string对象的类型。</p>
+<p>类型ifstream和istringstream都<strong>继承</strong>自istream。因此我们可以像使用istream对象一样来使用ifstream和istringstream对象。需要注意的是，不<strong>能对IO对象进行拷贝或赋值，另外读写一个IO对象会改变其状态，因此传递和返回的引用不能是const的</strong>。</p>
+<h2 id="条件状态"><a href="#条件状态" class="headerlink" title="条件状态"></a>条件状态</h2><p>IO类定义了一些函数和标志，可以帮助我们访问和操纵流的<strong>条件状态</strong>。一个流一旦发生错误，其后的IO操作都会失败，确定一个流对象的最简单的方法就是将他作为一个条件去使用：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span>(<span class="built_in">cin</span>&gt;&gt;word)</span><br></pre></td></tr></table></figure></p>
+<p>IO库定义了一个与机器无关的iostate类型，它提供了表达流状态的完整功能：<br><strong>badbit</strong>表示系统级错误，如不可恢复的读写错误；<strong>failbit</strong>表示可恢复错误，如期望读取数值缺读取了一个字符；达到文件结束的位置时，<strong>eofbit</strong>和<strong>failbit</strong>都会被置位。<strong>goodbit</strong>的值为0表示未出现错误。如果<strong>badbit</strong>，<strong>failbit</strong>，<strong>eofbit</strong>任意一个被置位，检测流的条件都会失败。</p>
+<h2 id="输出缓冲管理"><a href="#输出缓冲管理" class="headerlink" title="输出缓冲管理"></a>输出缓冲管理</h2><p>每个输出流都有一个<strong>缓冲区</strong>，用于保存程序读写的数据，如下面的代码<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">os&lt;&lt;<span class="string">"Hello,world"</span>;</span><br></pre></td></tr></table></figure></p>
+<p>有可能直接打印也有可能被操作系统保存到缓冲区中，随后再打印。<br>显式刷新缓冲区的几个方法：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;<span class="built_in">endl</span>;	<span class="comment">//输出字符串之后输出换行然后刷新缓冲区</span></span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;flush;	<span class="comment">//输出字符串之后直接刷新缓冲区</span></span><br><span class="line"><span class="built_in">cout</span>&lt;&lt;<span class="string">"Hello,world"</span>&lt;&lt;ends;	<span class="comment">//输出字符串之后输出空白字符然后刷新缓冲区</span></span><br></pre></td></tr></table></figure></p>
+<p>当输入流关联到输出流的时候，任何试图从输入流读取数据的操作都会先刷新关联的输出流，标准库将cout和cin关联到一起，可以使用tie()函数手动将istream和ostream关联到一起。</p>
+<h1 id="文件输入输出"><a href="#文件输入输出" class="headerlink" title="文件输入输出"></a>文件输入输出</h1><h2 id="open和close函数"><a href="#open和close函数" class="headerlink" title="open和close函数"></a>open和close函数</h2><p>在定义了一个空文件流对象之后，可以调用open将其与文件关联起来<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ifstream <span class="title">in</span><span class="params">(ifile)</span></span>;	<span class="comment">//构造一个ifstream并打开给定文件</span></span><br><span class="line">ofstream out;	<span class="comment">//输出文件流未与任何文件相关联</span></span><br><span class="line">out.open(ifile+<span class="string">".copy"</span>)	<span class="comment">//打开指定文件</span></span><br></pre></td></tr></table></figure></p>
+<p>文件流打开之后就会保持和对应文件的关联，如果试图将这个文件流关联到另一个文件上，必须先关闭相应的文件流。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">in.close();	<span class="comment">//关闭文件</span></span><br><span class="line">in.open(ifile+<span class="string">"2"</span>);	<span class="comment">//关联到新的文件</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="文件模式"><a href="#文件模式" class="headerlink" title="文件模式"></a>文件模式</h2><p>每个流都有一个关联的文件模式，用来指出如何使用文件，每个文件流类型都定义了一个默认的文件模式，当我们未指定文件模式时，就使用默认模式。与ifstream关联的文件默认以in模式（读方式）打开；与ofstream相关联的文件默认以out模式（写方式）打开。文件模式如下表：</p>
+<ul>
+<li>in           以只读方式打开</li>
+<li>out         以写方式打开</li>
+<li>app        每次写操作前均定位到文件末尾</li>
+<li>ate         打开文件后立即定义到文件末尾</li>
+<li>trunc      截断文件</li>
+<li>binary    以二进制进行IO</li>
+</ul>
+<p>默认情况下，当打开一个ofstream时，文件的内容会被丢弃。阻止一个ofstream清空给定文件内容的方法是同时指定app模式。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">ofstream <span class="title">out</span><span class="params">(<span class="string">"file1"</span>)</span>	<span class="comment">//文件会被清空</span></span></span><br><span class="line"><span class="function">ofstream <span class="title">out</span><span class="params">(<span class="string">"file"</span>,ofstream::app|ofstream::out)</span>	<span class="comment">//以app方式打开会被保存</span></span></span><br></pre></td></tr></table></figure></p>
+<p>保留ofstream打开的文件中数据的唯一办法就是指定app形式打开或者in模式打开。</p>
+<h1 id="string流"><a href="#string流" class="headerlink" title="string流"></a>string流</h1><p>sstream头文件定义了三个类型来支持内存IO，这些类型可以向string写入数据，从string读取数据，就像string是个IO流一样。</p>
+<p>当我们的工作是对整行文本进行处理，而其他的一些工作是处理行内的单个单词时，通常可以使用<strong>istringstream</strong>。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> line,word;</span><br><span class="line"><span class="built_in">vector</span>&lt;PersonInfo&gt; people;</span><br><span class="line"><span class="keyword">while</span>(getline(<span class="built_in">cin</span>,line))&#123;	<span class="comment">//不断从cin读取一行</span></span><br><span class="line">	PersonInfo info;</span><br><span class="line">	<span class="function"><span class="built_in">istringstream</span> <span class="title">record</span><span class="params">(line)</span></span>;   <span class="comment">//利用读取的这一行初始化record对象</span></span><br><span class="line">	record&gt;&gt;info.name;      <span class="comment">//从这一行中单独处理每个单词</span></span><br><span class="line">	<span class="keyword">while</span>(record&gt;&gt;word)</span><br><span class="line">		info.phones.push_back(word);</span><br><span class="line">	people.push_back(info);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在我们逐步构造输出，希望最后一行打印时，ostringstream非常有用。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;entry:people)&#123;</span><br><span class="line">	<span class="built_in">ostringstream</span> formatted,badNums;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">const</span> <span class="keyword">auto</span> &amp;nums:entry.phones)&#123;</span><br><span class="line">		<span class="keyword">if</span>(!valid(nums))&#123;   <span class="comment">//如果遇到无效电话号码，则放到badNums之后一起输出</span></span><br><span class="line">			badNums&lt;&lt;<span class="string">" "</span>&lt;&lt;nums;</span><br><span class="line">		&#125;<span class="keyword">else</span></span><br><span class="line">		formatted&lt;&lt;<span class="string">" "</span>&lt;&lt;format(nums);   <span class="comment">//将正常的电话号码都放到formatted中</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(badNums.str().empty())</span><br><span class="line">		os&lt;&lt;entry.name&lt;&lt;<span class="string">" "</span>&lt;&lt;formatted.str()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="built_in">cerr</span>&lt;&lt;<span class="string">"Input error: "</span>&lt;&lt;entry.name&lt;&lt;<span class="string">" invalid number(s) "</span>&lt;&lt;badNums.str()&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/05/18/Cpp-Cpp中的IO类/" data-id="cjnpw62530002m0awlqdj0ww1" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Cpp-Cpp中的构造函数" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/05/11/Cpp-Cpp中的构造函数/" class="article-date">
@@ -119,7 +251,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/11/Cpp-Cpp中的构造函数/" data-id="cjn5svrru0002m8ezhhja1v31" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/11/Cpp-Cpp中的构造函数/" data-id="cjnpw6261000cm0awwknovis4" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
@@ -191,7 +323,7 @@ subject\ to\quad \lambda^{T}A\le c^{T}</script><p>注意此时由于$u,v\ge 0,\l
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/11/最优化-线性规划中的对偶问题/" data-id="cjn5svru20015m8ezff7nn1o2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/11/最优化-线性规划中的对偶问题/" data-id="cjnpw626m001bm0awu1tzmnc3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -238,156 +370,10 @@ subject\ to\quad \lambda^{T}A\le c^{T}</script><p>注意此时由于$u,v\ge 0,\l
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/04/Cpp-Cpp函数中的参数传递/" data-id="cjn5svrtk000sm8eziq79wnej" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/05/04/Cpp-Cpp函数中的参数传递/" data-id="cjnpw6261000am0awlqkc65ut" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Cpp/">Cpp</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-最优化-求解线性规划问题的单纯形算法" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/05/04/最优化-求解线性规划问题的单纯形算法/" class="article-date">
-  <time datetime="2018-05-04T02:41:04.000Z" itemprop="datePublished">2018-05-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/04/最优化-求解线性规划问题的单纯形算法/">[最优化]求解线性规划问题的单纯形算法</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="单纯形算法"><a href="#单纯形算法" class="headerlink" title="单纯形算法"></a>单纯形算法</h1><p>1947年，丹齐格提出了一种求解线性规划问题的方法，即今天所称的单纯形法，这是一种简洁且高效的算法，被誉为20世纪对科学发展和工程实践影响最大的十大算法之一。<br>上文提到线性规划问题的最优解一定是基本可行解，单纯形法的思路即在不同的基向量下求不同的<strong>基本可行解</strong>，然后找到最优的解。从几何的角度来看，也就是从一个极点转换到另一个极点，直至找到最优极点的过程。<br>那么这样的话可以把算法分成<strong>三个子问题</strong>，1.如何从一个基本可行解转换到另一个基本可行解。2.如何确定应该转移到哪个极点。3.什么时候停止转移操作，即如何判断当前基本可行解是否为最优解。</p>
-<h2 id="极点的转移"><a href="#极点的转移" class="headerlink" title="极点的转移"></a>极点的转移</h2><p>线性规划的标准型为</p>
-<script type="math/tex; mode=display">
-minimize\quad c^{T}x\\
-subject\ to\quad Ax=b\\
-x\ge0</script><p>考虑到方程$Ax=b$，展开成如下规范型的方程组</p>
-<script type="math/tex; mode=display">
-x_{1}+y_{1\ m+1}x_{m+1}+...+y_{1n}x_{n}=y_{10}\\
-x_{2}+y_{2\ m+1}x_{m+1}+...+y_{2n}x_{n}=y_{20}\\
-\vdots\\
-x_{m}+y_{m\ m+1}x_{m+1}+...+y_{mn}x_{n}=y_{m0}</script><p>可以将该方程组转换为$[I_{m},Y_{m,n-m}]x=y_{0}$，这种形式的方程组$Ax=b$称为<strong>典式</strong>，方程组的典式与原方程组的解是相同的，在典式表达式中，与基列向量对应的变量为基变量，其他的变量为非基变量，即在方程$[I_{m},Y_{m,n-m}]x=y_{0}$中，$x_{1},x_{2}…,x_{m}$为基变量，其他的变量是非基变量。考虑增广矩阵规范型$[I_{m},Y_{m,n-m},y_{0}]$，其最后一列的各元素是向量$b$关于基{$a_{1},…,a_{m}$}的坐标。</p>
-<p>现在考虑增广矩阵的更新，即用某个非基变量替换某个基变量，求新的基变量对应的典式表达式，比如用非基变量$a_{q},m&lt;q\le n$替换基变量$a_{p},1\le p\le m$。在原矩阵上，$a_{q}$可以表示为</p>
-<script type="math/tex; mode=display">
-a_{q}=\sum_{i=1}^{m}y_{iq}a_{i}=\sum_{i=1\\i\ne p}^{m}y_{iq}a_{i}+y_{pq}a_{p}</script><p>注意仅当$y_{pq}\ne 0$时，向量组{$a_{1},…,a_{p-1},a_{q},a_{p+1},…,a_{m}$}才是线性无关的，才能形成一组基。<br>可以由上述方程求解出</p>
-<script type="math/tex; mode=display">
-a_{p}=\frac{1}{y_{pq}}a_{q}-\sum_{i=1\\i\ne p}^{m}\frac{y_{iq}}{y_{pq}}a_{i}</script><p>利用原来的增广矩阵，可以将任意向量$a_{j}(m&lt;j\le n)$表示为</p>
-<script type="math/tex; mode=display">
-a_{j}=y_{1j}a_{1}+y_{2j}a_{2}+...+y_{mj}a_{m}</script><p>将$a_{p}$的表达式代入可以得到</p>
-<script type="math/tex; mode=display">
-a_{j}=\sum_{i=1\\i\ne p}^{m}(y_{ij}-\frac {y_{pj}}{y_{pq}}y_{iq})a_{i}+\frac{y_{pj}}{y_{pq}}a_{q}</script><p>利用$y_{ij}^{‘}$表示新的增广矩阵中的元素，由上式可得</p>
-<script type="math/tex; mode=display">
-y_{ij}^{'}=y_{ij}-\frac{y_{pj}}{y_{pq}}y_{iq},i\ne p\\
-y_{pj}^{'}=\frac{y_{pj}}{y_{pq}}</script><p>利用以上公式对矩阵的变换称为关于元素$(p,q)$的<strong>枢轴变换</strong>，以上即为从一个极点转换到另一个极点的公式。</p>
-<h2 id="确定转移的极点"><a href="#确定转移的极点" class="headerlink" title="确定转移的极点"></a>确定转移的极点</h2><p>确定转移的极点即将向量组转换到另一组坐标系上，详细来说就是将向量组中m个向量之一取出，从另外n-m个向量中选择一个向量加入到基向量组形成新的基。我们记为将$a_{p}$向量取出（出基），将$a_{q}$向量加入（入基），又可以将这个问题分为两部分，即分别确定$p$和$q$。<br>对于$q$的确定，先看枢轴变换的公式如下</p>
-<script type="math/tex; mode=display">
-y_{ij}^{'}=y_{ij}-\frac{y_{pj}}{y_{pq}}y_{iq},i\ne p\\
-y_{pj}^{'}=\frac{y_{pj}}{y_{pq}}</script><p>再看另一种方法将一个非基变量$a_{q}$变成基向量<br>利用当前的基向量来表示向量$a_{q}$</p>
-<script type="math/tex; mode=display">
-a_{q}=y_{1q}a_{1}+y_{2q}a_{2}+...+y_{mq}a_{m}</script><p>上式两边同时乘上$\epsilon&gt;0$可以得到</p>
-<script type="math/tex; mode=display">
-\epsilon a_{q}=\epsilon y_{1q}a_{1}+\epsilon y_{2q}a_{2}+...+\epsilon y_{mq}a_{m}</script><p>将基本解$x=[y_{10},…,y_{m0},0,…,0]^T$代入方程$Ax=b$可以得到</p>
-<script type="math/tex; mode=display">
-y_{10}a_{1}+...+y_{m0}a_{m}=b</script><p>联立上面两个等式，可以得到</p>
-<script type="math/tex; mode=display">
-(y_{10}-\epsilon y_{1q})a_{1}+(y_{20}-\epsilon y_{2q})a_{2}+...+(y_{m0}-\epsilon y_{mq})a_{m}+\epsilon a_{q}=b</script><p>即向量$[y_{10}-\epsilon y_{1q},…,y_{m0}-\epsilon y_{mq},0,…,\epsilon,…,0]$是方程$Ax=b$的一个解，当$\epsilon$不断增大，向量的前m个元素中首次出现0，此时可以得到一个基本可行解，变换过后的基本可行解对应的目标函数值为</p>
-<script type="math/tex; mode=display">
-z=c_{1}(y_{10}-y_{1q}\epsilon)+...+c_{m}(y_{m0}-y_{mq}\epsilon)+c_{q}\epsilon\\
-=z_{0}+[c_{q}-(c_{1}y_{1q}+...+c_{m}y_{mq})]\epsilon</script><p>其中，$z_{0}=c_{1}y_{10}+…+c_{m}y_{m0}$，令$z_{q}=c_{1}y_{1q}+…+c_{m}y_{mq}$，可以得到$z=z_{0}+(c_{q}-z_{q})\epsilon$，当$z-z_{0}=(c_{q}-z_{q})\epsilon&lt;0$时，说明基本可行解对应的目标函数值变小了，即认为这个向量加入基向量组后是有益的。</p>
-<p>那么可以对每一个$q,m&lt;q\le n$计算$c_{q}-z_{q}$，令$r_{i}=0(i=1,…,m),r_{i}=c_{i}-z_{i}(i=m+1,…,n)$，称$r_{i}$为第$i$个<strong>简化价值系数</strong>，也称为<strong>检验数</strong>。可以通过证明得到，<strong>当且仅当相应的检验数都是非负的时候，该基本可行解是最优解</strong>。</p>
-<p>即可以通过计算检验数的方法来判断当前解是否为最优解，当检验数中有负数的时候，则说明当前解不是最优解，可以通过将第$q$个向量加入基向量组的方法减小目标函数值，如果有多个负数，则选择检验数最小的第$q$个向量加入基向量组。</p>
-<p>上面确定了$q$的选择方法，下面来介绍一下如何确定出基向量$a_{p}$，由上文可知，对于向量$[y_{10}-\epsilon y_{1q},…,y_{m0}-\epsilon y_{mq},0,…,\epsilon,…,0]$，当$\epsilon$不断增大，在前$m$个元素中会有第$i$个元素$y_{i0}-\epsilon y_{iq}$最先等于0，那么我们则选择$a_{i}$作为出基向量$a_{p}$，即$p=arg min_{i}\{y_{i0}/y_{iq}:y_{iq}&gt;0\}$，需要注意的是，如果不存在$y_{iq}&gt;0$，则问题有无界解，停止运算，另外如果同时出现多个0元素，那么得到退化的基本可行解，此时选择最小的$p$值。</p>
-<h2 id="确定停止条件"><a href="#确定停止条件" class="headerlink" title="确定停止条件"></a>确定停止条件</h2><p>上文介绍了如何选择转移的极点数，在确定$q$的时候，计算检验数，若所有的检验数都是非负，那么此时的基本可行解是最优解，停止计算。另外在确定$p$的时候，若随着$\epsilon$不断增大，向量的前m个元素也随之增大，即对于$0&lt;i\le m,y_{iq}&lt;0$，那么该问题有无界解，也停止计算。</p>
-<h2 id="单纯形算法-1"><a href="#单纯形算法-1" class="headerlink" title="单纯形算法"></a>单纯形算法</h2><p>上文介绍了单纯形算法几个子问题的处理方法，下面来总结一下<strong>单纯形算法</strong><br><strong>1.</strong>根据初始基本可行解构造增广矩阵规范型；<br><strong>2.</strong>计算非基变量的检验数；<br><strong>3.</strong>如果对于所有$j$都有$r_{j}\le 0$，则停止计算，当前基本可行解是最优解，否则进入下一步<br><strong>4.</strong>在小于0的检验数中选择检验数最小的$q$<br><strong>5.</strong>如果不存在$y_{iq}&gt;0$，则停止计算，问题有无界解；否则计算$p=arg min_{i}\{y_{i0}/y_{iq}:y_{iq&gt;0}\}$，如果得到多个满足条件的下标$i$，令$p$为最小的下标值。<br><strong>6.</strong>以元素$(p,q)$作为枢轴元素，进行枢轴变换，更新增广矩阵规范型。<br><strong>7.</strong>转到步骤2</p>
-<p>另外对于单纯形算法，还有其矩阵表达式，对于寻找初始基本可行解所遇到的困难，又提出了<strong>两阶段单纯形法</strong>，为了减小计算量，又提出了<strong>修正单纯形法</strong>等等。</p>
-<p>To be continue…</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/05/04/最优化-求解线性规划问题的单纯形算法/" data-id="cjn5svrtp000xm8ezbb17rwh0" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-最优化-线性规划概述" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/04/27/最优化-线性规划概述/" class="article-date">
-  <time datetime="2018-04-27T08:26:11.000Z" itemprop="datePublished">2018-04-27</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/27/最优化-线性规划概述/">[最优化]线性规划概述</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="线性规划"><a href="#线性规划" class="headerlink" title="线性规划"></a>线性规划</h1><p>在最优化问题中有一类问题被称作线性规划问题，属于有约束下的优化问题，线性规划是在<strong>线性约束条件</strong>下（等式或不等式）<strong>求解线性目标函数极值</strong>的问题。</p>
-<h2 id="线性规划问题的标准模型"><a href="#线性规划问题的标准模型" class="headerlink" title="线性规划问题的标准模型"></a>线性规划问题的标准模型</h2><p>线性规划的<strong>标准模型</strong>为</p>
-<script type="math/tex; mode=display">
-minimize\quad c^{T}x\\
-subject\ to\ Ax=b\\x\ge0</script><p>所有的线性规划问题都可以转化成以上的标准型，例如某线性规划问题具有以下形式，与标准型不同的是，该形式用了不等式约束</p>
-<script type="math/tex; mode=display">
-minimize\quad c^{T}x\\
-subject\ to\ Ax\ge b\\x\ge0</script><p>可以通过引入剩余变量$y$的方式，将以上问题转化为标准型</p>
-<script type="math/tex; mode=display">
-minimize\quad c^{T}x\\
-subject\ to\ Ax-I_{m}y=\begin{bmatrix} A & -I_{m}\end{bmatrix}\begin{bmatrix} x \\ y\end{bmatrix}=b\\x\ge0,y\ge0</script><p>如果约束条件具有以下形式：</p>
-<script type="math/tex; mode=display">
-Ax\le b\\
-x\ge 0</script><p>可以通过引入剩余变量$y$，将约束条件转换为</p>
-<script type="math/tex; mode=display">
-Ax+I_{m} y =\begin{bmatrix} A & I_{m}\end{bmatrix}\begin{bmatrix} x \\ y\end{bmatrix}=b\\x\ge0,y\ge0</script><h2 id="线性规划问题的基本解"><a href="#线性规划问题的基本解" class="headerlink" title="线性规划问题的基本解"></a>线性规划问题的基本解</h2><p>上文提到，任何线性规划问题都可以转换为标准型，即约束条件为线性等式，决策变量非负。</p>
-<p>考虑方程$Ax=b$，其中$rank(A)=m$，为了求解这类问题，通常从矩阵$A$的一部分列向量入手。为方便起见，可以将$A$中的列向量重新进行排序，将感兴趣的列向量排在前列。具体来说，从$A$中选取m个线性无关的向量组成方阵$B$，对$A$的列向量重新排序，可以使$B$中的列向量位于$A$的前m列，即$A$可以写为分块矩阵$A=[B,D]$，其中$D$是$m*(n-m)$矩阵，它由$A$中剩余的列向量组成。矩阵$B$是非奇异的，因此求解方程$Bx_{B}=b$可以得到唯一解$x_{B}=B^{-1}b$。令$x$为n维向量，它的前m个元素等于$x_B$，其余元素为零，即$x=[s_{B}^{T},0^{T}]^{T}$,则$x$是方程$Ax=b$的一个解。</p>
-<p>$[x_{B}^{T},0^{T}]^{T}$是$Ax=b$在$B$下的<strong>基本解</strong>，向量$x_{B}$中的元素称为基变量，$B$中的列向量称为基本列向量。</p>
-<p><strong>退化的基本解</strong>—-&gt;基本解中的某些基变量为0<br><strong>可行解</strong>—-&gt;满足$Ax=0,x\ge 0$的向量$x$<br><strong>基本可行解</strong>—-&gt;某个可行解也是基本解<br><strong>退化的基本可行解</strong>—-&gt;某个基本可行解是退化的基本解</p>
-<p>在求解线性规划问题时，<strong>仅需要考虑基本可行解</strong>，因为目标函数的最优解如果存在，那么一定是在某个基本可行解上得到。</p>
-<p><strong>线性规划基本定理</strong><br>1.如果存在可行解，那么一定存在基本可行解<br>2.如果存在最优可行解，那么一定存在最优基本可行解</p>
-<p>线性规划基本定理将线性规划问题的求解转换为在有限数量的基本可行解上进行搜索，这极大地缩减了求解的工作量。</p>
-<p>从<strong>几何</strong>的角度来看，标准线性规划中的约束$Ax=b,x\ge 0$中的点集是凸集，即对于任何$x,y\in \Theta$和实数$\alpha$，$0&lt;\alpha &lt;1$，有$\alpha x+(1-\alpha)y\in \Theta$，对于凸集内的点$x$，如果在$\Theta$中找不到两个不同的点$x_{1}$和$x_{2}$使$x=\alpha x_{1}+(1-\alpha)x_{2}$成立则称$x$是极点，可以通过证明得到，<strong>约束集的极点与基本可行解是等价的</strong>。</p>
-<p>从某个极点转移到另一个相邻极点的算法就是单纯性法求解线性规划问题的思路，后面的文章将对单纯形法以及对偶等概念进行详细介绍。</p>
-<p>To be continue…</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/04/27/最优化-线性规划概述/" data-id="cjn5svrtz0013m8ez6sdmwfgn" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
 
     </footer>
   </div>
@@ -435,7 +421,7 @@ Ax+I_{m} y =\begin{bmatrix} A & I_{m}\end{bmatrix}\begin{bmatrix} x \\ y\end{bma
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -454,7 +440,7 @@ Ax+I_{m} y =\begin{bmatrix} A & I_{m}\end{bmatrix}\begin{bmatrix} x \\ y\end{bma
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -467,6 +453,14 @@ Ax+I_{m} y =\begin{bmatrix} A & I_{m}\end{bmatrix}\begin{bmatrix} x \\ y\end{bma
       <ul>
         
           <li>
+            <a href="/2018/10/22/paper-darts/">[paper]darts</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/15/paper-HashingTricks/">[paper]HashingTricks</a>
+          </li>
+        
+          <li>
             <a href="/2018/10/12/paper-ShuffleNet/">[paper]ShuffleNet</a>
           </li>
         
@@ -476,14 +470,6 @@ Ax+I_{m} y =\begin{bmatrix} A & I_{m}\end{bmatrix}\begin{bmatrix} x \\ y\end{bma
         
           <li>
             <a href="/2018/10/04/paper-MobileNets/">[paper]MobileNets</a>
-          </li>
-        
-          <li>
-            <a href="/2018/09/28/paper-InceptionV4/">[paper]InceptionV4总结</a>
-          </li>
-        
-          <li>
-            <a href="/2018/09/21/Matrix-Derivative/">[Matrix]关于向量与矩阵的求导</a>
           </li>
         
       </ul>

@@ -70,6 +70,71 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-最优化-求解线性方程组-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/20/最优化-求解线性方程组-1/" class="article-date">
+  <time datetime="2018-07-20T13:17:02.000Z" itemprop="datePublished">2018-07-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/20/最优化-求解线性方程组-1/">[最优化]求解线性方程组(1)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="求解线性方程组（1）"><a href="#求解线性方程组（1）" class="headerlink" title="求解线性方程组（1）"></a>求解线性方程组（1）</h1><h2 id="最小二乘分析"><a href="#最小二乘分析" class="headerlink" title="最小二乘分析"></a>最小二乘分析</h2><p>在本文中将讨论线性方程组中的一种情况的求解，即考虑线性方程组</p>
+<script type="math/tex; mode=display">
+Ax=b</script><p>其中，<script type="math/tex">A\in R^{m*n},b\in R^{m},m\ge n,rank(A)=n</script>，在这种情况下，未知数的数量小于方程的数量，所以在很大可能上$b$不在$A$的值域空间中，即方程组无解，但是此时可以得到该线性方程方程的最小二乘解，即存在<script type="math/tex">x^{*}</script>使得对于所有的<script type="math/tex">x\in R^{n}</script>都有</p>
+<script type="math/tex; mode=display">
+||Ax-b||^{2}\ge ||Ax^{*}-b||^{2}</script><p>即称<script type="math/tex">x^{*}</script>为该线性方程的<strong>最小二乘解</strong>，当$b$在$A$的解空间中时，<script type="math/tex">x^{*}</script>自然就是该方程的解，最小二乘解可以通过以下公式直接计算出来：</p>
+<script type="math/tex; mode=display">
+x^{*}=(A^{T}A)^{-1}A^{T}b</script><p>证明过程如下：<br>构造目标函数</p>
+<script type="math/tex; mode=display">f(x)=||Ax-b||^{2}\\
+=(Ax-b)^{T}(Ax-b)\\
+=\frac{1}{2}x^{T}(2A^{T}A)x-x^{T}(2A^{T}b)+b^{T}b</script><p>显然函数<script type="math/tex">f</script>为二次型函数，由于<script type="math/tex">rank(A)=n</script>，因此该二次型为正定二次型，利用局部极小点的一阶必要条件可以得到极小点满足</p>
+<script type="math/tex; mode=display">
+\nabla f(x)=2A^{T}Ax-2A^{T}b=0</script><p>该方程的唯一解为<script type="math/tex">x^{*}=(A^{T}A)^{-1}A^{T}b</script>，即为最小二乘解，最小二乘法对于直线拟合等应用是很方便的算法。</p>
+<h2 id="递推最小二乘法"><a href="#递推最小二乘法" class="headerlink" title="递推最小二乘法"></a>递推最小二乘法</h2><p>上一节介绍了最小二乘法，我们可以用其来做直线拟合，如果要在拟合的数据中增加几组数据可以通过递推最小二乘法的方式来进行，即根据上次拟合的结果做部分修正即可，即利用上次拟合得到的最小二乘解<script type="math/tex">x^{*}</script>来得到数据点增加后的最小二乘解<script type="math/tex">x^{*}</script>。</p>
+<p>某个优化问题为了寻找合适的<script type="math/tex">x</script>，使得<script type="math/tex">||A_{0}x-b^{(0)}||^{2}</script>最小，已知该问题的解为<script type="math/tex">x^{(0)}=G_{0}^{-1}A_{0}^{T}b^{(0)}</script>，其中<script type="math/tex">G_{0}=A^{T}_{0}A_{0}</script>，如果增加了新的数据，用矩阵<script type="math/tex">A_{1}</script>和向量<script type="math/tex">b_{1}</script>来表示，那么这个问题即为寻找<script type="math/tex">x</script>使得</p>
+<script type="math/tex; mode=display">
+||
+\begin{bmatrix}
+A_{0}\\A_{1}
+\end{bmatrix}x-\begin{bmatrix}
+b^{(0)}\\b^{(1)}
+\end{bmatrix}||^{2}</script><p>达到最小<br>其迭代公式为：</p>
+<script type="math/tex; mode=display">
+G_{1}=G_{0}+A_{1}^{T}A_{1}\\
+x^{(1)}=x^{(0)}+G_{1}^{-1}A_{1}^{T}(b^{(1)}-A_{1}x^{(0)})</script><p>证明过程暂略，在一般情况下的迭代公式为：</p>
+<script type="math/tex; mode=display">
+G_{k+}=G_{k}+A_{k+1}^{T}A_{k+1}\\
+x^{(k+1)}=x^{(k)}+G_{k+1}^{-1}A_{k+1}^{T}(b^{(k+1)}-A_{k+1}x^{(k)})</script><p>对于线性方程组的求解，后面还将会介绍最小范数解和一般情况下的解法，以及伪逆等知识，To be continue…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/07/20/最优化-求解线性方程组-1/" data-id="cjnzg5f5h0011agawokjxd7fq" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-LeetCode-207-Course-Schedule" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/07/20/LeetCode-207-Course-Schedule/" class="article-date">
@@ -104,7 +169,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/20/LeetCode-207-Course-Schedule/" data-id="cjnpw6261000gm0awhlvtzthq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/20/LeetCode-207-Course-Schedule/" data-id="cjnzg5f4w0005agawhqy8imqv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
@@ -156,7 +221,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/14/机器学习-机器学习中的数值计算-1/" data-id="cjnpw6271001zm0aw2za20dkd" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/14/机器学习-机器学习中的数值计算-1/" data-id="cjnzg5f5w001tagawp4b3emcv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -202,7 +267,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/06/机器学习-利用TensorFlow训练一个简单的神经网络/" data-id="cjnpw6271001tm0awaq708wpq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/06/机器学习-利用TensorFlow训练一个简单的神经网络/" data-id="cjnzg5f5v001ragaw0yxtr2re" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -243,64 +308,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/29/机器学习-在极客云上进行深度学习/" data-id="cjnpw6271001vm0aw2etfnyht" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-机器学习-KITTI的雷达-摄像头数据融合" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/06/15/机器学习-KITTI的雷达-摄像头数据融合/" class="article-date">
-  <time datetime="2018-06-15T13:43:30.000Z" itemprop="datePublished">2018-06-15</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/15/机器学习-KITTI的雷达-摄像头数据融合/">[机器学习]KITTI的雷达+摄像头数据融合</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="KITTI数据"><a href="#KITTI数据" class="headerlink" title="KITTI数据"></a>KITTI数据</h1><p>KITTI的数据集有很多，我们在这里选取了其中的raw_data(原始数据)进行融合，数据下载地址：<a href="http://www.cvlibs.net/datasets/kitti/raw_data.php" target="_blank" rel="noopener">http://www.cvlibs.net/datasets/kitti/raw_data.php</a></p>
-<p>KITTI数据集的数据采集平台装配有2个灰度摄像机，2个彩色摄像机，一个Velodyne 64线3D激光雷达，4个光学镜头，以及1个GPS导航系统。具体的传感器参数如下 ：</p>
-<ul>
-<li>2 × PointGray Flea2 grayscale cameras (FL2-14S3M-C), 1.4 Megapixels,<br>1/2” Sony ICX267 CCD, global shutter</li>
-<li>2 × PointGray Flea2 color cameras (FL2-14S3C-C), 1.4 Megapixels, 1/2”<br>Sony ICX267 CCD, global shutter</li>
-<li>4 × Edmund Optics lenses, 4mm, opening angle ∼ 90◦, vertical opening<br>angle of region of interest (ROI) ∼ 35◦</li>
-<li>1 × Velodyne HDL-64E rotating 3D laser scanner, 10 Hz, 64 beams, 0.09<br>degree angular resolution, 2 cm distance accuracy, collecting ∼ 1.3<br>million points/second, field of view: 360◦ horizontal, 26.8◦<br>vertical, range: 120 m</li>
-<li>1 × OXTS RT3003 inertial and GPS navigation system, 6 axis, 100 Hz,<br>L1/L2 RTK, resolution: 0.02m / 0.1◦</li>
-</ul>
-<p><img src="https://img-blog.csdn.net/20180615212808485?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="传感器"></p>
-<p>传感器的安装位置如下图：<br><img src="https://img-blog.csdn.net/20180615212914102?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<p>对于我们使用的raw_data数据集，其数据包（以2011_09_26_drive_0001，synced,+rectified data为例），解压之后主要包含以下几个部分：</p>
-<ul>
-<li>标定文件：calib_cam_to_cam.txt，calib_imu_to_velo.txt，calib_velo_to_cam.txt</li>
-<li>摄像头文件：image_00到image_03四个文件夹，分别对应4个摄像头，常用的摄像头为02</li>
-<li>点云文件：雷达扫描到的点文件，velodyne_points文件夹，其中包括多个bin文件和时间戳文件</li>
-</ul>
-<h1 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h1><p>KITTI数据集提供了官方的toolkit来方便我们对数据集进行操作，对于其中的raw_data数据，提供了十多个函数来方便我们进行操作。并提供了数据融合的demo如下：<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">run_demoVelodyne</span> <span class="params">(base_dir,calib_dir)</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">% clear and close everything</span></span><br><span class="line">close all; dbstop error; clc;</span><br><span class="line"><span class="built_in">disp</span>(<span class="string">'======= KITTI DevKit Demo ======='</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">% 根据函数输入参数的不同的设定</span></span><br><span class="line"><span class="keyword">if</span> nargin&lt;<span class="number">1</span></span><br><span class="line">  base_dir  = <span class="string">'./data/2011_09_26/2011_09_26_drive_0005_sync'</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">if</span> nargin&lt;<span class="number">2</span></span><br><span class="line">  calib_dir = <span class="string">'./data/2011_09_26'</span>;</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line">cam       = <span class="number">2</span>; <span class="comment">% 0-based index</span></span><br><span class="line">frame     = <span class="number">137</span>; <span class="comment">% 0-based index</span></span><br><span class="line"></span><br><span class="line"><span class="comment">%加载标定文件，fullfile将路径和文件相结合</span></span><br><span class="line"><span class="comment">%calib是相机参数的结构矩阵</span></span><br><span class="line">calib = loadCalibrationCamToCam(fullfile(calib_dir,<span class="string">'calib_cam_to_cam.txt'</span>));</span><br><span class="line"><span class="comment">%Tr_velo_to_cam是一个参数矩阵</span></span><br><span class="line">Tr_velo_to_cam = loadCalibrationRigid(fullfile(calib_dir,<span class="string">'calib_velo_to_cam.txt'</span>));	</span><br><span class="line"></span><br><span class="line"><span class="comment">%计算从雷达的3d数据到摄像机图片的投影矩阵</span></span><br><span class="line">R_cam_to_rect = <span class="built_in">eye</span>(<span class="number">4</span>);</span><br><span class="line">R_cam_to_rect(<span class="number">1</span>:<span class="number">3</span>,<span class="number">1</span>:<span class="number">3</span>) = calib.R_rect&#123;<span class="number">1</span>&#125;;</span><br><span class="line">P_velo_to_img = calib.P_rect&#123;cam+<span class="number">1</span>&#125;*R_cam_to_rect*Tr_velo_to_cam;</span><br><span class="line"></span><br><span class="line"><span class="comment">% load and display image</span></span><br><span class="line">img = imread(sprintf(<span class="string">'%s/image_%02d/data/%010d.png'</span>,base_dir,cam,frame));</span><br><span class="line">fig = figure(<span class="string">'Position'</span>,[<span class="number">20</span> <span class="number">100</span> size(img,<span class="number">2</span>) size(img,<span class="number">1</span>)]);</span><br><span class="line">axes(<span class="string">'Position'</span>,[<span class="number">0</span> <span class="number">0</span> <span class="number">1</span> <span class="number">1</span>]);</span><br><span class="line">imshow(img); hold on;</span><br><span class="line"></span><br><span class="line"><span class="comment">% load velodyne points</span></span><br><span class="line">fid=fopen(sprintf(<span class="string">'%s/velodyne_points/data/%010d.bin'</span>,base_dir,frame),<span class="string">'rb'</span>);<span class="comment">%先以二进制方式打开</span></span><br><span class="line">velo = fread(fid,[inf <span class="number">4</span>],<span class="string">'single'</span>);<span class="comment">%将文件读取为single格式，维度为(n,4)</span></span><br><span class="line">velo = velo(<span class="number">1</span>:<span class="number">5</span>:<span class="keyword">end</span>,:);<span class="comment">%每五个点只取一个点，为了方便显示</span></span><br><span class="line">fclose(fid);</span><br><span class="line"></span><br><span class="line"><span class="comment">% remove all points behind image plane (approximation</span></span><br><span class="line">idx = velo(:,<span class="number">1</span>)&lt;<span class="number">5</span>;	<span class="comment">%找到x坐标小于5的雷达点的索引</span></span><br><span class="line">velo(idx,:) = [];	<span class="comment">%将这些点去掉</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% project to image plane (exclude luminance)</span></span><br><span class="line">velo_img = project(velo(:,<span class="number">1</span>:<span class="number">3</span>),P_velo_to_img);</span><br><span class="line"></span><br><span class="line"><span class="comment">% plot points，彩色</span></span><br><span class="line"></span><br><span class="line">cols = jet;</span><br><span class="line"><span class="keyword">for</span> <span class="built_in">i</span>=<span class="number">1</span>:<span class="built_in">size</span>(velo_img,<span class="number">1</span>)</span><br><span class="line">  col_idx = <span class="built_in">round</span>(<span class="number">64</span>*<span class="number">5</span>/velo(<span class="built_in">i</span>,<span class="number">1</span>));</span><br><span class="line">  plot(velo_img(<span class="built_in">i</span>,<span class="number">1</span>),velo_img(<span class="built_in">i</span>,<span class="number">2</span>),<span class="string">'o'</span>,<span class="string">'LineWidth'</span>,<span class="number">4</span>,<span class="string">'MarkerSize'</span>,<span class="number">1</span>,<span class="string">'Color'</span>,cols(col_idx,:));</span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% plot points，灰度图</span></span><br><span class="line"></span><br><span class="line"><span class="comment">% cols = 1-[0:1/63:1]'*ones(1,3);</span></span><br><span class="line"><span class="comment">% for i=1:size(velo_img,1)</span></span><br><span class="line"><span class="comment">%   col_idx = round(64*5/velo(i,1));</span></span><br><span class="line"><span class="comment">%   plot(velo_img(i,1),velo_img(i,2),'o','LineWidth',4,'MarkerSize',1,'Color',cols(col_idx,:));</span></span><br><span class="line"><span class="comment">% end</span></span><br></pre></td></tr></table></figure></p>
-<p>最后的效果图如下：<br><img src="https://img-blog.csdn.net/20180615214631398?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>完整的toolkit和数据，代码可以到我的github下载：<br><a href="https://github.com/Lannyy/DataFusion" target="_blank" rel="noopener">https://github.com/Lannyy/DataFusion</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/15/机器学习-KITTI的雷达-摄像头数据融合/" data-id="cjnpw626s001jm0aw872lfb4g" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/06/29/机器学习-在极客云上进行深度学习/" data-id="cjnzg5f5u001oagaw0f4w3h2v" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -351,7 +359,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -370,7 +378,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -381,6 +389,10 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/10/30/paper-EDAnet/">[paper]EDAnet</a>
+          </li>
         
           <li>
             <a href="/2018/10/22/paper-darts/">[paper]darts</a>
@@ -396,10 +408,6 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
         
           <li>
             <a href="/2018/10/11/paper-ShuffleNetV2/">[paper]ShuffleNetV2</a>
-          </li>
-        
-          <li>
-            <a href="/2018/10/04/paper-MobileNets/">[paper]MobileNets</a>
           </li>
         
       </ul>

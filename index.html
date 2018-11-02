@@ -70,6 +70,67 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-paper-EDAnet" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/10/30/paper-EDAnet/" class="article-date">
+  <time datetime="2018-10-30T06:40:41.000Z" itemprop="datePublished">2018-10-30</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/10/30/paper-EDAnet/">[paper]EDAnet</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="《Efficient-Dense-Modules-of-Asymmetric-Convolution-for-Real-Time-Semantic-Segmentation》总结"><a href="#《Efficient-Dense-Modules-of-Asymmetric-Convolution-for-Real-Time-Semantic-Segmentation》总结" class="headerlink" title="《Efficient Dense Modules of Asymmetric Convolution for Real-Time Semantic Segmentation》总结"></a>《Efficient Dense Modules of Asymmetric Convolution for Real-Time Semantic Segmentation》总结</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>之前的用于segmentation的网络要么速度比较慢，要么精度比较低，这里设计了一种EDANet模块，将asymmtric conv，dilated conv，dense connectivity相结合。在各个方面上都比FCN要好，并且不具有decoder structure，context module，post-processing scheme和pretrained model。在cityscapes和camvid上做了实验。</p>
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.Introduction</h2><p>EDANet与其他一些网络的对比如下<img src="/images/paper-EDANet/compare.PNG" alt="EDANet与其它网络的性能对比"></p>
+<p>然后对于EDANet有几个关键的组成，分别为asymmetric conv，DenseNet的densely connected structure，dilated conv。</p>
+<p>asymmetric conv：将nxn conv分成1xn和nx1两个conv，可以减小参数量并且只有少量的性能下降</p>
+<p>densely connected structure：来自于DenseNet，本来最开始设计用于图像分类的，但是其中的多层特征融合对于分割任务是很有用的</p>
+<p>dilated conv：可以增大感知野</p>
+<p>为了效率和精度上的平衡，没有增加decoder structure，context module，post-processing scheme。</p>
+<h2 id="2-Related-Work"><a href="#2-Related-Work" class="headerlink" title="2.Related Work"></a>2.Related Work</h2><p>CNN最初是用于图像分类的任务，FCN是第一个将CNN用于语义分割的网络，将VGG中的FC层用卷积层替代进行像素级的语义分割，从此语义分割进入了基于CNN的时代。</p>
+<p>高精度的网络中，UNet使用了encoder-decoder结构，从浅层网络层中收集空间信息用于增强深层的信息。DeconvNet提出了与encoder相对称的encoder，对encoder的输出进行上采样，不过这样的网络由于大量的decoder的存在计算量很大。Dilation10将扩展率逐渐增加的扩展卷积层相堆积，创造了一种上下文模块，来聚合多尺度的上下文信息。deeplab引入了一种ASPP模块，利用多个并行的扩展的卷积核来探索多尺度的表达，两种模块都需要大量的计算量和推断时间，并不实用。</p>
+<p>高效率的网络中，ENet是第一个针对于实时语义分割的网络，继承了ResNet的结构，并且修剪了卷积的数量来减少计算量，而ESPNet在空间金字塔前面使用了1x1 conv来减少计算量，这两者都很高效但是准确率并不高。</p>
+<p>对于Dense连接的网络结构，DenseNet在图像分类任务中取得了很好的结构。已经有一些任务利用DenseNet来进行语义分割的任务，FC-DenseNet利用DenseNet作为encoder，然后构建了额外的decoder结构。SDN利用DenseNet作为骨架，将堆积起来的deconv结构与之相结合，这个方法将DenseNet进行了简单的改善，并没有进行额外的优化，这样的改善同时也增加了计算量和计算时间。</p>
+<p>这里使用非对称卷积来减少参数量和计算消耗，同样将dense连接的思想应用在该网络的结构设计中，EDANet能够在实现较高的推断速度的同时维持较高的精度。</p>
+<h2 id="3-Method"><a href="#3-Method" class="headerlink" title="3.Method"></a>3.Method</h2><p>整个网络的结构如图<img src="/images/paper-EDAnet/edanet.PNG" alt="EDANet网络结构"></p>
+<p>主要分为这么几个模块，Downsampling Block和EDA Block和最后的Projection Layer。其中的EDA Block又包括多个EDA module。其中EDA module的结构如下所示：<img src="/images/paper-EDANet/eda-module.PNG" alt="EDA module"></p>
+<p>其中有两组asymmetric conv，前一组是正常的conv，后一组是dilated conv，这种asymmetic conv可以减少33%的计算量，并且只会带来少量的性能下降。</p>
+<p>另外一个技术就是DenseNet中的连接方式，将新学到的特征和输入进行concat，即<script type="math/tex">y_m=[H_{m}(y_{m-1}),y_{m-1}]</script>，m是其中的第m个模块，这样的连接结构能够大量的提高处理效率，并且众所周知更深的层有着更大的感知野，比如两个3x3 conv的堆叠相当于一个5x5 conv的感知野，因此dense连接可以将具有不同感知野的模块的特征进行concat，让网络来聚集更多的信息，这让该网络在低计算量之下也具有更好的分割结果。</p>
+<p>对于网络结构的设计，使用了ENet的initial block作为downsampling block，并且分成了两种模式，其表示如下<img src="/images/paper-EDANet/dspblock.PNG" alt="downsampling block的结构"></p>
+<p>这样的downsampling block可以让网络具有更大的感知野，用于收集上下文信息，然而减少feature map的解析度将会失去一些细节，这对于pixel的segmentation是很有害的，因此这里仅使用了3个downsampling block。在最后，相对于全解析度的输入图片，特征尺寸变为了1/8，而其他的网络比如SegNet特征尺寸则变为了1/32。</p>
+<p>为了计算速度这里并没有使用decoder，而是在最后加了一层1x1 conv作为projection layer，采用<strong>双线性插值</strong>resize的方式来将图像还原为全解析度的尺寸。这样会轻微降低一些精度但是能够节省大量的计算量。</p>
+<p>这里使用了post-activation的方式，即使用的conv-bn-relu的顺序，将这样的结构应用在所有的conv层上，在训练的过程中也加入了0.02的dropout用于正则化。</p>
+<h2 id="4-Experiment"><a href="#4-Experiment" class="headerlink" title="4.Experiment"></a>4.Experiment</h2><p>我们在这里主要关注cityscapes上的实验。在训练的时候将图片downsample为512x1024的尺寸进行训练，在validation的时候将输出特征通过双线性插值的方式upsampling为1024x2048的原始尺寸，这里略去其中的一些训练细节，<a href="https://github.com/shaoyuanlo/EDANet" target="_blank" rel="noopener">EDANet的训练细节</a>，最后的实验结果分为两部分，一部分是ablation study的结果，另一部分是cityscapes上与其他网络结构相比的实验结果。</p>
+<p><img src="/images/paper-EDANet/abalation-study.PNG" alt="ablation study的结果"></p>
+<p>与其他网络相比在cityscapes上的实验结果<img src="/images/paper-EDANet/evaluation.PNG" alt="对比实验结果"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/10/30/paper-EDAnet/" data-id="cjnzg5f59000magawnlp25wwy" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-paper-darts" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/10/22/paper-darts/" class="article-date">
@@ -142,7 +203,7 @@ s.t. \ w^{*}(\alpha)=argmin_{w}\ L_{train}(w,\alpha)</script><p>其实也可以�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/22/paper-darts/" data-id="cjnpw626h000zm0awjq96kfy9" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/22/paper-darts/" data-id="cjnzg5f5d000sagaw72oxb0er" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -217,7 +278,7 @@ a_i^{l+1}=f(\sum^{n^l}_{j}w^{l}_{h^{l}(i,j)}\xi^{l}(i,j)a_{j}^l)</script><p>误�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/15/paper-HashingTricks/" data-id="cjnpw6261000em0awhvb7qrum" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/15/paper-HashingTricks/" data-id="cjnzg5f57000kagaw7zo8g5pf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -274,7 +335,7 @@ a_i^{l+1}=f(\sum^{n^l}_{j}w^{l}_{h^{l}(i,j)}\xi^{l}(i,j)a_{j}^l)</script><p>误�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/12/paper-ShuffleNet/" data-id="cjnpw626b000sm0awi646kdah" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/12/paper-ShuffleNet/" data-id="cjnzg5f5a000oagawfau57mqw" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -335,129 +396,7 @@ a_i^{l+1}=f(\sum^{n^l}_{j}w^{l}_{h^{l}(i,j)}\xi^{l}(i,j)a_{j}^l)</script><p>误�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/11/paper-ShuffleNetV2/" data-id="cjnpw626b000um0aw74f3yh65" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-paper-MobileNets" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/10/04/paper-MobileNets/" class="article-date">
-  <time datetime="2018-10-04T12:34:54.000Z" itemprop="datePublished">2018-10-04</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/04/paper-MobileNets/">[paper]MobileNets</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="paper-《MobileNets-Efficient-Convolutional-Neural-Networks-for-Mobile-Vision"><a href="#paper-《MobileNets-Efficient-Convolutional-Neural-Networks-for-Mobile-Vision" class="headerlink" title="[paper]《MobileNets: Efficient Convolutional Neural Networks for Mobile Vision"></a>[paper]《MobileNets: Efficient Convolutional Neural Networks for Mobile Vision</h1><p>Applications》总结</p>
-<h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>针对移动和嵌入式视觉应用，本文提出了一种高效的模型称之为MobileNets，基于depthwise separable convolutions构造的一种轻量级神经网络。该模型使用两个超参数来平衡准确率和延迟，并针对二者的平衡在ImageNet上做了广泛的实验，与其他模型相比展现出了强大的性能。并通过实验展现了ImageNet在各种应用上的强大之处，包括目标检测，精细化分类，人脸属性和大范围地理定位等。</p>
-<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1-Introduction"></a>1-Introduction</h2><p>自从AlexNet使深度CNN变得流行起来，CNN在计算机视觉方面变得无所不在，总体趋势在于发明更深更复杂的网络来实现更高的精度。然而这些改进在网络速度和尺寸上并没有起到促进作用，显示应用中的机器人，无人驾驶汽车，AR等都需要在有限的计算平台下具有实时性。</p>
-<p>本文提出了一种高效的网络结构和两个超参数构成的集合来构建用于以上应用的模型，章节2审视了前人在构建小型模型方面的经验，章节3描述了MobileNet的结构和宽度乘子，分辨率乘子这两个超参数，章节4描述了其在ImageNet和各种应用下的实验，最后章节5进行了总结。</p>
-<h2 id="2-Prior-Work"><a href="#2-Prior-Work" class="headerlink" title="2-Prior Work"></a>2-Prior Work</h2><p>构建高效的小尺寸网络在最近很流行，很多方法能被分类成两种：压缩欲训练网络或者直接训练小尺寸网络，本文提出的网络结构可以让搭建者来选择满足资源约束的小尺寸网络，MobileNet主要专注于优化延迟并产出小尺寸网络，许多网络都只考虑了尺寸而没有速度。 </p>
-<p>MobileNets利用depthwise separable convolutions，Inception model也利用这个来减少前几层的计算量。Flattened networks利用全分解卷积来构建网络，并且展现了分解网络的潜力。Factorized networks利用了相似的卷积分解，也利用了topological connections。另外的还有Xception network：通过缩放depthwise separable filters。Squeezenet：利用bottleneck。其他一些减少计算量的网络：structured transform network，deep fried convnets。</p>
-<p>获得小尺寸网络的其他方法：对于欲训练网络的shrinking，factorizing，compressing，其中compressing包含：product quantization，hashing，pruning，vector quantization，Huffman coding。其中factorization的方法：[14,20]文献。另外的方法还有distillation(用大网络的输出来训练小网络)，low bit networks。</p>
-<h2 id="3-MobileNet-Architecture"><a href="#3-MobileNet-Architecture" class="headerlink" title="3-MobileNet Architecture"></a>3-MobileNet Architecture</h2><p>这一章首先介绍核心的depthwise separable filters，然后介绍MobileNet的网络结构，最后以shrinking的两个超参数（宽度乘子，分辨率乘子）的介绍结尾。</p>
-<h3 id="3-1-Depthwise-Separable-Convolutions"><a href="#3-1-Depthwise-Separable-Convolutions" class="headerlink" title="3.1-Depthwise Separable Convolutions"></a>3.1-Depthwise Separable Convolutions</h3><p>depthwise separable convolution是将一个标准卷积分成了两部分：depthwise convolution和1x1的卷积。同时也将一个卷积层分成了两层：filtering和combining。这样的分解可以极大地减少计算量和模型尺寸。标准卷积和depthwise separable convolution的对比如下图：<img src="\images\paper-MobileNets\depthwise-separable-convolution.PNG" alt="两种卷积方式的区别"></p>
-<p>对于一个标准卷积，假设其输入维度为<script type="math/tex">D_{F}*D_{F}*M</script>，输出维度为<script type="math/tex">D_{G}*D_{G}*N</script>，卷积核的维度为<script type="math/tex">D_{K}*D_{K}*M*N</script>，那么在stride=1，padding的情况下，标准卷积的计算公式为：</p>
-<script type="math/tex; mode=display">
-G_{k,l,n}=\sum_{i,j,m}K_{i,j,m,n}\cdot F_{k+i-1,l+j-1,m}</script><p>标准卷积的计算消耗为：</p>
-<script type="math/tex; mode=display">
-D_{K}\cdot D_{K}\cdot M\cdot N\cdot D_{F}\cdot D_{F}</script><p>而depthwise separable convolution的计算消耗为：</p>
-<script type="math/tex; mode=display">
-D_{K}\cdot D_{K}\cdot M\cdot D_{F}\cdot D_{F}+M\cdot N\cdot D_{F}\cdot D_{F}</script><p>前者为depthwise convolution的计算消耗，而后者为1x1的卷积的计算消耗，通过比较，二者的计算量之间的减少为：</p>
-<script type="math/tex; mode=display">
-\frac{D_{K}\cdot D_{K}\cdot M\cdot D_{F}\cdot D_{F}+M\cdot N\cdot D_{F}\cdot D_{F}}{D_{K}\cdot D_{K}\cdot M\cdot N\cdot D_{F}\cdot D_{F}}=\frac{1}{N}+\frac{1}{D_{K}^{2}}</script><p>如果使用3x3的卷积核，那么计算量将减小8-9倍，并且在准确率上只有微小的降低。再进一步进行分解[16,31]并不会减少很多计算量因为depthwise convolution的计算量已经很小了。</p>
-<h3 id="3-2-Network-Structure-and-Training"><a href="#3-2-Network-Structure-and-Training" class="headerlink" title="3.2-Network Structure and Training"></a>3.2-Network Structure and Training</h3><p>MobileNet除了第一层是标准卷积之外，其余结构都是基于depthwise separable convolution来构建的。整个网络结构如下图：<img src="\images\paper-MobileNets\MobileNet-Body-Architecture.PNG" alt="MobileNet的网络结构"></p>
-<p>值得一提的是，并不能以小数量的Mult-Adds就认为这个模型是高效的。让这些Mult-Adds操作能够高效实现同样也很重要。比如非结构化的稀疏矩阵操作并不一定比密集矩阵的操作更快，除非具有很高的稀疏度。我们的模型几乎将所有的计算转化为密集的1x1卷积操作，这种操作可以用一种经过高度优化的通用矩阵乘法（GEMM）来实现。通常的用GEMM实现的卷积操作需要先使用im2col来对输入在内存中重新进行排序，例如这样的操作可以用Caffe来实现。而我们的1x1卷积则不需要先排序，可以直接应用GEMM算法（最优的数值线性代数算法之一）。在MobileNet中，95%的Mult-Adds操作和75%的参数都来自1x1卷积。</p>
-<p>对于训练的细节：TensorFlow+RMSprop+asynchronous gradient descent(类似InceptionV3)+更少的正则化和数据增强(小模型不容易过拟合)+很少或者没有weight decay on the depthwise filters(因为里面已经只有很少的参数)</p>
-<h3 id="3-3-Width-Multiplier-Thinner-Models"><a href="#3-3-Width-Multiplier-Thinner-Models" class="headerlink" title="3.3-Width Multiplier: Thinner Models"></a>3.3-Width Multiplier: Thinner Models</h3><p>尽管当前的MobileNet已经很小很快了，不过有时候还需要更小的模型，我们引入一个超参数<script type="math/tex">\alpha</script>(width multiplier)来构建这些更小的模型，这个参数的目标是均匀的在每一层来让整个网络变得更加瘦小。给定一个<script type="math/tex">\alpha</script>，则让输入通道数M变为<script type="math/tex">\alpha M</script>，输出通道数N变为<script type="math/tex">\alpha N</script>，<script type="math/tex">\alpha</script>的取值通常为1，0.75，0.5，0.25，使用了该参数之后的计算量为：</p>
-<script type="math/tex; mode=display">
-D_{K}\cdot D_{K}\cdot \alpha M\cdot D_{F}\cdot D_{F}+\alpha M\cdot \alpha N\cdot D_{F}\cdot D_{F}</script><p>计算量大约变成了以前的<script type="math/tex">\alpha^{2}</script></p>
-<h3 id="3-4-Resolution-Multiplier-Reduced-Representation"><a href="#3-4-Resolution-Multiplier-Reduced-Representation" class="headerlink" title="3.4-Resolution Multiplier: Reduced Representation"></a>3.4-Resolution Multiplier: Reduced Representation</h3><p>第二个减少网络计算量的超参数是<script type="math/tex">\rho</script>(resolution multiplier)， 通过设置输入的分辨率来设置这一参数，然后内部的分辨率也会随之减少，在加上了超参数<script type="math/tex">\alpha,\rho</script>之后的计算量则变为：</p>
-<script type="math/tex; mode=display">
-D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \alpha N\cdot \rho D_{F}\cdot \rho D_{F}</script><p>通常<script type="math/tex">\rho</script>设定之后的分辨率为224，192，160，128。注意在设定该参数之后计算量会发生变化，但是模型参数则不会发生变化。</p>
-<h2 id="4-Experiments"><a href="#4-Experiments" class="headerlink" title="4-Experiments"></a>4-Experiments</h2><p>这部分主要讲了一些实验，首先是depthwise separable convolution，标准卷积的对比，瘦小和浅层MobileNet的对比。然后介绍了两个超参数的实验结果，包括ImageNet的准确度，Multi-Adds操作的数量和参数的数量。最后介绍了MobileNet在其它一些不同应用上（精细化分类，大尺度地理定位，人脸属性，目标检测，人脸嵌入）的实验结果。</p>
-<h3 id="4-1-Model-Choices"><a href="#4-1-Model-Choices" class="headerlink" title="4.1-Model Choices"></a>4.1-Model Choices</h3><p>试验结果表明，全卷积的MobileNet和depthwise separable convolution相比，精度差不多，但是depthwise separable convolution的参数和计算量相比而言小了很多。瘦小和浅层MobileNet相比，计算量差不多的情况下瘦小MobileNet精度更高一些。实验结果如图：<img src="\images\paper-MobileNets\Model-Choices-Experiment.PNG" alt="关于模型选择的实验结果"></p>
-<h3 id="4-2-Model-Shrinking-Hyperparameters"><a href="#4-2-Model-Shrinking-Hyperparameters" class="headerlink" title="4.2-Model Shrinking Hyperparameters"></a>4.2-Model Shrinking Hyperparameters</h3><p>这一部分是讲关于上述两个超参数调参的，其实验结果如下图所示：<img src="\images\paper-MobileNets\Model-Shrinking-Hyperparameters-experiment1.PNG" alt="超参数调参对比"></p>
-<p><img src="\images\paper-MobileNets\Model-Shrinking-Hyperparameters-experiment2.PNG" alt="超参数调参对比"></p>
-<p><img src="\images\paper-MobileNets\Model-Shrinking-Hyperparameters-experiment3.PNG" alt="与经典模型的对比"></p>
-<h3 id="4-3-Fine-Grained-Recognition"><a href="#4-3-Fine-Grained-Recognition" class="headerlink" title="4.3-Fine Grained Recognition"></a>4.3-Fine Grained Recognition</h3><p>利用Stanford Dogs dataset数据集和网上的一些包含噪声的数据上训练了应用于精细化分类的模型，并且进行了很好的调参，最后在减小计算量和模型尺寸的情况下得到了近似于state of the art的结果，实验结果如图<img src="\images\paper-MobileNets\Fine-Grained-Recognition-experiment.PNG" alt="精细化分类的实验结果"></p>
-<h3 id="4-4-Large-Scale-Geolocalizaton"><a href="#4-4-Large-Scale-Geolocalizaton" class="headerlink" title="4.4-Large Scale Geolocalizaton"></a>4.4-Large Scale Geolocalizaton</h3><p>PlaNet是将这个定位问题转化为一个分类问题来解决，PlaNet已经成功定位了很多照片，并且在这个问题上的表现已经超过了Im2GPS，用MobileNet结构在同样的数据下重新训练了PlaNet，实验结果如下图：<img src="\images\paper-MobileNets\Large-Scale-Geolocalizaton-experiment.PNG" alt="地理定位的实验结果"></p>
-<h3 id="4-5-Face-Attributes"><a href="#4-5-Face-Attributes" class="headerlink" title="4.5-Face Attributes"></a>4.5-Face Attributes</h3><p>MobileNet还能够用于压缩未知训练过程的大规模系统，在人脸属性分类系统中使用了MobileNet和distillation的协同作用，在将二者进行结合之后，系统不仅不需要进行正则化，而且表现出来了更强的性能，实验结果如下图：<img src="\images\paper-MobileNets\Face-Attributes-experiment.PNG" alt="人脸属性检测的实验结果"></p>
-<h3 id="4-6-Object-Detection"><a href="#4-6-Object-Detection" class="headerlink" title="4.6-Object Detection"></a>4.6-Object Detection</h3><p>这个实验利用VGG，Inception，MobileNet在SSD和Faster-RCNN上对COCO数据集进行了训练，结果如下图：<img src="\images\paper-MobileNets\Object-Detection-experiment.PNG" alt="目标检测的实验结果"></p>
-<h3 id="4-7-Face-Embeddings"><a href="#4-7-Face-Embeddings" class="headerlink" title="4.7-Face Embeddings"></a>4.7-Face Embeddings</h3><p>FaceNet是FaceEmbedding的state of the art结果，这里同样的利用distillation来训练Mobile FaceNet。结果如下图：<img src="\images\paper-MobileNets\Face-Embeddings-experiment.PNG" alt="人脸嵌入的实验结果"></p>
-<h2 id="5-Conclusion"><a href="#5-Conclusion" class="headerlink" title="5-Conclusion"></a>5-Conclusion</h2><p>提出了基于depthwise separable convolution的模型结构，并且使用了width multiplier和resolution multiplier两个超参数来控制模型的复杂度，并且在模型尺寸，速度，准确度上面与其他模型进行了对比，证明了MobileNet在多种应用之下的高效性，下一步打算对MobileNet进行改进和进一步开发。</p>
-<h2 id="6-其他的一些相关总结"><a href="#6-其他的一些相关总结" class="headerlink" title="6-其他的一些相关总结"></a>6-其他的一些相关总结</h2><p>数据集：ImageNet(图像分类)，Stanford Dogs dataset(精细化分类)，YFCC100M(人脸属性)，COCO(目标检测)</p>
-<p>相关的论文：</p>
-<p><strong>数据集</strong></p>
-<p>《Imagenet large scale visual recognition challenge》（ImageNet，ILSVRC 2012）</p>
-<p>《In First Workshop on Fine-Grained Visual Categorization》（Stanford Dogs dataset）</p>
-<p>《Yfcc100m: The new data in multimedia research》（YFCC100M）</p>
-<p><strong>更深更复杂精度更高的神经网络</strong></p>
-<p>《Inception-v4,inception-resnet and the impact of residual connections onlearning》（InceptionV4）</p>
-<p>《Rethinking the inception architecture for computer vision》（InceptionV3，空间维度的额外分解）</p>
-<p>《Deep residual learning for image recognition》（resnet）</p>
-<p>《Going deeper with convolutions》(GoogleNet)</p>
-<p>《Very deep convolutional networks for large-scale image recognition》（VGG16）</p>
-<p>《Imagenet classification with deep convolutional neural networks》（AlexNet）</p>
-<p><strong>神经网络的压缩加速</strong></p>
-<p>《Flattened convolutional neural networks for feedforward acceleration》（空间维度的额外分解）</p>
-<p>《Factorized convolutional neural networks》（对卷积进行分解）</p>
-<p>《Squeezenet: Alexnet-level accuracy with 50x fewer parameters and¡ 1mb model size》（利用bottleneck来实现小型网络）</p>
-<p>《Quantized convolutional neural networks for mobile devices》（基于product quantization进行压缩）</p>
-<p>《Xnornet:Imagenet classification using binary convolutional neural networks》（利用low bit networks）</p>
-<p>《Training deep neural networks with low precision multiplications》（利用low bit networks）</p>
-<p>《Quantized neural networks: Training neural networks with low precision weights and activations》（利用low bit networks）</p>
-<p>《Xception: Deep learning with depthwise separable convolutions》（缩放depthwise separable filters）</p>
-<p>《Structured transforms for small-footprint deep learning》（用于减少计算量的网络）</p>
-<p>《Deep fried convnets》（用于减少计算量的网络）</p>
-<p>《Compressing neural networks with the hashing trick》（利用哈希来压缩神经网络）</p>
-<p>《Rigid-motion scattering for image classification》（最初提出标准卷积分解为depthwise conv和1x1 conv）</p>
-<p>《Deep compression: Compressing deep neural network with pruning, trained quantization and huffman coding》（利用哈夫曼编码压缩网络）</p>
-<p>《Speeding up convolutional neural networks with low rank expansions》（额外的变量分解）</p>
-<p>《Speeding-up convolutional neural networks using fine-tuned cp-decomposition》（额外的变量分解）</p>
-<p>《Distilling the knowledge in a neural network》（利用distillation来从大型网络训练小网络，以进行压缩）</p>
-<p><strong>BN</strong></p>
-<p>《Batch normalization: Accelerating deep network training by reducing internal covariate shift》（InceptionV2也从此而来）</p>
-<p><strong>框架</strong></p>
-<p>《Caffe: Convolutional architecture for fast feature embedding》</p>
-<p>《Tensorflow: Large-scale machine learning on heterogeneous systems》</p>
-<p><strong>图像定位</strong></p>
-<p>《IM2GPS: estimating geographic information from a single image》（提出了Im2GPS）</p>
-<p>《Large-Scale Image Geolocalization》（关于Im2GPS）</p>
-<p>《PlaNet - Photo Geolocation with Convolutional Neural Networks》（PlaNet）</p>
-<p><strong>精细化分类</strong></p>
-<p>《The unreasonable effectiveness of noisy data for fine-grained recognition》</p>
-<p><strong>目标检测</strong></p>
-<p>《Faster r-cnn: Towards real-time object detection with region proposal networks》（Faster-RCNN框架）</p>
-<p>《Ssd: Single shot multibox detector》（SSD框架）</p>
-<p><strong>人脸嵌入</strong></p>
-<p>《Facenet: A unified embedding for face recognition and clustering》（FaceNet，基于三元损失来构建人脸嵌入）</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/04/paper-MobileNets/" data-id="cjnpw626b000nm0aw7lmwfl9w" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/11/paper-ShuffleNetV2/" data-id="cjnzg5f5c000qagawv5ca3gtc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -508,7 +447,7 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -527,7 +466,7 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -538,6 +477,10 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/10/30/paper-EDAnet/">[paper]EDAnet</a>
+          </li>
         
           <li>
             <a href="/2018/10/22/paper-darts/">[paper]darts</a>
@@ -553,10 +496,6 @@ D_{K}\cdot D_{K}\cdot \alpha M\cdot \rho D_{F}\cdot \rho D_{F}+\alpha M\cdot \al
         
           <li>
             <a href="/2018/10/11/paper-ShuffleNetV2/">[paper]ShuffleNetV2</a>
-          </li>
-        
-          <li>
-            <a href="/2018/10/04/paper-MobileNets/">[paper]MobileNets</a>
           </li>
         
       </ul>

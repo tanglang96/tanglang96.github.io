@@ -70,6 +70,59 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-最优化-求解线性方程组-2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/21/最优化-求解线性方程组-2/" class="article-date">
+  <time datetime="2018-07-21T10:02:02.000Z" itemprop="datePublished">2018-07-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/21/最优化-求解线性方程组-2/">[最优化]求解线性方程组(2)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="求解线性方程组-2"><a href="#求解线性方程组-2" class="headerlink" title="求解线性方程组(2)"></a>求解线性方程组(2)</h1><h2 id="线性方程组的最小范数解"><a href="#线性方程组的最小范数解" class="headerlink" title="线性方程组的最小范数解"></a>线性方程组的最小范数解</h2><p>上一篇博文介绍了线性方程组的情况之一，即未知数数量小于方程个数的情况，介绍了最小二乘法，在本文中将介绍线性方程组的另一种情况，即方程个数小于未知数数量的情况，此时方程组有无限多的解，但是最接近原点的解，即范数最小的解只有一个，也就是这里将会介绍的线性方程组的<strong>最小范数解</strong>。</p>
+<p>考虑线性方程组<script type="math/tex">Ax=b</script>，其中<script type="math/tex">A\in R^{m*n},m\le n</script>，要寻找其最小范数解，即相当于求解下列最优化问题：</p>
+<script type="math/tex; mode=display">
+minimize\ ||x||\\
+subject\  to\ Ax=b</script><p>这个问题属于等式约束的最优化问题，可以利用拉格朗日乘子法求解，在这里我们介绍另外一种方法。</p>
+<p>先给出结论，该方程组的最小范数解为<script type="math/tex">x^{*}=A^{T}(AA^{T})^{-1}b</script>，下面给出证明：</p>
+<script type="math/tex; mode=display">
+||x||^{2}=||(x-x^{*})+x^{*}||^{2}\\
+=||x-x^{*}||^{2}+||x^{*}||^{2}+2x^{*T}(x-x^{*})</script><p>令<script type="math/tex">x^{*}=A^{T}(AA^{T})^{-1}b</script>代入上式最右边项可以得到<script type="math/tex">2x^{*T}(x-x^{*})=0</script>，于是<script type="math/tex">||x||^{2}=||x-x^{*}||^{2}+||x^{*}||^{2}</script>，<script type="math/tex">||x^{*}||^{2}</script>是一个定值，而当<script type="math/tex">x\neq x^{*}</script>时，<script type="math/tex">||x-x^{*}||^{2}>0</script>恒成立，因此可以得到<script type="math/tex">x=x^{*}</script>是该优化问题的唯一最小解，即最小范数解。</p>
+<h2 id="Kaczmarz算法"><a href="#Kaczmarz算法" class="headerlink" title="Kaczmarz算法"></a>Kaczmarz算法</h2><p>Kaczmarz算法是一种迭代求解最小范数解的算法，可以省去求解<script type="math/tex">(AA^{T})^{-1}</script>的步骤，使计算更为高效，假设<script type="math/tex">A\in R^{m*n}</script>，直接给出迭代公式如下：<br>在前<script type="math/tex">m</script>次迭代中，即<script type="math/tex">k=0,1,...,m-1</script>时，有：</p>
+<script type="math/tex; mode=display">
+x^{(k+1)}=x^{(k)}+\mu(b_{k+1}-a_{k+1}^{T}x^{(k)})\frac{a_{k+1}}{a_{k+1}^{T}a_{k+1}}</script><p>对于第$(m+1)$次迭代，重新使用$A$的第1行以及$b$的第1个元素，即</p>
+<script type="math/tex; mode=display">
+x^{(m+1)}=x^{(m)}+\mu(b_{1}-a_{1}^{T}x^{(m)})\frac{a_{1}}{a_{1}^{T}a_{1}}</script><p>每迭代m次便从头循环一次，<script type="math/tex">\mu</script>可以视为迭代算法的过程。可以证明得到在Kaczmarz算法中，如果<script type="math/tex">x^{(0)}=0</script>，则当<script type="math/tex">k\to \infty</script>时，<script type="math/tex">x^{(k)}\to x^{*}=A^{T}(AA^{T})^{-1}b</script>，详细证明过程在这里省略。</p>
+<p>后面的文章还会介绍线性方程组的一般解法，伪逆等相关内容，To be continue…</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/07/21/最优化-求解线性方程组-2/" data-id="cjo2ng80e0016kgaw6y0j9nec" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-最优化-求解线性方程组-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/07/20/最优化-求解线性方程组-1/" class="article-date">
@@ -123,7 +176,7 @@ x^{(k+1)}=x^{(k)}+G_{k+1}^{-1}A_{k+1}^{T}(b^{(k+1)}-A_{k+1}x^{(k)})</script><p>�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/20/最优化-求解线性方程组-1/" data-id="cjnzl2oq3000y9kawhz8uzc0c" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/20/最优化-求解线性方程组-1/" data-id="cjo2ng80f0018kgawp5ucy2y9" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -169,7 +222,7 @@ x^{(k+1)}=x^{(k)}+G_{k+1}^{-1}A_{k+1}^{T}(b^{(k+1)}-A_{k+1}x^{(k)})</script><p>�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/20/LeetCode-207-Course-Schedule/" data-id="cjnzl2opq000d9kaweo39uaqb" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/20/LeetCode-207-Course-Schedule/" data-id="cjo2ng803000kkgawrmcqg0it" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
@@ -221,7 +274,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/14/机器学习-机器学习中的数值计算-1/" data-id="cjnzl2oql001y9kawa0g8y5qz" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/14/机器学习-机器学习中的数值计算-1/" data-id="cjo2ng80s001wkgawxpykpqxd" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -267,48 +320,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/06/机器学习-利用TensorFlow训练一个简单的神经网络/" data-id="cjnzl2oqh001r9kaw3i3om5sc" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-机器学习-在极客云上进行深度学习" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/06/29/机器学习-在极客云上进行深度学习/" class="article-date">
-  <time datetime="2018-06-29T14:49:12.000Z" itemprop="datePublished">2018-06-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/29/机器学习-在极客云上进行深度学习/">[机器学习]在极客云上进行深度学习</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="极客云-深度学习云平台"><a href="#极客云-深度学习云平台" class="headerlink" title="极客云-深度学习云平台"></a>极客云-深度学习云平台</h1><p>最近在做老师给的一个图像相关的深度学习任务，代码调试后发现电脑内存不够(8g笔记本)，后来发现了一个很好用的深度学习云服务平台<br>极客云:<a href="http://www.jikecloud.net/" target="_blank" rel="noopener">http://www.jikecloud.net/</a><br><img src="https://img-blog.csdn.net/20180629223231171?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>这个平台最大的方便之处莫过于其自带很多计算框架，每次配置各种环境的时候都被折腾得要死，各种库之间的依赖关系实在头疼。并且该平台有很多不同配置的机器进行选择，价格也很公道，今天在我用了那个tesla p100的显卡，60g内存的机器之后，就再也没有出现我之前遇到的bad_alloc问题<br><img src="https://img-blog.csdn.net/20180629223343714?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"></p>
-<h1 id="关于如何使用"><a href="#关于如何使用" class="headerlink" title="关于如何使用"></a>关于如何使用</h1><p>在进行训练之前可以先上传我们所使用的数据，我自己的数据大概10g左右，上传了一个晚上多一点，这个平台支持数据断点上传，并且在上传数据的时候是不会计算价格的，会默认放到/data目录下，最好是先解压上传压缩包上去，然后再在服务器上将数据解压到/input目录里，这样是最快的，因为貌似/data是机械盘，/input是固态。</p>
-<p>数据上传之后可以创建一个服务器实例了，他会提供一个ssh登陆指令直接远程登陆操作就行，也可以使用jupyter notebook和tensorboard，很方便。也可以直接在独占/共享两种方式上切换，或者换一个性能更强大的服务器。<br><img src="https://img-blog.csdn.net/2018062922402981?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>看一下我这台机子的配置<br>Tesla p100的显卡，京东价5w多。。。<br><img src="https://img-blog.csdn.net/20180629224707639?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>4核8线的志强E5<br><img src="https://img-blog.csdn.net/2018062922475828?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>60g的内存<br><img src="https://img-blog.csdn.net/20180629224823880?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>需要注意的是，在服务器关机后/input和/output的数据会被清除，在关机之前要将这两个目录下所需要的数据转移到/data目录下，这样便可以关机后一直保存。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/29/机器学习-在极客云上进行深度学习/" data-id="cjnzl2oqi001t9kawjn402jbw" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/06/机器学习-利用TensorFlow训练一个简单的神经网络/" data-id="cjo2ng80p001qkgawpp5hin94" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -359,7 +371,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -378,7 +390,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -389,6 +401,10 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/11/02/dataset-cityscapes/">dataset-cityscapes</a>
+          </li>
         
           <li>
             <a href="/2018/10/30/paper-EDAnet/">[paper]EDAnet</a>
@@ -404,10 +420,6 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
         
           <li>
             <a href="/2018/10/12/paper-ShuffleNet/">[paper]ShuffleNet</a>
-          </li>
-        
-          <li>
-            <a href="/2018/10/11/paper-ShuffleNetV2/">[paper]ShuffleNetV2</a>
           </li>
         
       </ul>

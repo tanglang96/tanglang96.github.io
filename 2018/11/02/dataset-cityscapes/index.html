@@ -5,22 +5,24 @@
   
 
   
-  <title>[机器学习]神经网络反向传播的推导 | Math &amp; Code</title>
+  <title>dataset-cityscapes | Math &amp; Code</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="神经网络反向传播的推导对于神经网络的训练过程而言，其反向传播算法是训练过程的核心，神经网络根据预测值$\hat{y}$与实际值$y$的偏差从后向前来计算损失函数对于各个参数的梯度，从而利用梯度下降的方法来优化训练神经网络的各个参数。 神经网络的计算流程图如下：从该流程图可以看到，如果我们要计算神经网络的参数$W^{[1]},b^{[1]},W^{[2]},b^{[2]}$，首先需要计算$\frac">
+  <meta name="description" content="cityscapes数据集介绍Introductioncityscapes通常被用作语义分割，里面的数据一共分为8个category，其中包含一个名为void的category，每个category中又有多个class，cityscapes一共有30个class，但是cityscapes编号过后的label一共有35种，其中也包含unlabeled等并没有算作class的label。 paper中">
 <meta name="keywords" content="machine learning">
 <meta property="og:type" content="article">
-<meta property="og:title" content="[机器学习]神经网络反向传播的推导">
-<meta property="og:url" content="http://yoursite.com/2018/06/01/机器学习-神经网络反向传播的推导/index.html">
+<meta property="og:title" content="dataset-cityscapes">
+<meta property="og:url" content="http://yoursite.com/2018/11/02/dataset-cityscapes/index.html">
 <meta property="og:site_name" content="Math &amp; Code">
-<meta property="og:description" content="神经网络反向传播的推导对于神经网络的训练过程而言，其反向传播算法是训练过程的核心，神经网络根据预测值$\hat{y}$与实际值$y$的偏差从后向前来计算损失函数对于各个参数的梯度，从而利用梯度下降的方法来优化训练神经网络的各个参数。 神经网络的计算流程图如下：从该流程图可以看到，如果我们要计算神经网络的参数$W^{[1]},b^{[1]},W^{[2]},b^{[2]}$，首先需要计算$\frac">
+<meta property="og:description" content="cityscapes数据集介绍Introductioncityscapes通常被用作语义分割，里面的数据一共分为8个category，其中包含一个名为void的category，每个category中又有多个class，cityscapes一共有30个class，但是cityscapes编号过后的label一共有35种，其中也包含unlabeled等并没有算作class的label。 paper中">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://img-blog.csdn.net/2018060112352186?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
-<meta property="og:updated_time" content="2018-08-31T02:19:20.000Z">
+<meta property="og:image" content="http://yoursite.com/images/data-cityscapes/data.PNG">
+<meta property="og:image" content="http://yoursite.com/images/data-cityscapes/label-img.PNG">
+<meta property="og:image" content="http://yoursite.com/images/data-cityscapes/label.PNG">
+<meta property="og:updated_time" content="2018-11-04T08:26:38.991Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="[机器学习]神经网络反向传播的推导">
-<meta name="twitter:description" content="神经网络反向传播的推导对于神经网络的训练过程而言，其反向传播算法是训练过程的核心，神经网络根据预测值$\hat{y}$与实际值$y$的偏差从后向前来计算损失函数对于各个参数的梯度，从而利用梯度下降的方法来优化训练神经网络的各个参数。 神经网络的计算流程图如下：从该流程图可以看到，如果我们要计算神经网络的参数$W^{[1]},b^{[1]},W^{[2]},b^{[2]}$，首先需要计算$\frac">
-<meta name="twitter:image" content="https://img-blog.csdn.net/2018060112352186?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta name="twitter:title" content="dataset-cityscapes">
+<meta name="twitter:description" content="cityscapes数据集介绍Introductioncityscapes通常被用作语义分割，里面的数据一共分为8个category，其中包含一个名为void的category，每个category中又有多个class，cityscapes一共有30个class，但是cityscapes编号过后的label一共有35种，其中也包含unlabeled等并没有算作class的label。 paper中">
+<meta name="twitter:image" content="http://yoursite.com/images/data-cityscapes/data.PNG">
   
     <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
   
@@ -71,10 +73,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-机器学习-神经网络反向传播的推导" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-dataset-cityscapes" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2018/06/01/机器学习-神经网络反向传播的推导/" class="article-date">
-  <time datetime="2018-06-01T05:20:32.000Z" itemprop="datePublished">2018-06-01</time>
+    <a href="/2018/11/02/dataset-cityscapes/" class="article-date">
+  <time datetime="2018-11-02T12:53:11.000Z" itemprop="datePublished">2018-11-02</time>
 </a>
     
   </div>
@@ -85,7 +87,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      [机器学习]神经网络反向传播的推导
+      dataset-cityscapes
     </h1>
   
 
@@ -93,32 +95,19 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="神经网络反向传播的推导"><a href="#神经网络反向传播的推导" class="headerlink" title="神经网络反向传播的推导"></a>神经网络反向传播的推导</h1><p>对于神经网络的训练过程而言，其反向传播算法是训练过程的核心，神经网络根据预测值$\hat{y}$与实际值$y$的偏差从后向前来计算损失函数对于各个参数的梯度，从而利用梯度下降的方法来优化训练神经网络的各个参数。</p>
-<p>神经网络的计算流程图如下：<br><img src="https://img-blog.csdn.net/2018060112352186?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L0ZyYW5ra2tf/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>从该流程图可以看到，如果我们要计算神经网络的参数$W^{[1]},b^{[1]},W^{[2]},b^{[2]}$，首先需要计算$\frac{\partial L}{\partial a^{[2]}}$和$\frac{\partial a^{[2]}}{\partial z^{[2]}}$，然后根据链式法则得到$\frac{\partial L}{\partial z^{[2]}}=\frac{\partial L}{\partial a^{[2]}}\frac{\partial a^{[2]}}{\partial z^{[2]}}$。</p>
-<p>之后再计算$\frac{\partial z^{[2]}}{\partial W^{[2]}}$和$\frac{\partial z^{[2]}}{\partial b^{[2]}}$，同样根据链式法则可以得到$\frac{\partial L}{\partial W^{[2]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial W^{[2]}}$以及得到$\frac{\partial L}{\partial b^{[2]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial b^{[2]}}$。这样便得到了$dW^{[2]}$和$db^{[2]}$。</p>
-<p>另外对于$dW^{[1]}$和$db^{[1]}$的计算，需要先计算$\frac{\partial z^{[1]}}{\partial W^{[1]}}$，$\frac{\partial a^{[1]}}{\partial z^{[1]}}$和$\frac{\partial z^{[2]}}{\partial a^{[1]}}$，同样根据链式法则可以得到$\frac{\partial L}{\partial W^{[1]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial a^{[1]}}\frac{\partial a^{[1]}}{\partial z^{[1]}}\frac{\partial z^{[1]}}{\partial W^{[1]}}$，以及$\frac{\partial L}{\partial b^{[1]}}=\frac{\partial L}{\partial z^{[2]}}\frac{\partial z^{[2]}}{\partial a^{[1]}}\frac{\partial a^{[1]}}{\partial z^{[1]}}\frac{\partial z^{[1]}}{\partial b^{[1]}}$。这样也得到了$dW^{[1]}$和$db^{[1]}$。</p>
-<p>在使用随机梯度下降(SGD)优化算法以及交叉熵(Cross Entropy)损失函数的时候，我们令$a^{[2]}=\hat{y}$，即损失函数：</p>
-<script type="math/tex; mode=display">L(\hat{y},y)=-(ylog\hat{y}+(1-y)log(1-\hat{y}))</script><p>使用sigmoid激活函数，即</p>
-<script type="math/tex; mode=display">a^{[1]}=\sigma(z^{[1]})=\frac{1}{1+e^{-z^{[1]}}}\\a^{[2]}=\sigma(z^{[2]})=\frac{1}{1+e^{-z^{[2]}}}</script><p>将该激活函数和损失函数代入上面的计算过程，可以得到：</p>
-<script type="math/tex; mode=display">
-dz^{[2]}=a^{[2]}-y\\
-dW^{[2]}=dz^{[2]}a^{[1]T}\\
-db^{[2]}=dz^{[2]}\\
-dz^{[1]}=W^{[2]T}dz^{[2]}*\sigma^{'}(z^{[1]})\\
-dW^{[1]}=dz^{[1]}x^{T}\\
-db^{[1]}=dz^{[1]}</script><p>在进行随机梯度下降的过程中，随机选取样本中的一个错误分类点，根据该点计算当前的$dW^{[1]},db^{[1]},dW^{[2]},db^{[2]}$，然后利用以下公式来更新$W^{[1]},b^{[1]},W^{[2]},b^{[2]}$：</p>
-<script type="math/tex; mode=display">
-W^{[2]}:=W^{[2]}-\alpha *dW^{[2]}\\
-b^{[2]}:=b^{[2]}-\alpha *db^{[2]}\\
-W^{[1]}:=W^{[1]}-\alpha *dW^{[1]}\\
-b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
-<p>对于神经网络的训练，还有批量梯度下降(Batch Gradient Descent)和小批量梯度下降(Mini-Batch Gradient Descent)，带动量的随机梯度下降(Momentum)，RMSProp，Adam等方法，后面再做详解。</p>
-<p>To be continue…</p>
+        <h1 id="cityscapes数据集介绍"><a href="#cityscapes数据集介绍" class="headerlink" title="cityscapes数据集介绍"></a>cityscapes数据集介绍</h1><h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h2><p>cityscapes通常被用作语义分割，里面的数据一共分为8个category，其中包含一个名为void的category，每个category中又有多个class，cityscapes一共有30个class，但是cityscapes编号过后的label一共有35种，其中也包含unlabeled等并没有算作class的label。</p>
+<p>paper中常用的数据大概只有一部分，即fine标记过的数据集，其它一些额外的粗糙标记的数据使用相对比较少，下面先介绍一下这些常用的数据。</p>
+<p>常用的一些数据如下图：<img src="/images/data-cityscapes/data.PNG" alt="常用的cityscapes数据"></p>
+<p>上面两个是标记之后的mask，下面两个是原始的数据，即8位的照片，这两对数据也分成了两个部分，一部分是fine标记过的，另一部分为粗糙标记的额外数据，对应于train_extra，通常不用来训练。对于fine标记的数据，一共有5000张照片和对应的标记，其中有2975张用于train，500张用于val，1525张用于test和benchmark。</p>
+<h2 id="cityscapes的标记数据"><a href="#cityscapes的标记数据" class="headerlink" title="cityscapes的标记数据"></a>cityscapes的标记数据</h2><p>这里重点介绍一下cityscapes的标记数据，这一块比较麻烦一些，对于每一张图片，其标记数据有四种，也包含在gtFine的文件夹里面，每个图片所对应的4种标记分别为：xxx_gtFine_color.png，xxx_gtFine_instanceIds.png，xxx_gtFine_labelIds.png，xxx_gtFine_polygons.json。其中xxx_gtFine_color.png为标记的彩色表示，主要用于可视化，xxx_gtFine_instanceIds.png是instance-level分割的任务所使用的标记，xxx_gtFine_labelIds.png是pixel-level分割所使用的标记，xxx_gtFine_polygons.json是标记的具体信息，包括图像尺寸，标记的类别和多边形的顶点。<img src="/images/data-cityscapes/label-img.PNG" alt="每张图片的标记信息"></p>
+<p>需要注意的是，这里面的文件并不适合直接拿来训练，cityscapes对每个label都进行了编号，包括天空之类的，这个编号我们称之为绝对编号。</p>
+<p>对于instance-level的任务，在xxx_gtFine_instanceIds.png中，其每个像素对应的灰度值和这些ID并不是一一对应的，而需要一些函数来将其进行转换，这些函数可以在citycapesscripts里面找到，转换之后的文件为xxx_gtFine_instanceTrainIds.png，然后才能将其用于instance-level的训练。</p>
+<p>对于pixel-level的任务，同样也不能直接使用xxx_gtFine_labelIds.png作为标记，这里面的灰度值代表cityscapes对每个label进行的编号，也就是绝对编号，而其中很多label并不会用在训练和最后的val之中，比如天空等，所以也需要对这些编号进行转换，可以利用citycapesscripts里面的createTrainIdLabelImgs函数，将其转换为xxx_gtFine_labelTrainIds.png，这里面每个像素对应的灰度值是一个临时编号，包含-1,0-&gt;18,255的编号，其中-1和255的编号都不会在val里面被检测，所以可以将二者归类为19编号，即最后训练的编号变成了0-19这20类label，因此一共进行分类的类别有20种。需要注意的是，如果要提交结果到cityscapes的benchmark上，那么必须将这些分类转换为绝对编号再上传，各种编号与颜色之间的对应关系可以在citycapesscripts中的labels.py文件中找到，其中的trainId也就相当于拿来做pixel-level segmentation训练的临时编号。<img src="/images/data-cityscapes/label.PNG" alt="cityscapes中的类别标记"></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/01/机器学习-神经网络反向传播的推导/" data-id="cjo2ng80v0022kgawm3twdnjm" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/02/dataset-cityscapes/" data-id="cjo2ng7zq0004kgawrpixhyvz" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -129,19 +118,10 @@ b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
     
 <nav id="article-nav">
   
-    <a href="/2018/06/01/Cpp-Cpp中的关联容器/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          [Cpp]Cpp中的关联容器
-        
-      </div>
-    </a>
   
-  
-    <a href="/2018/05/25/Cpp-Cpp中的顺序容器/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2018/10/30/paper-EDAnet/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">[Cpp]Cpp中的顺序容器</div>
+      <div class="article-nav-title">[paper]EDAnet</div>
     </a>
   
 </nav>
@@ -161,7 +141,7 @@ b^{[1]}:=b^{[1]}-\alpha *db^{[1]}</script><p>直到收敛为止。</p>
         repo: 'Lannyy.github.io',
         owner: 'Lannyy',
         admin: ['Lannyy'],
-        id: '2018/06/01/机器学习-神经网络反向传播的推导/',
+        id: '2018/11/02/dataset-cityscapes/',
         distractionFreeMode: true,
     });
     gitalk.render('gitalk-container');

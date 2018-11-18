@@ -70,6 +70,60 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-paper-dqn" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/11/17/paper-dqn/" class="article-date">
+  <time datetime="2018-11-17T10:31:59.000Z" itemprop="datePublished">2018-11-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/17/paper-dqn/">[paper]dqn</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="《Playing-Atari-with-Deep-Reinforcement-Learning》总结"><a href="#《Playing-Atari-with-Deep-Reinforcement-Learning》总结" class="headerlink" title="《Playing Atari with Deep Reinforcement Learning》总结"></a>《Playing Atari with Deep Reinforcement Learning》总结</h1><p>这篇论文是Volodymyr Mnih在nips2013上的一篇论文，差不多是DQN的开山之作，另一篇是nature2015年的论文《Human-level control through deep reinforcement learning》，这两篇论文在强化学习领域也算是一座里程碑，本文将对nips2013这篇论文中涉及到的一些开创性思想进行总结。</p>
+<h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>这是第一篇通过深度学习模型利用强化学习来直接从高维传感器输入，学习控制策略的论文。该模型是一个基于CNN搭建的，利用Q-learning的变体进行学习的模型。输入是原始像素，也就是当前状态，输出则是Q值，其实也就是利用神经网络来近似Q(s,a)函数。这篇论文在Atari 2600游戏上进行了实验，在没有对结构和算法进行特殊调整的情况下就取得了很好的效果（比以前的算法和人类表现都要好）</p>
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.Introduction</h2><p>直接从高维度的传感器数据（语音，图像等）来学习控制策略对于RL是一个长期的挑战，大多数成功的RL应用都需要手工的特征调整，显然这种应用的效果就严重依赖于特征选取的质量。然而深度学习使得从高维数据中提取特征变得可能，那么这二者的结合应该能取得很好的效果。</p>
+<p>然而利用深度学习来做RL也有很多挑战，现在的深度学习基本都大量依赖于手工标注的数据，而RL并不是这种直接的一对一的关系，而是需要在很多次迭代之后才能得到一个标量的reward值，而这个reward通常由是稀疏的并且充满噪声的，而且具有很长的延时，在RL中得到reward之前通常需要上千步的操作，和常规的数据和标记一对一的情况相比显得非常迟钝。另外在深度学习中常要求训练数据之间是相互独立的，然而RL中的数据则是高度相互依赖的状态序列，并且RL在学习到新的动作的时候数据分布会发生改变，这对于需要固定数据分布的深度学习算法可能会造成病态的效果。主要问题就在于数据相关性/数据分布。</p>
+<p>这里提出了一种基于CNN的网络结构，通过引入一种experience replay的机制来缓解数据相关性和数据分布的问题，experience replay通过在Transition中进行随机采样来对数据的分布进行平滑。在训练过程中，模型得到的数据和人类是一样的，包括视频输入，reward，终止信号，以及可能的操作集。</p>
+<h2 id="2-Background"><a href="#2-Background" class="headerlink" title="2.Background"></a>2.Background</h2><p>这里使用的雅达利模拟器进行训练，需要注意的是reward也就是游戏分数是依赖于先前的动作序列的和观测的，很可能在几千步之后才会得到反馈。然而从单次的屏幕观测并不能完全理解当前的状态，于是需要用一个序列来表示当前状态，即<script type="math/tex">s_{t}=x_{1},a_{1},x_{2},...,a_{t-1},x_{t}</script>，利用一个屏幕观测和动作的序列来表示当前状态，然后依赖于这些序列来学习游戏策略。模拟器中的所有序列都假设会在一个有限的时间步内终止，那么可以在这些序列上应用标准的强化学习方法。</p>
+<p>另外假设reward随着时间步的增加是逐渐减少的，即采用一个衰减因子来对reward进行处理，累计Reward，<script type="math/tex">R_{t}=\sum^{T}_{t'=t}\gamma^{t'-t}r_{t'}</script>，其中<script type="math/tex">T</script>是游戏终止的时间步。定义<script type="math/tex">Q^{*}(s,a)</script>为最优策略下的Q值函数，即<script type="math/tex">Q^{*}(s,a)=max_{\pi}E[R_{t}|s_{t}=s,a_{t}=a,\pi]</script>，另外最优的Q函数遵守贝尔曼方程，其思路如下：如果对于下一个序列<script type="math/tex">s'</script>和所有可能的动作<script type="math/tex">a'</script>，其<script type="math/tex">Q(s',a')</script>是已知的，那么<script type="math/tex">Q^{*}(s,a)</script>则是最大化期望<script type="math/tex">r+\gamma Q^{*}(s',a')</script>，即</p>
+<script type="math/tex; mode=display">
+Q^{*}(s,a)=E_{s'\sim \varepsilon}[r+\gamma max_{a'}Q^{*}(s',a')|s,a]</script><p>很多RL算法背后的思想都是估计Q值函数，如果迭代的利用贝尔曼方程，<script type="math/tex">Q_{i+1}(s,a)=E[r+\gamma max_{a'}Q_{i}(s',a')|s,a]</script>那么最后当<script type="math/tex">i\to\infin</script>可以收敛到<script type="math/tex">Q^*</script>，然而在实际应用中这是不切实际的，因为Q函数是对每个序列单独估计的，没有泛化能力。取而代之的是利用一个函数来近似最优Q函数，即<script type="math/tex">Q(s,a;\theta)=Q^*(s,a)</script>，在这里采用神经网络对其进行估计，即损失函数为：</p>
+<script type="math/tex; mode=display">
+L_{i}(\theta_{i})=E_{s,a\sim p(\cdot)}[(y_{i}-Q(s,a;\theta_{i}))^2]</script><p>其中<script type="math/tex">y_{i}=E_{s'\sim \varepsilon}[r+\gamma max_{a'}Q(s',a';\theta_{i-1})|s,a]</script>，在代码实现中<script type="math/tex">Q(s,a;\theta_{i})</script>与<script type="math/tex">Q(s,a;\theta_{i-1})</script>通常定义两个不同的网络来进行实现，在pytorch的tutorial中采用了policy_net和target_net两种网络来实现。另外在进行动作选择的时候采取一定的概率来平衡”探索“和”利用“，即<script type="math/tex">\epsilon</script>-greedy算法，在训练的开始阶段尽量利用收益大的动作，在后期则更多的进行探索，即<script type="math/tex">\epsilon</script>是一个从大到小进行衰减的过程。</p>
+<h2 id="3-Related-Work"><a href="#3-Related-Work" class="headerlink" title="3.Related Work"></a>3.Related Work</h2><p>这里暂时先不做过多介绍，等买的书到了再进行补充</p>
+<h2 id="4-Deep-Reinforcement-Learning"><a href="#4-Deep-Reinforcement-Learning" class="headerlink" title="4.Deep Reinforcement Learning"></a>4.Deep Reinforcement Learning</h2><p>这一章主要就是介绍核心的算法，首先需要认识到利用深度学习来提取特征是优于手工进行特征处理的。DQN的算法框架的伪代码如下<img src="/images/paper-dqn/algorithm.PNG" alt="DQN算法"></p>
+<p>这里再度介绍一下replay memory的好处，1.每一次的状态转移都有可能作为网络权重更新的数据。2.由于样本之间的强关联性，直接从连续样本中进行学习是低效的，打破这种关联性而进行随机采样可以减少升级时的偏差。3.在learning on-policy的时候，当前的参数产生了下一批用于参数更新的样本，比如当前参数下获得最大reward的动作是向左，那么后续将一直得到左边的样本，如果以后的最佳动作变为了向右，那么训练分布也同样会发生改变。很容易就会发现一种恶性循环并且陷入局部最优点。通过replay可以将行为分布在多个之前的状态之间进行平均，并且将学习过程进行平滑而避免发散。因此需要learning off-policy，区别在于产生动作的policy和网络参数更新的policy是否相同，因为Q-learning中更新时的policy使用了max操作，而产生动作的policy并不一定使用reward最大的动作，Q-learning是off-policy learning的经典算法。</p>
+<p>对于这里的神经网络，采取state作为输入，输出的n个节点对应于n个可能的action造成的reward，这样通过一次计算便可以计算出每个action对应的reward。</p>
+<p>对于后面的实验章节，时间比较久了不再赘述。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/11/17/paper-dqn/" data-id="cjomnvjpw000n40awzfhxwvem" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-dataset-cityscapes" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/11/02/dataset-cityscapes/" class="article-date">
@@ -104,7 +158,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/11/02/dataset-cityscapes/" data-id="cjo5ne9un000dx0awywccqy20" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/11/02/dataset-cityscapes/" data-id="cjomnvjpq000f40awliix3fl5" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -165,7 +219,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/30/paper-EDAnet/" data-id="cjo5ne9ur000ix0awa165eu7e" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/30/paper-EDAnet/" data-id="cjomnvjpu000k40aws27e6ccj" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -249,7 +303,7 @@ s.t. \ w^{*}(\alpha)=argmin_{w}\ L_{train}(w,\alpha)</script><p>其实也可以�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/22/paper-darts/" data-id="cjo5ne9v10011x0aw6azpvuni" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/22/paper-darts/" data-id="cjomnvjq5001340awgcancn8y" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -324,64 +378,7 @@ a_i^{l+1}=f(\sum^{n^l}_{j}w^{l}_{h^{l}(i,j)}\xi^{l}(i,j)a_{j}^l)</script><p>误�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/15/paper-HashingTricks/" data-id="cjo5ne9uu000mx0aw3q5ahzcu" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-paper-ShuffleNet" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/10/12/paper-ShuffleNet/" class="article-date">
-  <time datetime="2018-10-12T01:28:55.000Z" itemprop="datePublished">2018-10-12</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/10/12/paper-ShuffleNet/">[paper]ShuffleNet</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="《ShuffleNet-An-Extremely-Efficient-Convolutional-Neural-Network-for-Mobile-Devices》总结"><a href="#《ShuffleNet-An-Extremely-Efficient-Convolutional-Neural-Network-for-Mobile-Devices》总结" class="headerlink" title="《ShuffleNet: An Extremely Efficient Convolutional Neural Network for Mobile Devices》总结"></a>《ShuffleNet: An Extremely Efficient Convolutional Neural Network for Mobile Devices》总结</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>本文介绍了一种很高效的网络ShuffleNet，其主要在于pointwise group conv和channel shuffle两种操作，可以在维持精度的时候大量减少计算消耗，在ImageNet和COCO上面的表现都超过了之前的网络</p>
-<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.Introduction</h2><p>构造更深，更宽的神经网络在解决视觉识别上面是发展趋势。然而本文提出另外一个极端：在有限的计算资源下达到最佳的性能。现有的很多方法（剪枝压缩等）都只是在处理基本的神经网络，而这里提出了一种给定计算资源下的高效网络结构。</p>
-<p>现在的state-of-the-art网络对资源都比较消耗计算资源，主要是因为太密集的1x1 conv，本文使用了1x1 group conv来减小计算量，并且使用channel shuffle来增加各个channel之间的通讯，这样可以编码更多信息，基于这两个技术而构建了ShuffleNet，基于这两个设计准则，在ImageNet和COCO上都取得了更好的性能，另外在真实的硬件平台上也有明显的加速效果</p>
-<h2 id="2-Related-Work"><a href="#2-Related-Work" class="headerlink" title="2.Related Work"></a>2.Related Work</h2><p><strong>Efficient Model Designs</strong>：GoogLeNet增加了网络深度但是相比简单的conv层堆积减少了计算量。SqueezeNet在维持精度的情况下明显减少了计算量。ResNet利用有效的瓶颈结构来得到较高的性能。SENet引入了一个结构单元在小计算量的情况下加速性能。另外最近有工作利用强化学习和模型搜索来探索高效的模型设计，得到的NASNet得到了不错的精度表现，但是在较小的FLOPs下表现比较一般。</p>
-<p><strong>Group Convolution</strong>：group conv最开始在AlexNet当中被提出，当时是为了在多个GPU上进行分布式训练，后来在ResNeXt当中表现了其有效性。Xception中的Depthwise separable conv总结了Inception系列网络的想法，后来MobieNet利用depthwise separable conv实现了state-of-the-art。</p>
-<p><strong>Channel Shuffle Operations</strong>：channel shuffle的思想在之前的工作中很少被提出来，即使cuda-convnet支持”random sparse conv”层，等价于后面带有group conv层的random channel shuffle。最近有工作在two-stage conv上应用这个思想但是却没有channel shuffle自身在小模型设计上的有效性。</p>
-<p><strong>Model Acceleration</strong>：这个是为了在保留模型精度的时候加速推断，对网络连接或者通道进行剪枝可以在保留性能的时候去掉冗余的连接。quantization和factorization可以减少计算当中的冗余从而加速推断。另外在不修改参数的时候，优化的卷积算法比如FFT都会减少实际当中的时间消耗。另外distilling可以从大模型中训练小模型，可以让训练小模型变得更加容易。</p>
-<h2 id="3-Approch"><a href="#3-Approch" class="headerlink" title="3.Approch"></a>3.Approch</h2><h3 id="3-1-Channel-Shuffle-for-Group-Convolutions"><a href="#3-1-Channel-Shuffle-for-Group-Convolutions" class="headerlink" title="3.1 Channel Shuffle for Group Convolutions"></a>3.1 Channel Shuffle for Group Convolutions</h3><p>现在的很多state-of-the-art网络，比如Xception和ResNeXt都有太多的1x1 conv，在每个block中占了大量的计算量，如果在限制计算资源的情况下就只能有更少的channel数，这样会降低模型的精度。要解决这个问题可以使用channel之间的稀疏连接，例如group conv就是其中的一个例子。然而这样会导致一个组内的输出只与这个组内的输入相关，会导致channel group之间的联系变得较弱，可以通过channel shuffle可以让group conv从不同的group获取信息，从而解决这个问题。具体操作为(g,n)维度先转置，然后展开，然后再reshape为(g,n)，其中g为group数，n为每组channel数。当两个卷积有不同的group数的时候依然是有效的，并且这个shuffle操作也是可以微分的。<img src="/images/paper-ShuffleNet/channel-shuffle.PNG" alt="Channel shuffle"></p>
-<h3 id="3-2-ShuffleNet-Unit"><a href="#3-2-ShuffleNet-Unit" class="headerlink" title="3.2 ShuffleNet Unit"></a>3.2 ShuffleNet Unit</h3><p>这个unit是专门为小网络设计的，使用了bottleneck的结构。unit分为两种，一种是没有stride，输入输出维度一样的，采用残差结构，最后是求和。另外一种是有stride的，同样残差结构不过最后采用了concat。这个Unit相比ResNet和ResNeXt更加高效，比如给定输入维度<script type="math/tex">c*h*w</script>，瓶颈通道数为<script type="math/tex">m</script>，ResNet的FLOPs为<script type="math/tex">hw(2cm+9m^{2})</script>，ResNeXt的FLOPs为<script type="math/tex">hw(2cm+9m^2/g)</script>，ShuffleNet unit的FLOPs为<script type="math/tex">hw(2cm/g+9m)</script>，也就相当于在给定计算资源的情况下ShuffleNet unit能够使用更宽的特征图。另外depthwise conv虽然只有很小的理论上的复杂度，但是FLOPs/MAC比较小，这个在后面的ShuffleNetV2中有提到，所以只在bottleneck那里使用depthwise conv。<img src="/images/paper-ShuffleNet/ShuffleNet-unit.PNG" alt="ShuffleNet unit"></p>
-<h3 id="3-3-Network-Architecture"><a href="#3-3-Network-Architecture" class="headerlink" title="3.3 Network Architecture"></a>3.3 Network Architecture</h3><p>在整个网络里面，为了简化，Bottleneck的channel数为输入的<script type="math/tex">1/4</script>，这里提供一个尽可能简单的参考模型，尽管进一步调参可能会取得更好的结果。其中的参数<script type="math/tex">g</script>控制连接的稀疏度，更多的group可能会帮助编码更多信息，但是对于单个conv可能会降低其性能，在ShuffleNetV2中也从另一个角度讨论了该问题：过多的group会增加MAC从而降低速度。另外用一个超参数<script type="math/tex">s</script>来对网络进行缩放，通过缩放调整通道数来实现。<img src="/images/paper-ShuffleNet/architecture.PNG" alt="ShuffleNet网络结构"></p>
-<h2 id="4-Experiments"><a href="#4-Experiments" class="headerlink" title="4.Experiments"></a>4.Experiments</h2><p>主要在ImageNet上做的实验，因为小型网络更加容易遭遇过拟合，所以使用了很轻微的data augmentation。</p>
-<h3 id="4-1-1-Ablation-Study"><a href="#4-1-1-Ablation-Study" class="headerlink" title="4.1.1 Ablation Study"></a>4.1.1 Ablation Study</h3><p>这里主要对于两个方面进行分析，一是pointwise group conv，二是channel shuffle。这两个是ShuffleNet的核心组件</p>
-<p>对于pointwise group conv，这里利用不同规模(缩放s)，不同group的网络进行对比，实验表明对于比较大的网络，当group达到一定值之后对于单个conv，其输入的通道数过少，将会影响表达性能。但是当缩放因子比较小的时候，网络比较小在group增大的时候更能明显提高性能，因为对于小网络而言，更宽的特征图可以带来更大的好处。<img src="/images/paper-ShuffleNet/group-ex.PNG" alt="1x1 group conv实验"></p>
-<p>对于channel shuffle，实验证明channel shuffle明显能够持续提高分类分数，尤其当group比较大的时候性能更好，此时的跨组信息交换变得更加重要。<img src="/images/paper-ShuffleNet/shuffle-ex.PNG" alt="shuffle实验"></p>
-<h3 id="4-2-Comparison-with-Other-Structure-Units"><a href="#4-2-Comparison-with-Other-Structure-Units" class="headerlink" title="4.2 Comparison with Other Structure Units"></a>4.2 Comparison with Other Structure Units</h3><p>在之前的ShuffleNet框架上与一些unit进行了对比，实验结果如图<img src="/images/paper-ShuffleNet/unit-ex.PNG" alt="不同unit"></p>
-<h3 id="4-3-Comparison-with-MobileNets-and-Other-Frameworks"><a href="#4-3-Comparison-with-MobileNets-and-Other-Frameworks" class="headerlink" title="4.3 Comparison with MobileNets and Other Frameworks"></a>4.3 Comparison with MobileNets and Other Frameworks</h3><p>这里主要将ShuffleNet与其它一些经典的结构相比较，其中值得注意的是在ShuffleNet和MobileNet相比较的过程中，减少ShuffleNet的深度也明显会比MobileNet更好，这说明ShuffleNet与之相比关键在于unit的设计而非网络深度，另外可以将ShuffleNet与其他优秀设计比如SE模块（Squeeze-and-Excitation）相组合，可以进一步提升其性能但是会变得比较慢。<img src="/images/paper-ShuffleNet/mobile-ex.PNG" alt="与MobileNet相比"></p>
-<p><img src="/images/paper-ShuffleNet/other-ex.PNG" alt="与其他结构相比"></p>
-<h3 id="4-4-Generalization-Ability"><a href="#4-4-Generalization-Ability" class="headerlink" title="4.4 Generalization Ability"></a>4.4 Generalization Ability</h3><p>为了探究ShuffleNet的泛化和迁移学习的性能，在COCO上进行了测试，利用Faster-RCNN的框架来进行实验。在这项任务上依旧比MobileNet好了很多，可能是由于网络结构设计没有过多的冗余装饰，所以泛化性能比较好。<img src="/images/paper-ShuffleNet/coco-ex.PNG" alt="关于泛化性能的实验"></p>
-<h3 id="4-5-Actual-Speedup-Evaluation"><a href="#4-5-Actual-Speedup-Evaluation" class="headerlink" title="4.5 Actual Speedup Evaluation"></a>4.5 Actual Speedup Evaluation</h3><p>这里在ARM平台上进行了测试，group数较大的时候（比如g=8）性能最好但是g=3的时候在性能和推断时间上有着比较好的平衡，但是依旧要比其他网络更优秀。<img src="/images/paper-ShuffleNet/speed-ex.PNG" alt="实际的速度测试"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/10/12/paper-ShuffleNet/" data-id="cjo5ne9ux000tx0awwjb62v2k" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/10/15/paper-HashingTricks/" data-id="cjomnvjpy000r40awtd6hrez3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -397,7 +394,7 @@ a_i^{l+1}=f(\sum^{n^l}_{j}w^{l}_{h^{l}(i,j)}\xi^{l}(i,j)a_{j}^l)</script><p>误�
 
   <nav id="page-nav">
     
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -432,7 +429,7 @@ a_i^{l+1}=f(\sum^{n^l}_{j}w^{l}_{h^{l}(i,j)}\xi^{l}(i,j)a_{j}^l)</script><p>误�
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -451,7 +448,7 @@ a_i^{l+1}=f(\sum^{n^l}_{j}w^{l}_{h^{l}(i,j)}\xi^{l}(i,j)a_{j}^l)</script><p>误�
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -462,6 +459,10 @@ a_i^{l+1}=f(\sum^{n^l}_{j}w^{l}_{h^{l}(i,j)}\xi^{l}(i,j)a_{j}^l)</script><p>误�
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/11/17/paper-dqn/">[paper]dqn</a>
+          </li>
         
           <li>
             <a href="/2018/11/02/dataset-cityscapes/">dataset-cityscapes</a>
@@ -477,10 +478,6 @@ a_i^{l+1}=f(\sum^{n^l}_{j}w^{l}_{h^{l}(i,j)}\xi^{l}(i,j)a_{j}^l)</script><p>误�
         
           <li>
             <a href="/2018/10/15/paper-HashingTricks/">[paper]HashingTricks</a>
-          </li>
-        
-          <li>
-            <a href="/2018/10/12/paper-ShuffleNet/">[paper]ShuffleNet</a>
           </li>
         
       </ul>
@@ -522,5 +519,21 @@ a_i^{l+1}=f(\sum^{n^l}_{j}w^{l}_{h^{l}(i,j)}\xi^{l}(i,j)a_{j}^l)</script><p>误�
 
 
   </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
 </body>
 </html>

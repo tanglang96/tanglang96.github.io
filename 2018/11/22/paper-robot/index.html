@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>[paper]robot | Math &amp; Code</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="《Learning to Push by Grasping: Using multiple tasks for effective learning》总结Abstract目前end-to-end的学习框架在机器人控制的领域内变得流行起来，这些框架的直接输入是状态/图像，然后直接输出预测的扭矩和动作参数。但是由于其对于数据的大量需求而受到了批判，并兴起了对于其可扩展性的讨论，即end-to-end的">
+<meta name="keywords" content="machine learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[paper]robot">
+<meta property="og:url" content="http://yoursite.com/2018/11/22/paper-robot/index.html">
+<meta property="og:site_name" content="Math &amp; Code">
+<meta property="og:description" content="《Learning to Push by Grasping: Using multiple tasks for effective learning》总结Abstract目前end-to-end的学习框架在机器人控制的领域内变得流行起来，这些框架的直接输入是状态/图像，然后直接输出预测的扭矩和动作参数。但是由于其对于数据的大量需求而受到了批判，并兴起了对于其可扩展性的讨论，即end-to-end的">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/paper-robot/grasp.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-robot/push.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-robot/poke.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-robot/network.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-robot/e1.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-robot/e2.PNG">
+<meta property="og:image" content="http://yoursite.com/images/paper-robot/e3.PNG">
+<meta property="og:updated_time" content="2018-11-24T09:13:26.001Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[paper]robot">
+<meta name="twitter:description" content="《Learning to Push by Grasping: Using multiple tasks for effective learning》总结Abstract目前end-to-end的学习框架在机器人控制的领域内变得流行起来，这些框架的直接输入是状态/图像，然后直接输出预测的扭矩和动作参数。但是由于其对于数据的大量需求而受到了批判，并兴起了对于其可扩展性的讨论，即end-to-end的">
+<meta name="twitter:image" content="http://yoursite.com/images/paper-robot/grasp.PNG">
+  
+    <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Math &amp; Code</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">---By Frank,the best or nothing</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-paper-robot" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/11/22/paper-robot/" class="article-date">
+  <time datetime="2018-11-22T08:49:07.000Z" itemprop="datePublished">2018-11-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      [paper]robot
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="《Learning-to-Push-by-Grasping-Using-multiple-tasks-for-effective-learning》总结"><a href="#《Learning-to-Push-by-Grasping-Using-multiple-tasks-for-effective-learning》总结" class="headerlink" title="《Learning to Push by Grasping: Using multiple tasks for effective learning》总结"></a>《Learning to Push by Grasping: Using multiple tasks for effective learning》总结</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>目前end-to-end的学习框架在机器人控制的领域内变得流行起来，这些框架的直接输入是状态/图像，然后直接输出预测的扭矩和动作参数。但是由于其对于数据的大量需求而受到了批判，并兴起了对于其可扩展性的讨论，即end-to-end的学习方式是否需要为每一个任务都单独建立一个模型？从直觉上来说任务间的共享是有帮助的，因为其对环境都需要有一些共同的理解。在该论文中尝试了数据驱动的end-to-end学习框架的下一步，即从特定任务的模型到多机器人任务的联合模型，得到了令人惊讶的结果：在同样数据量下多任务学习的效果要优于单任务学习。比如说对于grasp任务，2.5k的grasp数据+2.5k的push数据训练下的模型的表现要优于5k的grasp数据训练下的模型。</p>
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.Introduction</h2><p>当机器人准备执行一个操作（比如抓取）的时候，需要完成以下几个步骤：(a)推断物体的属性，(b)对自己的构造有一定了解，(c)理解怎样是一个成功的抓取并且知道如何去实现。很多分析框架通过数学的方式来定义(c)，而在感知部分则依赖于额外的感知模块，并且通常会做一定程度的简化，这种过度依赖导致其并没有获得很好的效果。end-to-end的模型通过数据驱动的方式来学习到(a)-(c)的联合模型，表现出了很好的效果。</p>
+<p>尽管end-to-end的模型取得了很好的效果，但是也有很多批判的声音，主要在于其需要对每一个任务都单独建立一个模型，而每一个模型的训练都需要大量的数据。那么有没有一种在任务间进行共享的方式来减小数据量的需求？直觉上说是存在的，因为所有的任务都需要(a)和(b)两部分，比如push任务的数据对于训练grasp的感知模块也是有帮助的。</p>
+<p>如前文提到的，在相同数据量下，不同任务的数据组合下的表现要优于单个任务的数据，猜测这可能是因为执行多个任务能够探索原任务中接触不到的目标属性与模式，这可以看作是一种正则化的手段，可以学得更多的泛化特征。</p>
+<h2 id="2-Related-Work"><a href="#2-Related-Work" class="headerlink" title="2.Related Work"></a>2.Related Work</h2><p>对于grasp，这是一个比较老的问题了，以前的方法大多都是基于分析方法和3d推理，来预测抓取位置和配置，最近才开始兴起了数据驱动的学习方式。pushing是另一个机器人的基本任务，使得在不需要抓取的情况下就可以使目标物体移动。另外我们使用触觉感应预测(poking)来作为学习pushing和grasp的辅助任务。</p>
+<p>前文提到了收集大量的数据可以被用于机器人任务，但是数据的收集是时间密集型的任务，multi task learning(MTL)利用一种共享的方式来探索这些任务之间的共性，即利用之前的任务来初始化当前的参数。本文专注于探索end-to-end的用于grasping和pushing的MTL模型。</p>
+<p>对于机器人任务而言，之前的框架主要都是针对特定任务的，这是第一篇报道多任务间的共享能够改善任务表现的文章，并且发现原始任务的额外数据点的价值并不如交替任务的价值，大概是因为这样的共享增强了鲁棒性并且对于特征学习进行了正则化，对于多个任务都有改善作用。通过对MTL的探索我们发现即使只有少量的数据，通过利用其他任务的大量数据也能够得到高效的模型。</p>
+<h2 id="3-Overview"><a href="#3-Overview" class="headerlink" title="3.Overview"></a>3.Overview</h2><p>我们的目标是探索针对特定任务收集的数据是否可以用在其他任务上，现在的研究方向都在于针对每个任务都训练一个特定模型，然而我们觉得大多数这些问题都要学习这个世界是如何工作的，因此可以进行数据间的共享来加快学习速度。具体一点来说就是CNN中的某些参数对应视觉特征，某些对应底层结构和物理学，某些对应机器人的结构和控制信息，最后剩余的参数才是针对某个特定任务的，如果确实是这样的话，那么任务间的数据共享则是至关重要的。</p>
+<p>本文调查了多任务学习对于grasping和pushing是否能够得到一个更好的控制模型，收集了grasping，pushing，poking三个任务的数据，最后探索了Grasp ConvNet在只利用grasping数据和利用grasping，pushing，poking融合数据下的对比表现，对于Push ConvNet也进行了同样的对比。</p>
+<h2 id="4-Approach"><a href="#4-Approach" class="headerlink" title="4.Approach"></a>4.Approach</h2><p>这里对三个任务进行了形式化描述，即planar grasping，planar pushing以及poking data在框架中的应用。</p>
+<h3 id="A-Planar-Grasps"><a href="#A-Planar-Grasps" class="headerlink" title="A. Planar Grasps"></a>A. Planar Grasps</h3><p>一次grasp可以用三个参数来定义<script type="math/tex">(x,y,\theta)</script>，分别是抓取点和抓取坐标，训练数据有37k失败数据和3k成功数据，测试数据有2.8k失败数据和0.2k成功数据。<img src="/images/paper-robot/grasp.PNG" alt="grasp数据集预览">一个抓取问题可以定义为通过输入图片来预测一个成功的抓取配置<script type="math/tex">(x_{s},y_{s},\theta_{s})</script>，然而这个问题是病态的，因为一个物体可以有多个可能的抓取位置，于是这里采样了一批图片，其<script type="math/tex">(x_{s},y_{s})</script>位于图片的中心，仅仅需要预测抓取角度，将角度分类为<script type="math/tex">0^{o},10^o...170^o</script>，因此该问题可以转换为18个二分类问题，因为评价标准是二分类的，即抓取成功或者失败。</p>
+<h3 id="B-Planar-Push"><a href="#B-Planar-Push" class="headerlink" title="B. Planar Push"></a>B. Planar Push</h3><p>push的每个数据点包括三个部分，初始图像<script type="math/tex">I_{begin}</script>，结束图像<script type="math/tex">I_{final}</script>和动作<script type="math/tex">Ap=(x_{start},y_{start},x_{final},y_{final},z_{pushHeight})</script>，整个数据集包括5k动作，70个对象<img src="/images/paper-robot/push.PNG" alt="push数据集"></p>
+<p>这个对于push的学习器的任务是给定初始和结束的图片，然后预测push动作<script type="math/tex">Ap</script>，这里使用的是带有共享权重的siamese network，输入的一端是<script type="math/tex">I_{begin}</script>，另一端是<script type="math/tex">I_{end}</script>，在两端处理之后concat到一起，然后使用fc层来输出<script type="math/tex">Ap</script>，损失函数使用的是欧式距离</p>
+<h3 id="C-Planar-Poke"><a href="#C-Planar-Poke" class="headerlink" title="C. Planar Poke"></a>C. Planar Poke</h3><p>这个数据集包括目标的图片<script type="math/tex">I_{poke}</script>和poking的时候感受到的反馈<script type="math/tex">R_{P}</script>，学习器的任务就是通过输入图片来预测<script type="math/tex">R_P</script>。<img src="/images/paper-robot/poke.PNG" alt="poking数据"></p>
+<p>利用两个参数来表示<script type="math/tex">R_P</script>，即电压增加的斜率和截距，这里采用了和grasp类似的结构，前面三层的网络参数与grasp进行共享，剩余的网络则是专门用于poking任务，这里的损失函数同样是欧式距离。</p>
+<h3 id="D-Network-Architecture"><a href="#D-Network-Architecture" class="headerlink" title="D. Network Architecture"></a>D. Network Architecture</h3><p>这里的feature transfer有两种，一种是poking+pushing-&gt;grasping，另一种是poking+grasping-&gt;pushing。网络的机构如下图<img src="/images/paper-robot/network.PNG" alt="网络结构"></p>
+<p>前面三个conv中，上下两层是共享权重的，conv上的数字代表卷积核的大小和数量，每个conv层后面都紧接着BN和ReLU。对于grasp任务，前两层fc后面都紧接着p=0.5的dropout层和ReLU，对于poking也是同样的。而对于pushing任务由于需要输入两张图片，因此使用了如图的两个卷积过程，但是其中的参数都是共享的，后面经过concat然后同样的fc层，然后输出预测的5维向量<script type="math/tex">A_P</script>。</p>
+<h3 id="E-Training"><a href="#E-Training" class="headerlink" title="E. Training"></a>E. Training</h3><p>在这里主要介绍训练细节，对于损失函数，grasping使用的是交叉熵（cross-entropy），而pushing和poking都是用的欧式距离作为损失函数。</p>
+<p>对于整个联合训练过程，取batch_size=128，可以得到针对三个任务的batch，对于全连接层的梯度计算和普通情况是相同的，对于共享的conv层，梯度的计算略有不同，其梯度计算公式为：</p>
+<script type="math/tex; mode=display">
+\frac{\partial L}{\partial W_{S}}=\frac{\partial(L_BG+L_BP+L_BPoke)}{\partial W_S}</script><p>其中<script type="math/tex">L_BG,L_BP,L_BPoke</script>分别为grasping，pushing，poking任务的损失函数。在训练过程中使用RMSProp算法，这是一个基于梯度下降的算法，学习率取为0.002，momentum=0.9，decay=0.9，学习率每5000步以0.1的比例大小进行衰减。</p>
+<h2 id="5-Results"><a href="#5-Results" class="headerlink" title="5.Results"></a>5.Results</h2><p>在进行验证的时候，对于grasping任务，使用的是分类误差，而对于pushing任务使用的均方误差。</p>
+<h3 id="A-Evaluating-Multi-Task-vs-Task-Specific"><a href="#A-Evaluating-Multi-Task-vs-Task-Specific" class="headerlink" title="A. Evaluating Multi-Task vs. Task-Specific"></a>A. Evaluating Multi-Task vs. Task-Specific</h3><p>这里主要是对多任务训练和特定任务的性能进行对比，这里的multi-task忽略了poking的情况，训练数据中pushing和grasping各占一半，最后得到的结论为，在小数据量下，特定任务数据的表现更好，在大数据量下，多任务的表现更好，这可能是由于多任务数据提供了一种差异性，有一种正则化的效果，可以防止过拟合<img src="/images/paper-robot/e1.PNG" alt="实验对比"></p>
+<h3 id="B-Multitask-Data-Ratio"><a href="#B-Multitask-Data-Ratio" class="headerlink" title="B. Multitask: Data Ratio"></a>B. Multitask: Data Ratio</h3><p>这里对于数据占比的大小进行了实验，实验结果如下图，可以看出pushing要比grasping更易于进行迁移。<img src="/images/paper-robot/e2.PNG" alt="实验对比"></p>
+<h3 id="C-Multitask-3-task-performance"><a href="#C-Multitask-3-task-performance" class="headerlink" title="C. Multitask: 3-task performance"></a>C. Multitask: 3-task performance</h3><p>这里进行实验对是否加入poking进行了验证，并且对于不同的数据比例也进行了实验，说明poking还是有较大用处的，结果如下<img src="/images/paper-robot/e3.PNG" alt="实验对比"></p>
+<h2 id="6-Discussion"><a href="#6-Discussion" class="headerlink" title="6. Discussion"></a>6. Discussion</h2><p>现在的研究趋势都在于特定任务的学习，很多地方的讨论也认为多任务学习是没有用处的，然而这样产生了一种问题，即针对end-to-end的学习方式，需要大量的训练数据。本文表明多任务训练不仅是可行的，而且在同样数据量的情况下能够获取更好的结果，我们假设这是因为数据的多样性起到了正则化的效果，本文开启了多任务学习在机器人方向的一个新的子领域，尤其在不同任务间的共享上。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/11/22/paper-robot/" data-id="cjov8npd2000v8wawbe2gfog9" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2018/11/17/paper-dqn/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">[paper]dqn</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<div id="gitalk-container"></div>     <script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '2193b885b967a685e247',
+        clientSecret: '49a60c8f19873532dc3e7a6658bbff6c95ce73c9',
+        repo: 'Lannyy.github.io',
+        owner: 'Lannyy',
+        admin: ['Lannyy'],
+        id: '2018/11/22/paper-robot/',
+        distractionFreeMode: true,
+    });
+    gitalk.render('gitalk-container');
+</script></section>
+        
+          <aside id="sidebar">
+  
+    
+<div class="widget-wrap">
+  <h3 class="widget-title">ABOUT ME</h3>
+  <ul class="widget about-me">
+    
+    <li><img class="author" title="About me" src="/images/cute.jpg" /></li>
+    
+    
+    <li>Name：Tang Lang</li>
+    
+    <li>School：Xiamen University</li>
+    
+    <li>Email：langtang1996@gmail.com</li>
+    
+    <li>QQ：1660039482</li>
+    
+  </ul>
+</div>
+
+
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Cpp/" style="font-size: 15px;">Cpp</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/algorithm/" style="font-size: 12.5px;">algorithm</a> <a href="/tags/machine-learning/" style="font-size: 20px;">machine learning</a> <a href="/tags/optimization/" style="font-size: 17.5px;">optimization</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2018/11/22/paper-robot/">[paper]robot</a>
+          </li>
+        
+          <li>
+            <a href="/2018/11/17/paper-dqn/">[paper]dqn</a>
+          </li>
+        
+          <li>
+            <a href="/2018/11/02/dataset-cityscapes/">dataset-cityscapes</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/30/paper-EDAnet/">[paper]EDAnet</a>
+          </li>
+        
+          <li>
+            <a href="/2018/10/22/paper-darts/">[paper]darts</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2018 Tang Lang<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<!-- <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> -->
+</body>
+</html>

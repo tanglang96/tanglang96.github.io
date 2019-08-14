@@ -70,6 +70,52 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-LeetCode-207-Course-Schedule" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/07/20/LeetCode-207-Course-Schedule/" class="article-date">
+  <time datetime="2018-07-20T08:20:36.000Z" itemprop="datePublished">2018-07-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/07/20/LeetCode-207-Course-Schedule/">[LeetCode]207. Course Schedule</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>该题目利用DFS和BFS来判断某个图是否能进行拓扑排序</p>
+<ol>
+<li><p>BFS的思路是先将给定的pair组转换成vector<unordered_set>格式存放的图，然后计算每个节点的入度，先找到入度为0的节点，如果未找到直接返回false ，找到之后将该点的入度标记为-1，然后将其指向的节点的入度减1，循环n次，如果每次都能找到入度为0的节点，那么可以进行拓扑排序。</unordered_set></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">canFinish</span><span class="params">(<span class="keyword">int</span> numCourses, <span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&amp; prerequisites)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt; graph = make_graph(numCourses, prerequisites);</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; degrees = compute_indegree(graph);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numCourses; i++) &#123;</span><br><span class="line">            <span class="keyword">int</span> j = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (; j &lt; numCourses; j++)</span><br><span class="line">                <span class="keyword">if</span> (!degrees[j]) <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">if</span> (j == numCourses) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            degrees[j] = <span class="number">-1</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> neigh : graph[j])</span><br><span class="line">                degrees[neigh]--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt; make_graph(<span class="keyword">int</span> numCourses, <span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&amp; prerequisites) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt; graph(numCourses);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> pre : prerequisites)</span><br><span class="line">            graph[pre.second].insert(pre.first);</span><br><span class="line">        <span class="keyword">return</span> graph;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; compute_indegree(<span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; graph) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; degrees(graph.size(), <span class="number">0</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> neighbors : graph)</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> neigh : neighbors)</span><br><span class="line">                degrees[neigh]++;</span><br><span class="line">        <span class="keyword">return</span> degrees;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>DFS的思路则是通过DFS判断图中是否有环，通过onPath作为标记数组，来标记是否当前路径已经访问过，利用visited来标记已经访问过的节点，利用dfs_cycle()来判断当前的dfs路径上是否有环</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">canFinish</span><span class="params">(<span class="keyword">int</span> numCourses, <span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&amp; prerequisites)</span> </span>&#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt; graph = make_graph(numCourses, prerequisites);</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt; onpath(numCourses, <span class="literal">false</span>), visited(numCourses, <span class="literal">false</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; numCourses; i++)</span><br><span class="line">            <span class="keyword">if</span> (!visited[i] &amp;&amp; dfs_cycle(graph, i, onpath, visited))</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt; make_graph(<span class="keyword">int</span> numCourses, <span class="built_in">vector</span>&lt;pair&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt;&gt;&amp; prerequisites) &#123;</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt; graph(numCourses);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span> pre : prerequisites)</span><br><span class="line">            graph[pre.second].insert(pre.first);</span><br><span class="line">        <span class="keyword">return</span> graph;</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">dfs_cycle</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt;&gt;&amp; graph, <span class="keyword">int</span> node, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&amp; onpath, <span class="built_in">vector</span>&lt;<span class="keyword">bool</span>&gt;&amp; visited)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (visited[node]) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        onpath[node] = visited[node] = <span class="literal">true</span>; </span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> neigh : graph[node])</span><br><span class="line">            <span class="keyword">if</span> (onpath[neigh] || dfs_cycle(graph, neigh, onpath, visited))</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">return</span> onpath[node] = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/07/20/LeetCode-207-Course-Schedule/" data-id="cjzavx0yw000n6gawtn1lxp1o" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-机器学习-机器学习中的数值计算-1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/07/14/机器学习-机器学习中的数值计算-1/" class="article-date">
@@ -110,7 +156,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/14/机器学习-机器学习中的数值计算-1/" data-id="cjp8akbwf0027woawafmu0rg4" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/14/机器学习-机器学习中的数值计算-1/" data-id="cjzavx10200286gawp2vkurg1" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -156,7 +202,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/07/06/机器学习-利用TensorFlow训练一个简单的神经网络/" data-id="cjp8akbwd0023woawk1ojvxqu" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/07/06/机器学习-利用TensorFlow训练一个简单的神经网络/" data-id="cjzavx0zx00206gawdule4mwp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -197,7 +243,7 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/29/机器学习-在极客云上进行深度学习/" data-id="cjp8akbwa001zwoaw7ncmvtqq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/06/29/机器学习-在极客云上进行深度学习/" data-id="cjzavx10100266gawrfq7oims" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -254,78 +300,10 @@ H(f)(\vec x)_{i,j}=\frac{\partial^{2}}{\partial x_{i}\partial x_{j}}f(\vec x)</s
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/15/机器学习-KITTI的雷达-摄像头数据融合/" data-id="cjp8akbw2001pwoaw15gkogb4" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/06/15/机器学习-KITTI的雷达-摄像头数据融合/" data-id="cjzavx0zt001u6gawj1p5fmaf" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-最优化-不等式约束的优化问题求解" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/06/08/最优化-不等式约束的优化问题求解/" class="article-date">
-  <time datetime="2018-06-08T08:31:23.000Z" itemprop="datePublished">2018-06-08</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/06/08/最优化-不等式约束的优化问题求解/">[最优化]不等式约束的优化问题求解</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="不等式约束的优化问题求解"><a href="#不等式约束的优化问题求解" class="headerlink" title="不等式约束的优化问题求解"></a>不等式约束的优化问题求解</h1><p>与前文讨论的只含等式约束的优化问题求解类似，含不等式约束的优化问题同样可以用拉格朗日乘子法进行求解<br>对于一般形式的优化问题：</p>
-<script type="math/tex; mode=display">
-minimize\quad f(x)\\
-subject\  to\quad h(x)=0\\
-\quad\quad g(x)\le 0</script><p>其中，<script type="math/tex">f:R^{n}\to R,h:R^{n}\to R^{m},m\le n,g:R^{n}\to R^{p}</script><br>引入下面两个定义：</p>
-<p><strong>定义1</strong>：对于一个不等式约束<script type="math/tex">g_{j}(x)\le 0</script>，如果在<script type="math/tex">x^{*}</script>处<script type="math/tex">g_{j}(x^{*})=0</script>，那么称该不等式约束是<script type="math/tex">x^{*}</script>处的起作用约束；如果在<script type="math/tex">x^{*}</script>处<script type="math/tex">g_{j}(x^{*})<0</script>，那么称该约束是<script type="math/tex">x^{*}</script>处的不起作用约束。按照惯例，总是把等式约束<script type="math/tex">h_{i}(x)</script>当作起作用的约束</p>
-<p><strong>定义2：</strong>设<script type="math/tex">x^{*}</script>满足<script type="math/tex">h(x^{*})=0,g(x^{*})\le 0</script>，设<script type="math/tex">J(x^{*})</script>为起作用不等式约束的下标集：</p>
-<script type="math/tex; mode=display">
-J(x^{*})\triangleq \{j:g_{j}(x^{*})=0\}</script><p>如果向量</p>
-<script type="math/tex; mode=display">
-\nabla h_{i}(x^{*}),\nabla g_{j}(x^{*}),1\le i\le m,j\in J(x^{*})</script><p>是线性无关的，那么称<script type="math/tex">x^{*}</script>是一个正则点</p>
-<p>下面介绍某个点是局部极小点所满足的一阶必要条件，即KKT条件。<br><strong>KKT条件：</strong>设<script type="math/tex">f,h,g\in C^{1}</script>，设<script type="math/tex">x^{*}</script>是问题<script type="math/tex">h(x)=0,g(x)\le 0</script>的一个正则点和局部极小点，那么必然存在<script type="math/tex">\lambda^{*}\in R^{m}</script>和<script type="math/tex">\mu^{*}\in R^{p}</script>，使得以下条件成立：</p>
-<script type="math/tex; mode=display">
-\mu^{*}\ge0\\
-Df(x^{*})+\lambda^{*T}Dh(x^{*})+\mu^{*T}Dg(x^{*})=0^{T}\\
-\mu^{*T}g(x^{*})=0\\
-h(x^{*})=0\\
-g(x^{*})\le0</script><p>那么在求解不等式约束的最优化问题的时候，可以搜索满足KKT条件的点，并将这些点作为极小点的候选对象。</p>
-<h2 id="二阶充分必要条件"><a href="#二阶充分必要条件" class="headerlink" title="二阶充分必要条件"></a>二阶充分必要条件</h2><p>除了一阶的KKT条件之外，求解这类问题还有二阶的充分必要条件。</p>
-<p><strong>二阶必要条件：</strong>在上述的问题中若<script type="math/tex">x^{*}</script>是极小点且<script type="math/tex">f,h,g\in C^{2}</script>。假设<script type="math/tex">x^{*}</script>是正则点，那么存在<script type="math/tex">\lambda^{*}\in R^{m}</script>和<script type="math/tex">\mu^{*}\in R^{p}</script>使得</p>
-<ol>
-<li><script type="math/tex; mode=display">\mu^{*}\ge 0,Df(x^{*})+\lambda^{*T}Dh(x^{*})+\mu^{*T}Dg(x^{*})=0^{T},\mu^{*T}g(x^{*})=0</script></li>
-<li>对于所有<script type="math/tex">y\in T(x^{*})</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*},\mu^{*})y\ge0</script>成立</li>
-</ol>
-<p><strong>二阶充分条件：</strong>假定<script type="math/tex">f,h,g\in C^{2}</script>，<script type="math/tex">x^{*}\in R^{n}</script>是一个可行点，存在向量<script type="math/tex">\lambda^{*}\in R^{m}</script>和<script type="math/tex">\mu^{*}\in R^{p}</script>使得</p>
-<ol>
-<li><script type="math/tex; mode=display">\mu^{*}\ge 0,Df(x^{*})+\lambda^{*T}Dh(x^{*})+\mu^{*T}Dg(x^{*})=0^{T},\mu^{*T}g(x^{*})=0</script></li>
-<li>对于所有<script type="math/tex">y\in \widetilde{T}(x^{*},\mu^{*}),y\neq0</script>，都有<script type="math/tex">y^{T}L(x^{*},\lambda^{*},\mu^{*})y>0</script>成立</li>
-</ol>
-<p>那么<script type="math/tex">x^{*}</script>是优化问题<script type="math/tex">h(x)=0,g(x)\le 0</script>的严格局部极小点</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/06/08/最优化-不等式约束的优化问题求解/" data-id="cjp8akbvo0018woawrg1jrxc1" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
 
     </footer>
   </div>
@@ -373,7 +351,7 @@ g(x^{*})\le0</script><p>那么在求解不等式约束的最优化问题的时�
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -392,7 +370,7 @@ g(x^{*})\le0</script><p>那么在求解不等式约束的最优化问题的时�
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -403,6 +381,10 @@ g(x^{*})\le0</script><p>那么在求解不等式约束的最优化问题的时�
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/12/17/paper-NAS-conclusion/">[machine learning]NAS conclusion</a>
+          </li>
         
           <li>
             <a href="/2018/11/22/paper-robot/">[paper]robot</a>
@@ -420,10 +402,6 @@ g(x^{*})\le0</script><p>那么在求解不等式约束的最优化问题的时�
             <a href="/2018/10/30/paper-EDAnet/">[paper]EDAnet</a>
           </li>
         
-          <li>
-            <a href="/2018/10/22/paper-darts/">[paper]darts</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -436,7 +414,7 @@ g(x^{*})\le0</script><p>那么在求解不等式约束的最优化问题的时�
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2018 Tang Lang<br>
+      &copy; 2019 Tang Lang<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>

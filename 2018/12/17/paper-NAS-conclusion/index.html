@@ -5,19 +5,22 @@
   
 
   
-  <title>Tag: machine learning | Math &amp; Code</title>
+  <title>[machine learning]NAS conclusion | Math &amp; Code</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="the best or nothing">
-<meta name="keywords" content="Algorithm">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Math &amp; Code">
-<meta property="og:url" content="http://yoursite.com/tags/machine-learning/page/4/index.html">
+  <meta name="description" content="NAS相关的论文小结NEURAL ARCHITECTURE SEARCH WITH REINFORCEMENT LEARNING这是谷歌的一篇文章，应该是比较早的做NAS的一篇。用强化学习+RNN来做架构搜索，因为我主要是做视觉相关的，这里主要总结一下CNN的部分，RNN的部分文章也有写，不过这里不加以总结了。 首先说一下结果吧，NAS搜索的结构在CIFAR10上得到了3.68的错误率，并且速度也">
+<meta name="keywords" content="machine learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[machine learning]NAS conclusion">
+<meta property="og:url" content="http://yoursite.com/2018/12/17/paper-NAS-conclusion/index.html">
 <meta property="og:site_name" content="Math &amp; Code">
-<meta property="og:description" content="the best or nothing">
+<meta property="og:description" content="NAS相关的论文小结NEURAL ARCHITECTURE SEARCH WITH REINFORCEMENT LEARNING这是谷歌的一篇文章，应该是比较早的做NAS的一篇。用强化学习+RNN来做架构搜索，因为我主要是做视觉相关的，这里主要总结一下CNN的部分，RNN的部分文章也有写，不过这里不加以总结了。 首先说一下结果吧，NAS搜索的结构在CIFAR10上得到了3.68的错误率，并且速度也">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://yoursite.com/images/paper-NAS/1.PNG">
+<meta property="og:updated_time" content="2018-12-17T01:22:12.988Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Math &amp; Code">
-<meta name="twitter:description" content="the best or nothing">
+<meta name="twitter:title" content="[machine learning]NAS conclusion">
+<meta name="twitter:description" content="NAS相关的论文小结NEURAL ARCHITECTURE SEARCH WITH REINFORCEMENT LEARNING这是谷歌的一篇文章，应该是比较早的做NAS的一篇。用强化学习+RNN来做架构搜索，因为我主要是做视觉相关的，这里主要总结一下CNN的部分，RNN的部分文章也有写，不过这里不加以总结了。 首先说一下结果吧，NAS搜索的结构在CIFAR10上得到了3.68的错误率，并且速度也">
+<meta name="twitter:image" content="http://yoursite.com/images/paper-NAS/1.PNG">
   
     <link rel="alternate" href="/atom.xml" title="Math &amp; Code" type="application/atom+xml">
   
@@ -68,123 +71,74 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2018" class="archive-year">2018</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/07/06/机器学习-利用TensorFlow训练一个简单的神经网络/" class="archive-article-date">
-  <time datetime="2018-07-06T14:23:33.000Z" itemprop="datePublished">Jul 6</time>
+        <section id="main"><article id="post-paper-NAS-conclusion" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/17/paper-NAS-conclusion/" class="article-date">
+  <time datetime="2018-12-17T01:14:31.000Z" itemprop="datePublished">2018-12-17</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/07/06/机器学习-利用TensorFlow训练一个简单的神经网络/">[机器学习]利用TensorFlow训练一个简单的神经网络</a>
+    <h1 class="article-title" itemprop="name">
+      [machine learning]NAS conclusion
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/06/29/机器学习-在极客云上进行深度学习/" class="archive-article-date">
-  <time datetime="2018-06-29T14:49:12.000Z" itemprop="datePublished">Jun 29</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/06/29/机器学习-在极客云上进行深度学习/">[机器学习]在极客云上进行深度学习</a>
-    </h1>
-  
+        <h1 id="NAS相关的论文小结"><a href="#NAS相关的论文小结" class="headerlink" title="NAS相关的论文小结"></a>NAS相关的论文小结</h1><h2 id="NEURAL-ARCHITECTURE-SEARCH-WITH-REINFORCEMENT-LEARNING"><a href="#NEURAL-ARCHITECTURE-SEARCH-WITH-REINFORCEMENT-LEARNING" class="headerlink" title="NEURAL ARCHITECTURE SEARCH WITH REINFORCEMENT LEARNING"></a>NEURAL ARCHITECTURE SEARCH WITH REINFORCEMENT LEARNING</h2><p>这是谷歌的一篇文章，应该是比较早的做NAS的一篇。用强化学习+RNN来做架构搜索，因为我主要是做视觉相关的，这里主要总结一下CNN的部分，RNN的部分文章也有写，不过这里不加以总结了。</p>
+<p>首先说一下结果吧，NAS搜索的结构在CIFAR10上得到了3.68的错误率，并且速度也比较快，说明了该方法确实是比较有效的。</p>
+<p>搜索的主要方式如下图<img src="/images/paper-NAS/1.PNG" alt="NAS"></p>
 
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/06/15/机器学习-KITTI的雷达-摄像头数据融合/" class="archive-article-date">
-  <time datetime="2018-06-15T13:43:30.000Z" itemprop="datePublished">Jun 15</time>
-</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/06/15/机器学习-KITTI的雷达-摄像头数据融合/">[机器学习]KITTI的雷达+摄像头数据融合</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/06/01/机器学习-神经网络反向传播的推导/" class="archive-article-date">
-  <time datetime="2018-06-01T05:20:32.000Z" itemprop="datePublished">Jun 1</time>
-</a>
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/12/17/paper-NAS-conclusion/" data-id="cjzavx0z0000u6gawbw5r9pja" class="article-share-link">Share</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/06/01/机器学习-神经网络反向传播的推导/">[机器学习]神经网络反向传播的推导</a>
-    </h1>
-  
-
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2018/05/24/机器学习-决策树和随机森林算法简介/" class="archive-article-date">
-  <time datetime="2018-05-24T13:22:21.000Z" itemprop="datePublished">May 24</time>
-</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2018/05/24/机器学习-决策树和随机森林算法简介/">[机器学习]决策树和随机森林算法简介</a>
-    </h1>
-  
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
 
-    </header>
+    </footer>
   </div>
-</article>
   
-  
-    </div></section>
-  
-
-
-  <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/tags/machine-learning/page/3/">&laquo; Prev</a><a class="page-number" href="/tags/machine-learning/">1</a><a class="page-number" href="/tags/machine-learning/page/2/">2</a><a class="page-number" href="/tags/machine-learning/page/3/">3</a><span class="page-number current">4</span>
-  </nav>
+<nav id="article-nav">
+  
+  
+    <a href="/2018/11/22/paper-robot/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">[paper]robot</div>
+    </a>
+  
+</nav>
 
-</section>
+  
+</article>
+
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=default"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script> 
+<div id="gitalk-container"></div>     <script type="text/javascript">
+    var gitalk = new Gitalk({
+        clientID: '2193b885b967a685e247',
+        clientSecret: '49a60c8f19873532dc3e7a6658bbff6c95ce73c9',
+        repo: 'Lannyy.github.io',
+        owner: 'Lannyy',
+        admin: ['Lannyy'],
+        id: '2018/12/17/paper-NAS-conclusion/',
+        distractionFreeMode: true,
+    });
+    gitalk.render('gitalk-container');
+</script></section>
         
           <aside id="sidebar">
   

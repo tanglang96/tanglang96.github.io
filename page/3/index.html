@@ -70,6 +70,54 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-paper-InceptionV4" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/09/28/paper-InceptionV4/" class="article-date">
+  <time datetime="2018-09-28T09:47:58.000Z" itemprop="datePublished">2018-09-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/09/28/paper-InceptionV4/">[paper]InceptionV4总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="《Inception-v4-Inception-ResNet-and-the-Impact-of-Residual-Connections-on-Learning》总结"><a href="#《Inception-v4-Inception-ResNet-and-the-Impact-of-Residual-Connections-on-Learning》总结" class="headerlink" title="《Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning》总结"></a>《Inception-v4, Inception-ResNet and the Impact of Residual Connections on Learning》总结</h1><h2 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h2><p>近些年，非常深的卷积神经网络在提升图像识别的性能表现上具有最大的促进作用。而Inception网络结构在具有很好的性能的同时还具有相对较低的计算消耗。最近的残差连接与传统结构的结合在2015 ILSVRC上取到了最好的结果，与InceptionV3的效果相近。考虑将Inception网络与残差连接相结合，充分的证据表明残差连接可以很大程度上加速Inception网络的训练，同样也有证据表明残差连接的Inception相比不带残差连接的几乎同样计算量的Inception网络性能要稍有优势。本文也提出了一些新的残差连接和不带残差连接的Inception网络，这些改变同样也明显改善了2012 ILSVRC的单帧分类性能。最后还提到了利用合适的激活缩放可以使非常宽的残差连接Inception网络的训练变得更加稳定</p>
+<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1.Introduction"></a>1.Introduction</h2><p>2012年的AlexNet在CV任务中取得了很好的成绩，深层的CNN在各种CV领域内取得了很成功的应用。因为残差连接在训练深层结构中是至关重要的，本文将残差连接和深层的Inception网络相结合，这样将在保持计算量的同时收获所有残差连接的优点。</p>
+<p>除了直接的结合之外，本文还探索了是否可以将Inception自身做的更深和更宽来实现更好的性能，因此本文设计了InceptionV4，并由于Tensorflow的分布式计算的技术不再需要将模型进行划分。</p>
+<p>本文还将Inception-V3，Inception-V4和同样计算消耗的残差连接的Inception网络进行了比较，很明显InceptionV4和Inception-ResNet-V2的单帧性能表现在ImageNet的验证集上相类似，都超过了state-of-the-art的结果。最后发现这种集成的性能也并没有达到数据集上分类噪声的程度，仍然还有改进的空间。</p>
+<h2 id="2-Related-Work"><a href="#2-Related-Work" class="headerlink" title="2.Related Work"></a>2.Related Work</h2><p>CNN在大型的图片识别任务上变得很流行，Network in network，VGGNet和GoogLeNet(InceptionV1)都是一些重要的里程碑。He 给出了充分的理论和实践说明残差连接的优点，尤其是在检测上面的应用。作者强调残差连接在训练很深的CNN模型上是内在必要的，但是我们的发现并<strong>不支持</strong>这一观点，至少在图像识别这方面不支持，这大概需要更多的论点支撑和对残差连接在深层网络的作用的理解。实验的章节证明<strong>就算没有残差连接我们也不难训练很深的网络</strong>，不过<strong>残差连接能够很好的改善训练速度</strong>，这也是对于其使用的重要观点。</p>
+<p>从InceptionV1开始该网络结构经过了多次改善，通过引入BN得到了V2，通过进行额外的因子分解得到了V3。</p>
+<h2 id="3-Architectural-Choices"><a href="#3-Architectural-Choices" class="headerlink" title="3.Architectural Choices"></a>3.Architectural Choices</h2><p>这一章节主要介绍了网络的具体结构</p>
+<p>在残差版本的Inception网络中使用了更加简单的Inception block，每个Inception block后面都有一个1*1的卷积来补偿通道数的改变。另外一个Inception和残差版本的小区别在于，在残差版本中，BN仅仅利用在传统层的顶部而不在summations的顶部，这是由于想让网络具有更多的Inception blocks，并可以在单个GPU上进行训练所做的妥协，事实上如果都使用BN会更友好处</p>
+<p>当filters超过1000的时候，网络会在训练的早期就训练失败，降低学习率或者增加额外的BN都不能避免这一现象。He提出了利用先低学习率warm up，然后高学习率进行训练可以改善这一现象，然而本文发现通过对残差量进行缩放可以更加可靠的解决该问题，这样并不会损失准确性并且可以让训练更加稳定。<br><img src="\images\paper-InceptionV4\scaling.PNG" alt="残差变量的缩放"></p>
+<h2 id="4-Training-Methodology"><a href="#4-Training-Methodology" class="headerlink" title="4.Training Methodology"></a>4.Training Methodology</h2><p>这一章节主要介绍了一些训练的细节，利用的tensorflow分布式计算框架，GPU为Nvidia的Kepler，最好的模型使用的RMSProp算法，dacay=0.9，<script type="math/tex">\epsilon=1.0</script>，学习率为0.045，以每两个epoch，0.94的指数衰减率进行衰减。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2018/09/28/paper-InceptionV4/" data-id="cjzavx0yz000s6gaw9201f3e0" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Matrix-Derivative" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2018/09/21/Matrix-Derivative/" class="article-date">
@@ -104,7 +152,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/09/21/Matrix-Derivative/" data-id="cjp8akbv3000awoaws6pyz8qx" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/09/21/Matrix-Derivative/" data-id="cjzavx0ys000j6gawuqzxais2" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Matrix/">Matrix</a></li></ul>
@@ -158,7 +206,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/09/14/leetcode-stock/" data-id="cjp8akbve000kwoaw058jwfgf" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/09/14/leetcode-stock/" data-id="cjzavx0yp000g6gawytxhp2p3" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
@@ -219,7 +267,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/31/最优化-凸集的定义与常见凸集/" data-id="cjp8akbvv001dwoawwfkc0wiu" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/31/最优化-凸集的定义与常见凸集/" data-id="cjzavx0zb00166gawipe9k58c" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/">optimization</a></li></ul>
@@ -284,69 +332,7 @@ s.t.\quad &\sum_{i=1}^{m}\alpha_{i}y_{i}=0\\
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/24/机器学习-SVM的推导-3/" data-id="cjp8akbw5001vwoaw1yg8td38" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-机器学习-SVM的推导-2" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2018/08/18/机器学习-SVM的推导-2/" class="article-date">
-  <time datetime="2018-08-18T08:54:25.000Z" itemprop="datePublished">2018-08-18</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/08/18/机器学习-SVM的推导-2/">[机器学习]SVM的推导(2)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h1 id="硬间隔SVM的SMO序列优化算法"><a href="#硬间隔SVM的SMO序列优化算法" class="headerlink" title="硬间隔SVM的SMO序列优化算法"></a>硬间隔SVM的SMO序列优化算法</h1><p>上一篇文章(1)我们讨论了硬间隔SVM的推导及其对偶形式，其对偶问题可以化简成以下形式：</p>
-<script type="math/tex; mode=display">\begin{align*}
-min_ \alpha\quad &\frac{1}{2}\sum_{i=1}^{N}\sum_{j=1}^{N}\alpha_{i}\alpha_{j}y_{i}y_{j}x_{i}\cdot x_{j}-\sum_{i=1}^{N}\alpha_{i}\\
-s.t.\quad &\sum_{i=1}^{N}\alpha_{i}y_{i}=0\\
-&\alpha_{i}\ge 0\\
-&i=1,2,...,N
-\end{align*}</script><p>该问题可以看作是一个以<script type="math/tex">\alpha</script>为优化变量的二阶规划问题，二阶规划问题有很多成熟的解法，针对SVM的优化有一种最为高效的SMO序列优化算法。</p>
-<h1 id="SMO序列优化算法"><a href="#SMO序列优化算法" class="headerlink" title="SMO序列优化算法"></a>SMO序列优化算法</h1><p>SMO序列优化算法先将<script type="math/tex">\alpha</script>的所有变量进行初始化，比如令<script type="math/tex">\alpha_{1},\alpha_{2},...,\alpha_{N}=0，</script>再将<script type="math/tex">\alpha</script>的其中两个分量看作变量，比如<script type="math/tex">\alpha_{1},\alpha_{2}</script>（在选取两个分量<script type="math/tex">\alpha_{i},\alpha_{j}</script>的时候，通常先取违反上文中KKT条件最严重的为<script type="math/tex">\alpha_{i}</script>，然后选取离<script type="math/tex">x_{i}</script>间隔最远的<script type="math/tex">x_{j}</script>对应的<script type="math/tex">\alpha_{j}</script>为第二个变量），其余的<script type="math/tex">\alpha_{3},\alpha_{4},...,\alpha_{N}</script>固定住，则根据约束条件<script type="math/tex">\sum_{i=1}^{N}\alpha_{i}y_{i}=0</script>可以得到<script type="math/tex">\alpha_{1}=-y_{1}\sum_{i=2}^{N}\alpha_{i}y_{i}</script>。上述问题即可以化为两个变量的二次规划问题(令<script type="math/tex">K_{ij}=x_{i}\cdot x_{j}</script>)：</p>
-<script type="math/tex; mode=display">\begin{align*}
-min_{\alpha_{1},\alpha_{2}}\quad W(\alpha_{1},\alpha_{2})=&\frac{1}{2}K_{11}\alpha_{1}^{2}+\frac{1}{2}K_{22}\alpha_{2}^{2}+y_{1}y_{2}K_{12}\alpha_{1}\alpha_{2}\\
-&-(\alpha_{1}+\alpha_{2})+y_{1}\alpha_{1}\sum_{i=3}^{N}y_{i}\alpha_{i}K_{i1}+y_{2}\alpha_{2}\sum_{i=3}^{N}y_{i}\alpha_{i}K_{i2}\\
-s.t.\quad &\alpha_{1}y_{1}+\alpha_{2}y_{2}=-\sum_{i=3}^{N}y_{i}\alpha_{i}=\zeta\\
-&\alpha_{1},\alpha_{2}\ge0
-\end{align*}</script><p>在上述二次规划问题中，由于<script type="math/tex">\alpha_{1}y_{1}+\alpha_{2}y_{2}=\zeta</script>，那么可以得到<script type="math/tex">\alpha_{1}=(\zeta-y_{2}\alpha_{2})y_{1}</script>，将该约束条件代入<script type="math/tex">W(\alpha_{1},\alpha_{2})</script>中即可以得到单变量的二次规划问题，如果先不考虑不等式约束条件，则可以直接得到解析解，不必利用数值计算的方式求解，这样可以大大提升计算速度。</p>
-<p>令<script type="math/tex">v_{i}=\sum_{j=3}^{N}\alpha_{j}y_{j}K(x_{i},x_{j})</script>，则将<script type="math/tex">\alpha_{1}=(\zeta-y_{2}\alpha_{2})y_{1}</script>代入<script type="math/tex">W(\alpha_{1},\alpha_{2})</script>可以得到：</p>
-<script type="math/tex; mode=display">
-W(\alpha_{2})=\frac{1}{2}K_{11}(\zeta-\alpha_{2}y_{2})^{2}+\frac{1}{2}K_{22}\alpha_{2}^{2}+y_{2}K_{12}(\zeta-\alpha_{2}y_{2})\alpha_{2}-(\zeta-\alpha_{2}y_{2})y_{1}-\alpha_{2}+v_{1}(\zeta-\alpha_{2}y_{2})+y_{2}v_{2}\alpha_{2}</script><p>直接令<script type="math/tex">\frac{\partial W}{\partial\alpha_{2}}=0</script>，那么可以得到<script type="math/tex">\alpha_{2}</script>的解析解为<script type="math/tex">\hat\alpha_{2}=\alpha_{2}+\frac{y_{2}(E_{1}-E_{2})}{\eta}</script>，其中<script type="math/tex">E_{i}=\sum_{j=1}^{N}\alpha_{j}y_{j}K_{ij}+b-y_{i}</script>，<script type="math/tex">\eta=K_{11}+K_{22}-2K_{12}</script>。此时得到的<script type="math/tex">\hat\alpha_{2}</script>还没有考虑不等式约束<script type="math/tex">\alpha_{1},\alpha_{2}\ge 0</script>，由<script type="math/tex">\alpha_{1}=(\zeta-y_{2}\alpha_{2})y_{1}\ge0</script>与<script type="math/tex">\alpha_{2}\ge0</script>可以解不等式得到<script type="math/tex">\alpha_2</script>的上界<script type="math/tex">H</script>与下界<script type="math/tex">L</script>，即经过剪辑可以得到<script type="math/tex">\alpha_{2}</script>的解析解为：</p>
-<script type="math/tex; mode=display">
-\alpha_{2}^{*}=
-\begin{cases}
-H,\quad \hat\alpha_{2}>H\\
-\hat\alpha_{2},\quad L\le\hat\alpha_{2}\le H\\
-L,\quad \hat\alpha_{2}<L
-\end{cases}</script><p>另外根据<script type="math/tex">\alpha_{1}^{*}=(\zeta-y_{2}\alpha_{2}^{*})y_{1}</script>则可以得到<script type="math/tex">\alpha_{1}^{*}</script>，这样便完成了SMO算法的一组变量的更新。重复进行变量选择，解析求解，变量剪辑的过程，直到<script type="math/tex">\alpha</script>的所有变量都能满足文章(1)中的KKT条件为止，然后再根据文章(1)中<script type="math/tex">w</script>与<script type="math/tex">b</script>的计算公式便可以得到训练好的超平面，这样便完成了硬间隔SVM的数学推导过程，后面的文章还会继续介绍软间隔SVM的推导与核方法的应用。To be continue…</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2018/08/18/机器学习-SVM的推导-2/" data-id="cjp8akbw4001twoawednhjus2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2018/08/24/机器学习-SVM的推导-3/" data-id="cjzavx0zu001w6gaw65pd8ecs" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/machine-learning/">machine learning</a></li></ul>
@@ -397,7 +383,7 @@ L,\quad \hat\alpha_{2}<L
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">19</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Cpp/">Cpp</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Matrix/">Matrix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/machine-learning/">machine learning</a><span class="tag-list-count">20</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/">optimization</a><span class="tag-list-count">9</span></li></ul>
     </div>
   </div>
 
@@ -416,7 +402,7 @@ L,\quad \hat\alpha_{2}<L
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">December 2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/11/">November 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/10/">October 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/09/">September 2018</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/07/">July 2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/06/">June 2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/05/">May 2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a><span class="archive-list-count">2</span></li></ul>
     </div>
   </div>
 
@@ -427,6 +413,10 @@ L,\quad \hat\alpha_{2}<L
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2018/12/17/paper-NAS-conclusion/">[machine learning]NAS conclusion</a>
+          </li>
         
           <li>
             <a href="/2018/11/22/paper-robot/">[paper]robot</a>
@@ -444,10 +434,6 @@ L,\quad \hat\alpha_{2}<L
             <a href="/2018/10/30/paper-EDAnet/">[paper]EDAnet</a>
           </li>
         
-          <li>
-            <a href="/2018/10/22/paper-darts/">[paper]darts</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -460,7 +446,7 @@ L,\quad \hat\alpha_{2}<L
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2018 Tang Lang<br>
+      &copy; 2019 Tang Lang<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
